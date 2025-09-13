@@ -70,7 +70,7 @@ jobs:
       - name: Create Azure Container Registry if not exists
         run: |
           if az acr show \
-            --name ${{ vars.ACR_NINFRA_AZURE_ACR_NAMEAME }} \
+            --name ${{ vars.INFRA_AZURE_ACR_NAME }} \
             --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
             echo "ACR ${{ vars.INFRA_AZURE_ACR_NAME }} already exists."
           else
@@ -137,7 +137,7 @@ jobs:
               --registry-username $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query username -o tsv) \
               --registry-password $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query passwords[0].value -o tsv) \
               --ingress external \
-              --target-port ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_TARGETPORT }}
+              --target-port ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_PORT }}
           fi
 
       - name: Create FrontEnd Container App if not exists
