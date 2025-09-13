@@ -33,7 +33,7 @@ jobs:
           if az sql server show --name ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
             echo "SQL Server ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} already exists."
           else
-            echo "Creating SQL Server..."
+            echo "Creating SQL Server ..."
             az sql server create \
               --name ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
@@ -41,3 +41,38 @@ jobs:
               --admin-user ${{ vars.INFRA_AZURE_SQLSERVER_ADMIN_LOGINNAME }} \
               --admin-password ${{ secrets.INFRA_AZURE_SQLSERVER_ADMIN_LOGINPASSWORD }}
           fi
+
+      - name: Create SQL Database if not exists
+        run: |
+          if az sql db show --name ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }} --server ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
+            echo "SQL DB ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }} already exists."
+          else
+            echo "Creating SQL Database ..."
+            az sql db create \
+              --name ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }} \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --server ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} \
+              --edition GeneralPurpose \
+              --compute-model Serverless \
+              --family Gen5 \
+              --capacity 2 \
+              --min-capacity 0.5 \
+              --max-size 5GB \
+              --zone-redundant false
+          fi
+
+      - name: Create Azure Container Registry if not exists
+        run: |
+          if az acr show --name ${{ vars.ACR_NINFRA_AZURE_ACR_NAMEAME }} --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
+            echo "ACR ${{ vars.INFRA_AZURE_ACR_NAME }} already exists."
+          else
+            echo "Creating ACR ..."
+            az acr create \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --location ${{ vars.INFRA_AZURE_LOCATION }} \
+              --name ${{ vars.INFRA_AZURE_ACR_NAME }} \
+              --sku Basic \
+              --admin-enabled true
+          fi
+
+
