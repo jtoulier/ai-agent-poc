@@ -5,7 +5,7 @@ on:
 
 
 jobs:
-  ensure-rg:
+  job-create-infra-azure:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
