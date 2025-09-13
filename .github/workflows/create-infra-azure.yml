@@ -128,22 +128,22 @@ jobs:
 
           echo "⏳ Waiting for Container App Environment ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} creation for $TOTAL_WAIT_TIME_IN_SECONDS seconds ..."
 
-          for i in {1..$MAX_RETRIES}; do
+          for i in $(seq 1 $MAX_RETRIES); do
             STATUS=$(az containerapp env show \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
               --name ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
               --query "provisioningState" -o tsv 2>/dev/null || echo "NotFound")
 
-            echo $(TZ="America/Lima" date +"%Y-%m-%d %H:%M:%S") "Status [$i of $MAX_RETRIES]: $STATUS"
+            echo $(TZ="America/Lima" date +"%Y-%m-%d %H:%M:%S") "Status [$(printf "%03d" "$i") of $(printf "%03d" "$MAX_RETRIES")]: $STATUS"
             if [ "$STATUS" = "Succeeded" ]; then
               echo "✅ Container App Environment is ready"
               break
             fi
-            if [ $i -eq $MAX_RETRIES ]; then
+            if [ "$i" -eq "$MAX_RETRIES" ]; then
               echo "❌ Timeout waiting for Container App Environment to be ready"
               exit 1
             fi
-            sleep $SLEEP_IN_SECONDS
+            sleep "$SLEEP_IN_SECONDS"
           done
 
       - name: Create API Java Container App if not exists
@@ -202,18 +202,28 @@ jobs:
             -o tsv)
 
           # Iterar sobre las IPs
+          TOTAL=$(echo "$IPS" | wc -w)
           INDEX=1
           for IP in $IPS; do
-            NOMBREREGLA="Rule_APIJava_${INDEX}"
+            NOMBREREGLA=$(printf "Rule_APIJava_%03d" "$INDEX")
+            INDEX_PAD=$(printf "%03d" "$INDEX")
+            TOTAL_PAD=$(printf "%03d" "$TOTAL")
 
-            echo "Creating firewall rule $NOMBREREGLA with IP $IP ..."
-
-            az sql server firewall-rule create \
-              --resource-group "$RG" \
-              --server "$SQL_SERVER" \
-              --name "$NOMBREREGLA" \
-              --start-ip-address "$IP" \
-              --end-ip-address "$IP"
+            if az sql server firewall-rule show \
+                  --resource-group "$RG" \
+                  --server "$SQL_SERVER" \
+                  --name "$NOMBREREGLA" \
+                  &>/dev/null; then
+              echo "⚠️ [$INDEX_PAD/$TOTAL_PAD] Rule $NOMBREREGLA with IP $IP already exists. Skipping ..."
+            else
+              echo "✅ [$INDEX_PAD/$TOTAL_PAD] Creating rule $NOMBREREGLA with IP $IP ..."
+              az sql server firewall-rule create \
+                  --resource-group "$RG" \
+                  --server "$SQL_SERVER" \
+                  --name "$NOMBREREGLA" \
+                  --start-ip-address "$IP" \
+                  --end-ip-address "$IP"
+            fi
 
             INDEX=$((INDEX+1))
           done
