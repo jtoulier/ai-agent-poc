@@ -120,6 +120,27 @@ jobs:
                   --query primarySharedKey -o tsv)
           fi
 
+      - name: Wait for Container App Environment
+        run: |
+          echo "⏳ Waiting for Container App Environment ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} ..."
+          for i in {1..20}; do
+            STATUS=$(az containerapp env show \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --name ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
+              --query "provisioningState" -o tsv 2>/dev/null || echo "NotFound")
+            
+            echo "Status: $STATUS"
+            if [ "$STATUS" = "Succeeded" ]; then
+              echo "✅ Container App Environment is ready"
+              break
+            fi
+            if [ $i -eq 20 ]; then
+              echo "❌ Timeout waiting for Container App Environment to be ready"
+              exit 1
+            fi
+            sleep 15
+          done
+
       - name: Create API Java Container App if not exists
         run: |
           if az containerapp show \
