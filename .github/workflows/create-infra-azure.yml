@@ -132,7 +132,7 @@ jobs:
             STATUS=$(az containerapp env show \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
               --name ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
-              --query "provisioningState" -o tsv 2>/dev/null || echo "NotFound")
+              --query "properties.provisioningState" -o tsv 2>/dev/null || echo "NotFound")
 
             echo $(TZ="America/Lima" date +"%Y-%m-%d %H:%M:%S") "Status [$(printf "%03d" "$i") of $(printf "%03d" "$MAX_RETRIES")]: $STATUS"
             if [ "$STATUS" = "Succeeded" ]; then
