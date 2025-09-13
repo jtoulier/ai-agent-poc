@@ -1,0 +1,7 @@
+# .gitignore
+node_modules/
+dist/
+target/
+*.log
+.env
+__pycache__/
