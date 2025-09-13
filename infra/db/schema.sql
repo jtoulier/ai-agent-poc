@@ -22,7 +22,7 @@ CREATE TABLE [dbo].[credits](
 	[interestRate] [numeric](5, 2) NULL,
 	[dueDate] [date] NULL,
 	[writtenAt] [datetime2](2) NULL,
-	[author] [varchar](33) NULL,
+	[author] [varchar](32) NULL,
 
     CONSTRAINT pk_cre PRIMARY KEY (orderId),
     CONSTRAINT fk_ord_cre FOREIGN KEY (orderId) REFERENCES credit_params.client_types(orderId)

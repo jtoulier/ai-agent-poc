@@ -1,0 +1,29 @@
+name: Ensure Azure Resource Group
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ensure-rg:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Ensure Resource Group exists
+        run: |
+          if az group show --name ${{ vars.RESOURCE_GROUP }} &>/dev/null; then
+            echo "Resource group ${{ vars.RESOURCE_GROUP }} already exists. Reusing it."
+          else
+            echo "Creating resource group ${{ vars.RESOURCE_GROUP }}..."
+            az group create \
+              --name ${{ vars.RESOURCE_GROUP }} \
+              --location ${{ vars.LOCATION }}
+          fi
