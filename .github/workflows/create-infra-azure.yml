@@ -18,7 +18,8 @@ jobs:
 
       - name: Create Resource Group if not exists
         run: |
-          if az group show --name ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
+          if az group show \
+            --name ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
             echo "Resource group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} already exists."
           else
             echo "Creating resource group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} ..."
@@ -30,7 +31,9 @@ jobs:
 
       - name: Create SQL Server if not exists
         run: |
-          if az sql server show --name ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
+          if az sql server show \
+            --name ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} \
+            --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
             echo "SQL Server ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} already exists."
           else
             echo "Creating SQL Server ..."
@@ -44,7 +47,10 @@ jobs:
 
       - name: Create SQL Database if not exists
         run: |
-          if az sql db show --name ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }} --server ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
+          if az sql db show \
+            --name ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }} \
+            --server ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} \
+            --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
             echo "SQL DB ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }} already exists."
           else
             echo "Creating SQL Database ..."
@@ -63,7 +69,9 @@ jobs:
 
       - name: Create Azure Container Registry if not exists
         run: |
-          if az acr show --name ${{ vars.ACR_NINFRA_AZURE_ACR_NAMEAME }} --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
+          if az acr show \
+            --name ${{ vars.ACR_NINFRA_AZURE_ACR_NAMEAME }} \
+            --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
             echo "ACR ${{ vars.INFRA_AZURE_ACR_NAME }} already exists."
           else
             echo "Creating ACR ..."
@@ -75,4 +83,39 @@ jobs:
               --admin-enabled true
           fi
 
-
+      - name: Create Log Analytics if not exists
+        run: |
+          if az monitor log-analytics workspace show \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --workspace-name ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} &>/dev/null; then
+            echo "Log Analytics Workspace ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} already exists."
+          else
+            echo "Creating Log Analytics Workspace ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} ..."
+            az monitor log-analytics workspace create \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --location ${{ vars.INFRA_AZURE_LOCATION }} \
+              --workspace-name ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }}
+          fi
+      
+      - name: Create Container App Environment
+        run: |
+          if az containerapp env show \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --name ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} &>/dev/null; then
+            echo "Container App Environment '${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }}' already exists."
+          else
+            echo "Creando Container App Environment '${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }}' ..."
+            az containerapp env create \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --name ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
+              --location ${{ vars.INFRA_AZURE_LOCATION }} \
+              --logs-destination log-analytics \
+              --logs-workspace-id  $(az monitor log-analytics workspace show \
+                  --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+                  --workspace-name ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} \
+                  --query customerId -o tsv) \
+              --logs-workspace-key $(az monitor log-analytics workspace get-shared-keys \
+                  --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+                  --workspace-name ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} \
+                  --query primarySharedKey -o tsv)
+          fi
