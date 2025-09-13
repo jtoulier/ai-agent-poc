@@ -1,4 +1,4 @@
-name: Deploy Database Schema
+name: Deploy Database to Azure
 
 on:
   push:
@@ -14,6 +14,57 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set environment variables
+        run: |
+          echo "RG=rg-ai-agent-poc" >> $GITHUB_ENV
+          echo "LOCATION=centralus" >> $GITHUB_ENV
+          echo "SQL_SERVER=sql-aiagent-poc" >> $GITHUB_ENV
+          echo "SQL_DB=dbcantolao" >> $GITHUB_ENV
+          echo "SQL_USER=sqladminuser" >> $GITHUB_ENV
+          echo "SQL_PASSWORD=${{ secrets.AZURE_SQL_PASSWORD }}" >> $GITHUB_ENV
+
+      - name: Create Resource Group
+        run: |
+          az group create \
+            --name $RG \
+            --location $LOCATION
+
+      - name: Create SQL Server
+        run: |
+          az sql server create \
+            --name $SQL_SERVER \
+            --resource-group $RG \
+            --location $LOCATION \
+            --admin-user $SQL_USER \
+            --admin-password $SQL_PASSWORD
+
+      - name: Create SQL Database
+        run: |
+          az sql db create \
+            --name $SQL_DB \
+            --resource-group $RG \
+            --server $SQL_SERVER \
+            --edition GeneralPurpose \
+            --compute-model Serverless \
+            --family Gen5 \
+            --capacity 2 \
+            --min-capacity 0.5 \
+            --max-size 5GB
+
+      - name: Allow Azure Services firewall rule
+        run: |
+          az sql server firewall-rule create \
+            --resource-group $RG \
+            --server $SQL_SERVER \
+            --name AllowAzureServices \
+            --start-ip-address 0.0.0.0 \
+            --end-ip-address 0.0.0.0
+
       - name: Install SQLCMD
         run: |
           sudo apt-get update
@@ -21,10 +72,20 @@ jobs:
           echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
           source ~/.bashrc
 
-      - name: Run schema.sql on Azure SQL
+      - name: Run schema.sql
         run: |
-          sqlcmd -S ${{ secrets.AZURE_SQL_SERVER }} \
-                 -d ${{ secrets.AZURE_SQL_DB }} \
-                 -U ${{ secrets.AZURE_SQL_USER }} \
-                 -P ${{ secrets.AZURE_SQL_PASSWORD }} \
+          sqlcmd -S ${SQL_SERVER}.database.windows.net \
+                 -d $SQL_DB \
+                 -U $SQL_USER \
+                 -P $SQL_PASSWORD \
                  -i infra/db/schema.sql
+
+      - name: Run seed.sql (if exists)
+        run: |
+          if [ -f infra/db/seed.sql ]; then
+            sqlcmd -S ${SQL_SERVER}.database.windows.net \
+                   -d $SQL_DB \
+                   -U $SQL_USER \
+                   -P $SQL_PASSWORD \
+                   -i infra/db/seed.sql
+          fi
