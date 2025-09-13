@@ -122,23 +122,28 @@ jobs:
 
       - name: Wait for Container App Environment
         run: |
-          echo "⏳ Waiting for Container App Environment ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} ..."
-          for i in {1..20}; do
+          export SLEEP_IN_SECONDS=15
+          export TOTAL_WAIT_TIME_IN_SECONDS=900  # 15 minutes
+          export MAX_RETRIES=$((TOTAL_WAIT_TIME_IN_SECONDS / SLEEP_IN_SECONDS))
+
+          echo "⏳ Waiting for Container App Environment ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} creation for $TOTAL_WAIT_TIME_IN_SECONDS seconds ..."
+
+          for i in {1..$MAX_RETRIES}; do
             STATUS=$(az containerapp env show \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
               --name ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
               --query "provisioningState" -o tsv 2>/dev/null || echo "NotFound")
             
-            echo "Status: $STATUS"
+            echo $(TZ="America/Lima" date +"%Y-%m-%d %H:%M:%S") "Status [$i/$MAX_RETRIES]: $STATUS"
             if [ "$STATUS" = "Succeeded" ]; then
               echo "✅ Container App Environment is ready"
               break
             fi
-            if [ $i -eq 20 ]; then
+            if [ $i -eq $MAX_RETRIES ]; then
               echo "❌ Timeout waiting for Container App Environment to be ready"
               exit 1
             fi
-            sleep 15
+            sleep $SLEEP_IN_SECONDS
           done
 
       - name: Create API Java Container App if not exists
