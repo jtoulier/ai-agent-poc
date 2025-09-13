@@ -1,0 +1,43 @@
+name: Create Azure Infrastructure
+
+on:
+  workflow_dispatch:  # Solo se ejecutará a demanda. Si el recurso ya existe, no hará nada.
+
+
+jobs:
+  ensure-rg:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Create Resource Group if not exists
+        run: |
+          if az group show --name ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
+            echo "Resource group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} already exists."
+          else
+            echo "Creating resource group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} ..."
+            az group create \
+              --name ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --location ${{ vars.INFRA_AZURE_LOCATION }} \
+              --subscription ${{ vars.INFRA_AZURE_SUBSCRIPTION_ID }}
+          fi
+
+      - name: Create SQL Server if not exists
+        run: |
+          if az sql server show --name ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
+            echo "SQL Server ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} already exists."
+          else
+            echo "Creating SQL Server..."
+            az sql server create \
+              --name ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --location ${{ vars.INFRA_AZURE_LOCATION }} \
+              --admin-user ${{ vars.INFRA_AZURE_SQLSERVER_ADMIN_LOGINNAME }} \
+              --admin-password ${{ secrets.INFRA_AZURE_SQLSERVER_ADMIN_LOGINPASSWORD }}
+          fi
