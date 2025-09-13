@@ -127,12 +127,13 @@ jobs:
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
             echo "Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }} already exists."
           else
+            export dummy_image=mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
             echo "Creating Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }} ..."
             az containerapp create \
               --name ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }} \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
               --environment ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
-              --image ${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io/${{ vars.INFRA_APIJAVA_IMAGE_NAME }}:${{ vars.INFRA_APIJAVA_IMAGE_VERSION }} \
+              --image $dummy_image \
               --registry-server ${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io \
               --registry-username $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query username -o tsv) \
               --registry-password $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query passwords[0].value -o tsv) \
@@ -147,12 +148,13 @@ jobs:
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
             echo "Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} already exists."
           else
+            export dummy_image=mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
             echo "Creating Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} ..."
             az containerapp create \
               --name ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
               --environment ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
-              --image ${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io/${{ vars.INFRA_FRONTEND_IMAGE_NAME }}:${{ vars.INFRA_FRONTEND_IMAGE_VERSION }} \
+              --image $dummy_image \
               --registry-server ${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io \
               --registry-username $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query username -o tsv) \
               --registry-password $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query passwords[0].value -o tsv) \
