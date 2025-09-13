@@ -97,14 +97,14 @@ jobs:
               --workspace-name ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }}
           fi
       
-      - name: Create Container App Environment
+      - name: Create Container App Environment if not exists
         run: |
           if az containerapp env show \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
               --name ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} &>/dev/null; then
             echo "Container App Environment '${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }}' already exists."
           else
-            echo "Creando Container App Environment '${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }}' ..."
+            echo "Creating Container App Environment '${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }}' ..."
             az containerapp env create \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
               --name ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
@@ -119,3 +119,43 @@ jobs:
                   --workspace-name ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} \
                   --query primarySharedKey -o tsv)
           fi
+
+      - name: Create API Java Container App if not exists
+        run: |
+          if az containerapp show \
+              --name ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }} \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
+            echo "Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }} already exists."
+          else
+            echo "Creating Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }} ..."
+            az containerapp create \
+              --name ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }} \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --environment ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
+              --image ${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io/${{ vars.INFRA_APIJAVA_IMAGE_NAME }}:${{ vars.INFRA_APIJAVA_IMAGE_VERSION }} \
+              --registry-server ${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io \
+              --registry-username $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query username -o tsv) \
+              --registry-password $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query passwords[0].value -o tsv) \
+              --ingress external \
+              --target-port ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_TARGETPORT }}
+          fi
+
+      - name: Create FrontEnd Container App if not exists
+        run: |
+          if az containerapp show \
+              --name ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
+            echo "Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} already exists."
+          else
+            echo "Creating Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} ..."
+            az containerapp create \
+              --name ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --environment ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
+              --image ${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io/${{ vars.INFRA_FRONTEND_IMAGE_NAME }}:${{ vars.INFRA_FRONTEND_IMAGE_VERSION }} \
+              --registry-server ${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io \
+              --registry-username $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query username -o tsv) \
+              --registry-password $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query passwords[0].value -o tsv) \
+              --ingress external \
+              --target-port ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_PORT }}
+          fi          
