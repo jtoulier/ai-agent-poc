@@ -20,9 +20,9 @@ jobs:
         run: |
           if az group show \
             --name ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
-            echo "Resource group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} already exists."
+            echo "⚠️ Resource group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} already exists."
           else
-            echo "Creating resource group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} ..."
+            echo "✅ Creating resource group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} ..."
             az group create \
               --name ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
               --location ${{ vars.INFRA_AZURE_LOCATION }} \
@@ -34,9 +34,9 @@ jobs:
           if az sql server show \
             --name ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} \
             --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
-            echo "SQL Server ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} already exists."
+            echo "⚠️ SQL Server ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} already exists."
           else
-            echo "Creating SQL Server ..."
+            echo "✅ Creating SQL Server ..."
             az sql server create \
               --name ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
@@ -51,9 +51,9 @@ jobs:
             --name ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }} \
             --server ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} \
             --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
-            echo "SQL DB ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }} already exists."
+            echo "⚠️ SQL DB ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }} already exists."
           else
-            echo "Creating SQL Database ..."
+            echo "✅ Creating SQL Database ..."
             az sql db create \
               --name ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }} \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
@@ -72,9 +72,9 @@ jobs:
           if az acr show \
             --name ${{ vars.INFRA_AZURE_ACR_NAME }} \
             --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
-            echo "ACR ${{ vars.INFRA_AZURE_ACR_NAME }} already exists."
+            echo "⚠️ ACR ${{ vars.INFRA_AZURE_ACR_NAME }} already exists."
           else
-            echo "Creating ACR ..."
+            echo "✅ Creating ACR ..."
             az acr create \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
               --location ${{ vars.INFRA_AZURE_LOCATION }} \
@@ -88,9 +88,9 @@ jobs:
           if az monitor log-analytics workspace show \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
               --workspace-name ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} &>/dev/null; then
-            echo "Log Analytics Workspace ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} already exists."
+            echo "⚠️ Log Analytics Workspace ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} already exists."
           else
-            echo "Creating Log Analytics Workspace ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} ..."
+            echo "✅ Creating Log Analytics Workspace ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} ..."
             az monitor log-analytics workspace create \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
               --location ${{ vars.INFRA_AZURE_LOCATION }} \
@@ -102,9 +102,9 @@ jobs:
           if az containerapp env show \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
               --name ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} &>/dev/null; then
-            echo "Container App Environment '${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }}' already exists."
+            echo "⚠️ Container App Environment '${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }}' already exists."
           else
-            echo "Creating Container App Environment '${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }}' ..."
+            echo "✅ Creating Container App Environment '${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }}' ..."
             az containerapp env create \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
               --name ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
@@ -120,7 +120,7 @@ jobs:
                   --query primarySharedKey -o tsv)
           fi
 
-      - name: Wait for Container App Environment
+      - name: Wait for Container App Environment creation
         run: |
           export SLEEP_IN_SECONDS=15
           export TOTAL_WAIT_TIME_IN_SECONDS=900  # 15 minutes
@@ -151,10 +151,10 @@ jobs:
           if az containerapp show \
               --name ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }} \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
-            echo "Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }} already exists."
+            echo "⚠️ Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }} already exists."
           else
             export dummy_image=mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
-            echo "Creating Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }} ..."
+            echo "✅ Creating Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }} ..."
             az containerapp create \
               --name ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }} \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
@@ -172,10 +172,10 @@ jobs:
           if az containerapp show \
               --name ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
-            echo "Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} already exists."
+            echo "⚠️ Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} already exists."
           else
             export dummy_image=mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
-            echo "Creating Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} ..."
+            echo "✅ Creating Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} ..."
             az containerapp create \
               --name ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
