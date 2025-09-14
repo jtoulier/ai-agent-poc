@@ -75,6 +75,6 @@ jobs:
           sqlcmd -S "${{ vars.INFRA_AZURE_SQLSERVER_NAME }}.database.windows.net" \
             -d "${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }}" \
             -U "${{ vars.INFRA_AZURE_SQLSERVER_ADMIN_LOGINNAME }}" \
-            -P "${{ secrets.INFRA_AZURE_SQLSERVER_ADMIN_LOGINPASSWORD }}" \
+            -P '${{ secrets.INFRA_AZURE_SQLSERVER_ADMIN_LOGINPASSWORD }}' \
             -i ./infra/db/schema.sql \
             -b
