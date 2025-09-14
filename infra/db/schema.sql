@@ -34,4 +34,3 @@ CREATE TABLE [dbo].[credits](
     CONSTRAINT fk_ord_cre FOREIGN KEY (orderId) REFERENCES dbo.orders(orderId)
 ) ON [PRIMARY]
 GO
-
