@@ -23,6 +23,13 @@ jobs:
         with:
           creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
 
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: microsoft   # Microsoft Build of OpenJDK
+          # distribution: temurin   # OpenJDK de Adoptium
+          java-version: 21
+
       # 3️⃣ Build Maven project
       - name: Build Maven project
         working-directory: ./services/api-java
