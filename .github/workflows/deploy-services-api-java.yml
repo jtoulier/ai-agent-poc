@@ -59,3 +59,17 @@ jobs:
           IMAGE_NAME="${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io/${{ vars.INFRA_APIJAVA_IMAGE_NAME }}:${{ vars.INFRA_APIJAVA_IMAGE_VERSION }}"
           echo "⬆️ Pushing Docker image $IMAGE_NAME ..."
           docker push $IMAGE_NAME
+
+      - name: Update Container App image
+        run: |
+          CONTAINER_APP_NAME="${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }}"
+          RESOURCE_GROUP="${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}"
+          ACR_NAME="${{ vars.INFRA_AZURE_ACR_NAME }}"
+          IMAGE_NAME="${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io/${{ vars.INFRA_APIJAVA_IMAGE_NAME }}:${{ vars.INFRA_APIJAVA_IMAGE_VERSION }}"
+
+          echo "🔄 Updating Container App $CONTAINER_APP_NAME to image $IMAGE_NAME ..."
+
+          az containerapp update \
+            --name "$CONTAINER_APP_NAME" \
+            --resource-group "$RESOURCE_GROUP" \
+            --image "$IMAGE_NAME"
