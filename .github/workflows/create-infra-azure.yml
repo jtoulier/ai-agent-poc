@@ -237,31 +237,34 @@ jobs:
           # Descargar el JSON de GitHub meta
           curl -s https://api.github.com/meta -o gh_meta.json
 
-          # Extraer IPs de la sección "actions"
-          IPS=$(jq -r '.actions[]' gh_meta.json)
+          # Extraer CIDRs de la sección "actions"
+          CIDRS=$(jq -r '.actions[]' gh_meta.json)
 
           # Iterar sobre las IPs
-          TOTAL=$(echo "$IPS" | wc -w)
+          TOTAL=$(echo "$CIDRS" | wc -w)
           INDEX=1
-          for IP in $IPS; do
+          for CIDR in $CIDRS; do
             NOMBREREGLA=$(printf "Rule_GitHubActions_%03d" "$INDEX")
             INDEX_PAD=$(printf "%03d" "$INDEX")
             TOTAL_PAD=$(printf "%03d" "$TOTAL")
+
+            START_IP=$(ipcalc -n $CIDR | awk -F= '/Network/ {print $2}')
+            END_IP=$(ipcalc -b $CIDR | awk -F= '/Broadcast/ {print $2}')
 
             if az sql server firewall-rule show \
                   --resource-group "$RG" \
                   --server "$SQL_SERVER" \
                   --name "$NOMBREREGLA" \
                   &>/dev/null; then
-              echo "⚠️ [$INDEX_PAD/$TOTAL_PAD] Rule $NOMBREREGLA with IP $IP already exists. Skipping ..."
+              echo "⚠️ [$INDEX_PAD/$TOTAL_PAD] Rule $NOMBREREGLA with CIDR $CIDR already exists. Skipping ..."
             else
               echo "✅ [$INDEX_PAD/$TOTAL_PAD] Creating rule $NOMBREREGLA with IP $IP ..."
               az sql server firewall-rule create \
                   --resource-group "$RG" \
                   --server "$SQL_SERVER" \
                   --name "$NOMBREREGLA" \
-                  --start-ip-address "$IP" \
-                  --end-ip-address "$IP"
+                  --start-ip-address "$START_IP" \
+                  --end-ip-address "$END_IP"
             fi
 
             INDEX=$((INDEX+1))
