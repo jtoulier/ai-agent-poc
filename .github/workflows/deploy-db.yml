@@ -26,6 +26,8 @@ jobs:
       - name: Add current GitHub Actions runner IP to SQL Server firewall
         run: |
           echo "${{ secrets.INFRA_AZURE_SQLSERVER_ADMIN_LOGINPASSWORD }}"
+          echo '${{ secrets.INFRA_AZURE_SQLSERVER_ADMIN_LOGINPASSWORD }}'
+          echo ${{ secrets.INFRA_AZURE_SQLSERVER_ADMIN_LOGINPASSWORD }}
 
           RG="${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}"
           SQL_SERVER="${{ vars.INFRA_AZURE_SQLSERVER_NAME }}"
