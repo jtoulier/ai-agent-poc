@@ -228,47 +228,10 @@ jobs:
             INDEX=$((INDEX+1))
           done
 
-      - name: Add current GitHub Actions runner IP to SQL Server firewall
-        run: |
-          RG="${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}"
-          APP_NAME="${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }}"
-          SQL_SERVER="${{ vars.INFRA_AZURE_SQLSERVER_NAME }}"
-
-          # Obtener la IP pública del runner
-          RUNNER_IP=$(curl -s https://api.ipify.org)
-          echo "Runner public IP: $RUNNER_IP"
-
-          # Nombrar la regla (puedes cambiar el prefijo)
-          NOMBREREGLA="TempGitHubRunner"
-
-          if az sql server firewall-rule show \
-                --resource-group "$RG" \
-                --server "$SQL_SERVER" \
-                --name "$NOMBREREGLA" \
-                &>/dev/null; then
-            echo "⚠️ Rule $NOMBREREGLA already exist. Updating it to IP $RUNNER_IP ..."
-            az sql server firewall-rule update \
-                --resource-group "$RG" \
-                --server "$SQL_SERVER" \
-                --name "$NOMBREREGLA" \
-                --start-ip-address "$RUNNER_IP" \
-                --end-ip-address "$RUNNER_IP"
-          else
-            echo "✅ Rule $NOMBREREGLA does not exist. Creating rule IP $RUNNER_IP ..."
-            az sql server firewall-rule create \
-                --resource-group "$RG" \
-                --server "$SQL_SERVER" \
-                --name "$NOMBREREGLA" \
-                --start-ip-address "$RUNNER_IP" \
-                --end-ip-address "$RUNNER_IP"
-          fi
-
-
       - name: Add GitHub Actions IPs to SQL Firewall
         if: false  # Temporalmente deshabilitado mientras se prueba la opción de solo agregar la IP del runner, pues son más de 5000 rangos
         run: |
           RG="${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}"
-          APP_NAME="${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }}"
           SQL_SERVER="${{ vars.INFRA_AZURE_SQLSERVER_NAME }}"
 
           # Descargar el JSON de GitHub meta
