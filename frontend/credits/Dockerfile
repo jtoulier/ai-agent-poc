@@ -19,8 +19,8 @@ EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
 
-# docker build -t credits-frontend:latest .
-# docker run -d -p 4200:80 --name credits-frontend credits-frontend:latest
+# docker build -t credits/frontend:latest .
+# docker run -d -p 4200:80 --name credits-frontend credits/frontend:latest
 
 # ng build --configuration production
 
@@ -28,4 +28,4 @@ CMD ["nginx", "-g", "daemon off;"]
 # docker stop credits-frontend
 # docker container rm credits-frontend
 
-# docker image rm credits-frontend:latest
+# docker image rm credits/frontend:latest
