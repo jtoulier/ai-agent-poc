@@ -1,9 +1,3 @@
-CREATE DATABASE dbcantolao
-GO
-
-USE dbcantolao
-GO
-
 CREATE TABLE [dbo].[orders](
 	[orderId] [int] IDENTITY(1,1) NOT NULL,
 	[businessId] [varchar](16) NULL,

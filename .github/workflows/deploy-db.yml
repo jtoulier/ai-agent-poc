@@ -7,7 +7,7 @@ on:
       - "infra/db/**"
 
 jobs:
-  deploy-db:
+  job-deploy-db:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,77 +15,20 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Azure Login
-        uses: azure/login@v2
+        uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
 
-      - name: Set environment variables
-        run: |
-          echo "RG=rg-ai-agent-poc" >> $GITHUB_ENV
-          echo "LOCATION=centralus" >> $GITHUB_ENV
-          echo "SQL_SERVER=sql-aiagent-poc" >> $GITHUB_ENV
-          echo "SQL_DB=dbcantolao" >> $GITHUB_ENV
-          echo "SQL_USER=sqladminuser" >> $GITHUB_ENV
-          echo "SQL_PASSWORD=${{ secrets.AZURE_SQL_PASSWORD }}" >> $GITHUB_ENV
+      - name: Setup sqlcmd
+        uses: azure/setup-sqlcmd@v1
+        with:
+          sqlcmd-version: '17.9.1'
 
-      - name: Create Resource Group
+      - name: Execute schema.sql
         run: |
-          az group create \
-            --name $RG \
-            --location $LOCATION
-
-      - name: Create SQL Server
-        run: |
-          az sql server create \
-            --name $SQL_SERVER \
-            --resource-group $RG \
-            --location $LOCATION \
-            --admin-user $SQL_USER \
-            --admin-password $SQL_PASSWORD
-
-      - name: Create SQL Database
-        run: |
-          az sql db create \
-            --name $SQL_DB \
-            --resource-group $RG \
-            --server $SQL_SERVER \
-            --edition GeneralPurpose \
-            --compute-model Serverless \
-            --family Gen5 \
-            --capacity 2 \
-            --min-capacity 0.5 \
-            --max-size 5GB
-
-      - name: Allow Azure Services firewall rule
-        run: |
-          az sql server firewall-rule create \
-            --resource-group $RG \
-            --server $SQL_SERVER \
-            --name AllowAzureServices \
-            --start-ip-address 0.0.0.0 \
-            --end-ip-address 0.0.0.0
-
-      - name: Install SQLCMD
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y mssql-tools unixodbc-dev
-          echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
-          source ~/.bashrc
-
-      - name: Run schema.sql
-        run: |
-          sqlcmd -S ${SQL_SERVER}.database.windows.net \
-                 -d $SQL_DB \
-                 -U $SQL_USER \
-                 -P $SQL_PASSWORD \
-                 -i infra/db/schema.sql
-
-      - name: Run seed.sql (if exists)
-        run: |
-          if [ -f infra/db/seed.sql ]; then
-            sqlcmd -S ${SQL_SERVER}.database.windows.net \
-                   -d $SQL_DB \
-                   -U $SQL_USER \
-                   -P $SQL_PASSWORD \
-                   -i infra/db/seed.sql
-          fi
+          echo "⏳ Running schema.sql ..."
+          sqlcmd -S "${{ vars.INFRA_AZURE_SQLSERVER_NAME }}.database.windows.net" \
+            -d "${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }}" \
+            -U "${{ vars.INFRA_AZURE_SQLSERVER_ADMIN_LOGINNAME }}" \
+            -P "${{ secrets.INFRA_AZURE_SQLSERVER_ADMIN_LOGINPASSWORD }}" \
+            -i ./infra/db/schema.sql
