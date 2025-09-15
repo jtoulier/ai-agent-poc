@@ -203,6 +203,13 @@ jobs:
             --hosted-zone-id ${{ vars.INFRA_AWS_DNS_HOSTED_ZONE_ID }} \
             --change-batch file://change-batch.json
 
+      - name: Checking backend DNS TXT record before Azure token
+        run: |
+          for i in 1 2 3; do
+            echo "[$i] Checking TXT record for asuid.${{ vars.INFRA_BACKEND_DOMAIN_NAME }} ..."
+            nslookup -type=TXT asuid.${{ vars.INFRA_BACKEND_DOMAIN_NAME }} || true
+            sleep 5
+          done
 
 
       - name: Adding custom domain for Backend Container App
