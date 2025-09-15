@@ -22,6 +22,8 @@ CMD ["nginx", "-g", "daemon off;"]
 # docker build -t credits/frontend:latest .
 # docker run -d -p 4200:80 --name credits-frontend credits/frontend:latest
 
+# correr localmente
+# ng serve
 # ng build --configuration production
 
 # docker ps -a

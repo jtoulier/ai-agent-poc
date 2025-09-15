@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  job-deploy-db:
+  job-deploy-frontend:
     runs-on: ubuntu-latest
     env:
       RG: ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
