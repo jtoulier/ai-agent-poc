@@ -188,7 +188,7 @@ jobs:
               \"Changes\": [{
                 \"Action\": \"UPSERT\",
                 \"ResourceRecordSet\": {
-                  \"Name\": \"asuid.${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }}\",
+                  \"Name\": \"asuid.${{ vars.INFRA_BACKEND_DOMAIN_NAME }}\",
                   \"Type\": \"TXT\",
                   \"TTL\": 300,
                   \"ResourceRecords\": [{ \"Value\": \"\\\"$TOKEN\\\"\" }]
