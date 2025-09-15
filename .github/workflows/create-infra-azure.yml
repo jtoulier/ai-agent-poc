@@ -188,7 +188,7 @@ jobs:
         with:
           aws-access-key-id: ${{ vars.INFRA_AWS_DNS_USER_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INFRA_AWS_DNS_USER_SECRET_ACCESS_KEY }}
-          aws-region: ${{ var.INFRA_AWS_DNS_REGION }}
+          aws-region: ${{ vars.INFRA_AWS_DNS_REGION }}
           args: |
             route53 change-resource-record-sets --hosted-zone-id ${{ vars.INFRA_AWS_DNS_HOSTED_ZONE_ID }} --change-batch '{
               "Changes": [{
