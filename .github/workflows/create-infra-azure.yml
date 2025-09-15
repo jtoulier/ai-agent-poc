@@ -146,17 +146,17 @@ jobs:
             sleep "$SLEEP_IN_SECONDS"
           done
 
-      - name: Create API Java Container App if not exists
+      - name: Create Backend Container App if not exists
         run: |
           if az containerapp show \
-              --name ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }} \
+              --name ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
-            echo "⚠️ Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }} already exists."
+            echo "⚠️ Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} already exists."
           else
             export dummy_image=mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
-            echo "✅ Creating Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }} ..."
+            echo "✅ Creating Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} ..."
             az containerapp create \
-              --name ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }} \
+              --name ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
               --environment ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
               --image $dummy_image \
@@ -164,8 +164,43 @@ jobs:
               --registry-username $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query username -o tsv) \
               --registry-password $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query passwords[0].value -o tsv) \
               --ingress external \
-              --target-port ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_PORT }}
-          fi
+              --target-port ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_PORT }}
+
+      - name: Adding custom domain for Backend Container App
+        id: getfqdn
+        run: |
+          echo "✅ Adding custom domain ${{ vars.INFRA_BACKEND_DOMAIN_NAME }} to Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} ..."
+          az containerapp hostname add \
+            --name ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} \
+            --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+            --hostname ${{ vars.INFRA_BACKEND_DOMAIN_NAME }}
+
+          fqdn=$(az containerapp show \
+            --name ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} \
+            --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+            --query properties.configuration.ingress.fqdn -o tsv)
+
+          echo "fqdn=$fqdn" >> $GITHUB_OUTPUT
+
+      # Configurar CNAME en Route53
+      - name: Updating Route53 DNS
+        uses: aws-actions/aws-cli@v2
+        with:
+          aws-access-key-id: ${{ vars.INFRA_AWS_DNS_USER_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INFRA_AWS_DNS_USER_SECRET_ACCESS_KEY }}
+          aws-region: ${{ var.INFRA_AWS_DNS_REGION }}
+          args: |
+            route53 change-resource-record-sets --hosted-zone-id ${{ vars.INFRA_AWS_DNS_HOSTED_ZONE_ID }} --change-batch '{
+              "Changes": [{
+                "Action": "UPSERT",
+                "ResourceRecordSet": {
+                  "Name": "${{ vars.INFRA_BACKEND_DOMAIN_NAME }}",
+                  "Type": "CNAME",
+                  "TTL": 300,
+                  "ResourceRecords": [{ "Value": "${{ steps.getfqdn.outputs.fqdn }}" }]
+                }
+              }]
+            }'
 
       - name: Create FrontEnd Container App if not exists
         run: |
@@ -191,7 +226,7 @@ jobs:
       - name: Add Container API Java IPs to SQL Firewall
         run: |
           RG="${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}"
-          APP_NAME="${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }}"
+          APP_NAME="${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }}"
           SQL_SERVER="${{ vars.INFRA_AZURE_SQLSERVER_NAME }}"
 
           # Obtener las IPs de salida del Container App en formato JSON
@@ -205,7 +240,7 @@ jobs:
           TOTAL=$(echo "$IPS" | wc -w)
           INDEX=1
           for IP in $IPS; do
-            NOMBREREGLA=$(printf "Rule_APIJava_%03d" "$INDEX")
+            NOMBREREGLA=$(printf "Rule_BACKEND_%03d" "$INDEX")
             INDEX_PAD=$(printf "%03d" "$INDEX")
             TOTAL_PAD=$(printf "%03d" "$TOTAL")
 
@@ -268,4 +303,4 @@ jobs:
             fi
 
             INDEX=$((INDEX+1))
-          done          
+          done

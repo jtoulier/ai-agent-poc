@@ -30,18 +30,18 @@ jobs:
             echo "⚠️ Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} does not exist. Skipping ..."
           fi
 
-      - name: Drop API Java Container App if exists
+      - name: Drop Backend Container App if exists
         run: |
           if az containerapp show \
-                --name ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }} \
+                --name ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} \
                 --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
-              echo "🗑️ Dropping Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }} ..."
+              echo "🗑️ Dropping Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} ..."
               az containerapp delete \
                   --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
-                  --name ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }} \
+                  --name ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} \
                   --yes
           else
-              echo "⚠️ Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }} does not exist. Skipping ..."
+              echo "⚠️ Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} does not exist. Skipping ..."
           fi
 
       - name: Drop Container App Environment if exists

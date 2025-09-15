@@ -1,11 +1,6 @@
-name: Build and Push API Java Docker Image
+name: Build and Push Backend Docker Image
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'services/api-java/**'
   workflow_dispatch:
 
 jobs:
@@ -32,7 +27,7 @@ jobs:
 
       # 3️⃣ Build Maven project
       - name: Build Maven project
-        working-directory: ./services/api-java
+        working-directory: ./services/backend
         run: |
           echo "📦 Building Maven project..."
           mvn clean package -DskipTests
@@ -47,25 +42,25 @@ jobs:
 
       # 5️⃣ Build Docker image
       - name: Build Docker image
-        working-directory: ./services/api-java
+        working-directory: ./services/backend
         run: |
-          IMAGE_NAME="${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io/${{ vars.INFRA_APIJAVA_IMAGE_NAME }}:${{ vars.INFRA_APIJAVA_IMAGE_VERSION }}"
+          IMAGE_NAME="${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io/${{ vars.INFRA_BACKEND_IMAGE_NAME }}:${{ vars.INFRA_BACKEND_IMAGE_VERSION }}"
           echo "🐳 Building Docker image $IMAGE_NAME ..."
           docker build --file src/main/docker/Dockerfile --tag $IMAGE_NAME .
 
       # 6️⃣ Push Docker image to ACR
       - name: Push Docker image
         run: |
-          IMAGE_NAME="${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io/${{ vars.INFRA_APIJAVA_IMAGE_NAME }}:${{ vars.INFRA_APIJAVA_IMAGE_VERSION }}"
+          IMAGE_NAME="${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io/${{ vars.INFRA_BACKEND_IMAGE_NAME }}:${{ vars.INFRA_BACKEND_IMAGE_VERSION }}"
           echo "⬆️ Pushing Docker image $IMAGE_NAME ..."
           docker push $IMAGE_NAME
 
       - name: Update Container App image
         run: |
-          CONTAINER_APP_NAME="${{ vars.INFRA_AZURE_CONTAINERAPP_APIJAVA_NAME }}"
+          CONTAINER_APP_NAME="${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }}"
           RESOURCE_GROUP="${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}"
           ACR_NAME="${{ vars.INFRA_AZURE_ACR_NAME }}"
-          IMAGE_NAME="${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io/${{ vars.INFRA_APIJAVA_IMAGE_NAME }}:${{ vars.INFRA_APIJAVA_IMAGE_VERSION }}"
+          IMAGE_NAME="${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io/${{ vars.INFRA_BACKEND_IMAGE_NAME }}:${{ vars.INFRA_BACKEND_IMAGE_VERSION }}"
 
           echo "🔄 Updating Container App $CONTAINER_APP_NAME to image $IMAGE_NAME ..."
 

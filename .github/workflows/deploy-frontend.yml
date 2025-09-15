@@ -1,13 +1,6 @@
 name: Deploy FrontEnd to Azure
 
 on:
-  push:
-    branches: [
-      "main"
-    ]
-    paths:
-      - "frontend/**"
-  
   workflow_dispatch:
 
 jobs:

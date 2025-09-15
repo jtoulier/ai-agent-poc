@@ -1,13 +1,6 @@
 name: Deploy Database to Azure
 
 on:
-  push:
-    branches: [
-      "main"
-    ]
-    paths:
-      - "infra/db/schema.sql"
-  
   workflow_dispatch:
 
 jobs:
