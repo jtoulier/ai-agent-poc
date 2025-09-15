@@ -165,7 +165,8 @@ jobs:
               --registry-password $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query passwords[0].value -o tsv) \
               --ingress external \
               --target-port ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_PORT }}
-
+          fi
+          
       - name: Adding custom domain for Backend Container App
         id: getfqdn
         run: |
