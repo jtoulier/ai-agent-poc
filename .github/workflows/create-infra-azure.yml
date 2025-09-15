@@ -166,7 +166,38 @@ jobs:
               --ingress external \
               --target-port ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_PORT }}
           fi
-          
+
+      - name: Configuring AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ vars.INFRA_AWS_DNS_USER_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INFRA_AWS_DNS_USER_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.INFRA_AWS_DNS_REGION }}
+
+      - name: Creating TXT validation record for backend custom domain
+        run: |
+          TOKEN=$(az containerapp hostname list \
+            --name ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} \
+            --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+            --query "[?name=='${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }}'].validationToken" -o tsv)
+          echo "TOKEN=$TOKEN" >> $GITHUB_ENV  
+
+          aws route53 change-resource-record-sets \
+            --hosted-zone-id ${{ vars.INFRA_AWS_DNS_HOSTED_ZONE_ID }} \
+            --change-batch "{
+              \"Changes\": [{
+                \"Action\": \"UPSERT\",
+                \"ResourceRecordSet\": {
+                  \"Name\": \"asuid.${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }}\",
+                  \"Type\": \"TXT\",
+                  \"TTL\": 300,
+                  \"ResourceRecords\": [{ \"Value\": \"\\\"$TOKEN\\\"\" }]
+                }
+              }]
+            }"
+
+
+
       - name: Adding custom domain for Backend Container App
         id: getfqdn
         run: |
@@ -182,13 +213,6 @@ jobs:
             --query properties.configuration.ingress.fqdn -o tsv)
 
           echo "fqdn=$fqdn" >> $GITHUB_OUTPUT
-
-      - name: Configuring AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ vars.INFRA_AWS_DNS_USER_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.INFRA_AWS_DNS_USER_SECRET_ACCESS_KEY }}
-          aws-region: ${{ vars.INFRA_AWS_DNS_REGION }}
 
       # Configurar CNAME en Route53
       - name: Updating Route53 DNS
