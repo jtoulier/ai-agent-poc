@@ -380,6 +380,162 @@ jobs:
               --target-port ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_PORT }}
           fi
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ vars.INFRA_AWS_DNS_USER_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INFRA_AWS_DNS_USER_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.INFRA_AWS_DNS_REGION }}
+
+      - name: Create TXT validation record for frontend custom domain
+        run: |
+          TOKEN=$(az containerapp show \
+            --name ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} \
+            --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+            --query "properties.customDomainVerificationId" -o tsv)
+          echo "TOKEN=$TOKEN" >> $GITHUB_ENV  
+
+          cat > change-frontend-batch.json <<EOF
+          {
+            "Changes": [{
+              "Action": "UPSERT",
+              "ResourceRecordSet": {
+                "Name": "asuid.${{ vars.INFRA_FRONTEND_DOMAIN_NAME }}",
+                "Type": "TXT",
+                "TTL": 300,
+                "ResourceRecords": [{ "Value": "\"${TOKEN}\"" }]
+              }
+            }]
+          }
+          EOF
+
+          cat change-frontend-batch.json
+
+          aws route53 change-resource-record-sets \
+            --hosted-zone-id ${{ vars.INFRA_AWS_DNS_HOSTED_ZONE_ID }} \
+            --change-batch file://change-frontend-batch.json
+
+      - name: Wait for frontend DNS TXT record propagation
+        env:
+          DNS_NAME: "asuid.${{ vars.INFRA_FRONTEND_DOMAIN_NAME }}"
+          MAX_ATTEMPTS: 7
+          SLEEP_TIME: 5
+        run: |
+          SUCCESS=0
+          for i in $(seq 1 $MAX_ATTEMPTS); do
+            echo "[$i/$MAX_ATTEMPTS] Checking TXT record for $DNS_NAME..."
+            VALUE=$(nslookup -type=TXT $DNS_NAME | grep 'text' | awk -F'"' '{print $2}')
+            
+            if [ -n "$VALUE" ]; then
+              echo "✅ Found TXT record: $VALUE"
+              echo "DNS_TXT_VALUE=$VALUE" >> $GITHUB_ENV
+              SUCCESS=1
+              break
+            else
+              echo "⏳ No TXT record found yet, waiting ${SLEEP_TIME}s..."
+              sleep $SLEEP_TIME
+            fi
+          done
+
+          if [ $SUCCESS -eq 0 ]; then
+            echo "❌ ERROR: TXT record for $DNS_NAME not found after $MAX_ATTEMPTS attempts"
+            exit 1
+          fi
+
+      - name: Add custom domain for Frontend Container App
+        id: getfqdn
+        run: |
+          echo "🔍 Checking if frontend custom domain ${{ vars.INFRA_FRONTEND_DOMAIN_NAME }} exists ..."
+          HOSTNAMES=$(az containerapp hostname list \
+            --name ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} \
+            --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+            --query "[].name" -o tsv)
+
+          if echo "$HOSTNAMES" | grep -qx "${{ vars.INFRA_FRONTEND_DOMAIN_NAME }}"; then
+            echo "⚠️ Hostname already exists: ${{ vars.INFRA_FRONTEND_DOMAIN_NAME }}"
+          else
+            echo "✅ Adding hostname ${{ vars.INFRA_FRONTEND_DOMAIN_NAME }}"
+            az containerapp hostname add \
+              --name ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --hostname ${{ vars.INFRA_FRONTEND_DOMAIN_NAME }}
+          fi
+
+          fqdn=$(az containerapp show \
+            --name ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} \
+            --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+            --query properties.configuration.ingress.fqdn -o tsv)
+
+          echo "fqdn=$fqdn" >> $GITHUB_OUTPUT
+
+      - name: Update Route53 Frontend DNS
+        run: |
+          aws route53 change-resource-record-sets \
+            --hosted-zone-id ${{ vars.INFRA_AWS_DNS_HOSTED_ZONE_ID }} \
+            --change-batch '{
+              "Changes": [{
+                "Action": "UPSERT",
+                "ResourceRecordSet": {
+                  "Name": "${{ vars.INFRA_FRONTEND_DOMAIN_NAME }}",
+                  "Type": "CNAME",
+                  "TTL": 300,
+                  "ResourceRecords": [{ "Value": "${{ steps.getfqdn.outputs.fqdn }}" }]
+                }
+              }]
+            }'
+
+      - name: Bind SSL Certificate to Frontend Custom Domain
+        run: |
+          echo "🔍 Checking bindings for ${{ vars.INFRA_FRONTEND_DOMAIN_NAME }}..."
+          BINDINGS=$(az containerapp hostname list \
+            --name ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} \
+            --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+            --query "[].properties" -o json)
+
+          ALREADY_BOUND=$(echo "$BINDINGS" | jq -r ".[] | select(.hostname==\"${{ vars.INFRA_FRONTEND_DOMAIN_NAME }}\") | .bindingType")
+
+          if [ -n "$ALREADY_BOUND" ] && [ "$ALREADY_BOUND" != "null" ]; then
+            echo "⚠️ Hostname ${{ vars.INFRA_FRONTEND_DOMAIN_NAME }} already bound (bindingType=$ALREADY_BOUND)"
+          else
+            echo "✅ Binding hostname ${{ vars.INFRA_FRONTEND_DOMAIN_NAME }} with cert"
+            az containerapp hostname bind \
+              --name ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --hostname ${{ vars.INFRA_FRONTEND_DOMAIN_NAME }} \
+              --certificate frontend-cert \
+              --environment ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
+              --validation-method CNAME
+          fi
+
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Create FrontEnd Container App if not exists
+        run: |
+          if az containerapp show \
+              --name ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
+            echo "⚠️ Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} already exists."
+          else
+            export dummy_image=mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
+            echo "✅ Creating Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} ..."
+            az containerapp create \
+              --name ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --environment ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
+              --image $dummy_image \
+              --registry-server ${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io \
+              --registry-username $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query username -o tsv) \
+              --registry-password $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query passwords[0].value -o tsv) \
+              --ingress external \
+              --target-port ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_PORT }}
+          fi
+
   job-create-firewall-rules-sql:
     name: Create SQL Firewall Rules
     runs-on: ubuntu-latest
