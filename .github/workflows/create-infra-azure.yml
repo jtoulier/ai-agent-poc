@@ -324,6 +324,7 @@ jobs:
             }'
 
       - name: Bind SSL Certificate to Backend Custom Domain
+        if: false
         run: |
           echo "🔍 Checking bindings for ${{ vars.INFRA_BACKEND_DOMAIN_NAME }}..."
           BINDINGS=$(az containerapp hostname list \
@@ -485,6 +486,7 @@ jobs:
             }'
 
       - name: Bind SSL Certificate to Frontend Custom Domain
+        if: false
         run: |
           echo "🔍 Checking bindings for ${{ vars.INFRA_FRONTEND_DOMAIN_NAME }}..."
           BINDINGS=$(az containerapp hostname list \
