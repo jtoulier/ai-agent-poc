@@ -1,4 +1,4 @@
-name: Deploy FrontEnd to Azure
+name: WF04 - Deploy FrontEnd to Azure
 
 on:
   workflow_dispatch:

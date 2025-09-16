@@ -1,4 +1,4 @@
-name: Clean up Azure Infrastructure
+name: WF06- Clean up Azure Infrastructure
 
 on:
   workflow_dispatch:  # Solo se ejecutará a demanda. Si el recurso no existe, no hará nada.

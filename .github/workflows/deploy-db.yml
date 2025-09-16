@@ -1,4 +1,4 @@
-name: Deploy Database to Azure
+name: WF02 - Deploy Database to Azure
 
 on:
   workflow_dispatch:

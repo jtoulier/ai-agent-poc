@@ -1,4 +1,4 @@
-name: Create Azure Infrastructure
+name: WF01 - Create Azure Infrastructure
 
 on:
   workflow_dispatch:  # Solo se ejecutará a demanda. Si el recurso ya existe, no hará nada.
@@ -232,11 +232,11 @@ jobs:
       - name: Add custom domain for Backend Container App
         id: getfqdn
         run: |
-          echo "🔍 Checking if hostname ${{ vars.INFRA_BACKEND_DOMAIN_NAME }} exists..."
+          echo "🔍 Checking if backend custom domain ${{ vars.INFRA_BACKEND_DOMAIN_NAME }} exists ..."
           HOSTNAMES=$(az containerapp hostname list \
             --name ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} \
             --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
-            --query "[].properties.hostname" -o tsv)
+            --query "[].name" -o tsv)
 
           if echo "$HOSTNAMES" | grep -qx "${{ vars.INFRA_BACKEND_DOMAIN_NAME }}"; then
             echo "⚠️ Hostname already exists: ${{ vars.INFRA_BACKEND_DOMAIN_NAME }}"
@@ -273,13 +273,26 @@ jobs:
 
       - name: Bind SSL Certificate to Backend Custom Domain
         run: |
-          az containerapp hostname bind \
-            --hostname ${{ vars.INFRA_BACKEND_DOMAIN_NAME }} \
-            --environment ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
-            --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+          echo "🔍 Checking bindings for ${{ vars.INFRA_BACKEND_DOMAIN_NAME }}..."
+          BINDINGS=$(az containerapp hostname list \
             --name ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} \
-            --certificate backend-cert \
-            --validation-method CNAME
+            --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+            --query "[].properties" -o json)
+
+          ALREADY_BOUND=$(echo "$BINDINGS" | jq -r ".[] | select(.hostname==\"${{ vars.INFRA_BACKEND_DOMAIN_NAME }}\") | .bindingType")
+
+          if [ -n "$ALREADY_BOUND" ] && [ "$ALREADY_BOUND" != "null" ]; then
+            echo "⚠️ Hostname ${{ vars.INFRA_BACKEND_DOMAIN_NAME }} already bound (bindingType=$ALREADY_BOUND)"
+          else
+            echo "✅ Binding hostname ${{ vars.INFRA_BACKEND_DOMAIN_NAME }} with cert"
+            az containerapp hostname bind \
+              --name ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --hostname ${{ vars.INFRA_BACKEND_DOMAIN_NAME }} \
+              --certificate backend-cert \
+              --environment ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
+              --validation-method CNAME
+          fi
 
       - name: Create FrontEnd Container App if not exists
         run: |
