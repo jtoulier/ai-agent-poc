@@ -3,9 +3,9 @@ name: WF06- Clean up Azure Infrastructure
 on:
   workflow_dispatch:  # Solo se ejecutará a demanda. Si el recurso no existe, no hará nada.
 
-
 jobs:
-  job-cleanup-infra-azure:
+  job-drop-frontend-containerapp:
+    name: Drop Frontend Container App
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -30,6 +30,18 @@ jobs:
             echo "⚠️ Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} does not exist. Skipping ..."
           fi
 
+  job-drop-backend-containerapp:
+    name: Drop Backend Container App    
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
       - name: Drop Backend Container App if exists
         run: |
           if az containerapp show \
@@ -43,6 +55,18 @@ jobs:
           else
               echo "⚠️ Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} does not exist. Skipping ..."
           fi
+
+  job-drop-loganalytics-containerappenvironment:
+    name: Drop Log Analytics and Container App Environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
 
       - name: Drop Container App Environment if exists
         run: |
@@ -102,6 +126,18 @@ jobs:
               echo "⚠️ Log Analytics Workspace ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} does not exist. Skipping ..."
           fi
 
+  job-drop-acr:
+    name: Drop Azure Container Registry
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
       - name: Drop Azure Container Registry if exists
         run: |
           if az acr show \
@@ -115,6 +151,18 @@ jobs:
           else
               echo "⚠️ Azure Container Registry ${{ vars.INFRA_AZURE_ACR_NAME }} does not exist. Skipping ..."
           fi
+
+  job-drop-sql:
+    name: Drop SQL Server and Database
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
 
       - name: Drop SQL Database if exists
         run: |
@@ -145,6 +193,18 @@ jobs:
           else
               echo "⚠️ SQL Server ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} does not exist. Skipping ..."
           fi
+
+  job-drop-resource-group:
+    name: Drop Resource Group
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
 
       - name: Drop Resource Group if exists
         run: |

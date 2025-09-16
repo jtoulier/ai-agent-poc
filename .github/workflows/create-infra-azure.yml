@@ -185,7 +185,6 @@ jobs:
             sleep "$SLEEP_IN_SECONDS"
           done
 
-
   job-create-backend-containerapp:
     name: Create Backend Container App    
     runs-on: ubuntu-latest
