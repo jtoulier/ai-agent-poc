@@ -266,7 +266,7 @@ jobs:
           az containerapp hostname bind \
             --hostname ${{ vars.INFRA_BACKEND_DOMAIN_NAME }} \
             --environment ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
-            --resource-group${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+            --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
             --name ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} \
             --certificate backend-cert \
             --validation-method CNAME
