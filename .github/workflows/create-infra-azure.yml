@@ -232,11 +232,21 @@ jobs:
       - name: Add custom domain for Backend Container App
         id: getfqdn
         run: |
-          echo "✅ Adding custom domain ${{ vars.INFRA_BACKEND_DOMAIN_NAME }} to Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} ..."
-          az containerapp hostname add \
+          echo "🔍 Checking if hostname ${{ vars.INFRA_BACKEND_DOMAIN_NAME }} exists..."
+          HOSTNAMES=$(az containerapp hostname list \
             --name ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} \
             --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
-            --hostname ${{ vars.INFRA_BACKEND_DOMAIN_NAME }}
+            --query "[].properties.hostname" -o tsv)
+
+          if echo "$HOSTNAMES" | grep -qx "${{ vars.INFRA_BACKEND_DOMAIN_NAME }}"; then
+            echo "⚠️ Hostname already exists: ${{ vars.INFRA_BACKEND_DOMAIN_NAME }}"
+          else
+            echo "✅ Adding hostname ${{ vars.INFRA_BACKEND_DOMAIN_NAME }}"
+            az containerapp hostname add \
+              --name ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --hostname ${{ vars.INFRA_BACKEND_DOMAIN_NAME }}
+          fi
 
           fqdn=$(az containerapp show \
             --name ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} \
