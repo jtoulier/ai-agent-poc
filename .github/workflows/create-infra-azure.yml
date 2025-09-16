@@ -167,15 +167,14 @@ jobs:
               --target-port ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_PORT }}
           fi
 
-      - name: Configuring AWS credentials
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ vars.INFRA_AWS_DNS_USER_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INFRA_AWS_DNS_USER_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.INFRA_AWS_DNS_REGION }}
 
-
-      - name: Creating TXT validation record for backend custom domain
+      - name: Create TXT validation record for backend custom domain
         run: |
           TOKEN=$(az containerapp show \
             --name ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} \
@@ -203,8 +202,7 @@ jobs:
             --hosted-zone-id ${{ vars.INFRA_AWS_DNS_HOSTED_ZONE_ID }} \
             --change-batch file://change-backend-batch.json
 
-
-      - name: Waiting for backend DNS TXT record propagation
+      - name: Wait for backend DNS TXT record propagation
         env:
           DNS_NAME: "asuid.${{ vars.INFRA_BACKEND_DOMAIN_NAME }}"
           MAX_ATTEMPTS: 7
@@ -231,8 +229,7 @@ jobs:
             exit 1
           fi
 
-
-      - name: Adding custom domain for Backend Container App
+      - name: Add custom domain for Backend Container App
         id: getfqdn
         run: |
           echo "✅ Adding custom domain ${{ vars.INFRA_BACKEND_DOMAIN_NAME }} to Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} ..."
@@ -248,8 +245,7 @@ jobs:
 
           echo "fqdn=$fqdn" >> $GITHUB_OUTPUT
 
-      # Configurar CNAME en Route53
-      - name: Updating Route53 DNS
+      - name: Update Route53 Backend DNS
         run: |
           aws route53 change-resource-record-sets \
             --hosted-zone-id ${{ vars.INFRA_AWS_DNS_HOSTED_ZONE_ID }} \
@@ -264,6 +260,16 @@ jobs:
                 }
               }]
             }'
+
+      - name: Bind SSL Certificate to Backend Custom Domain
+        run: |
+          az containerapp hostname bind \
+            --hostname ${{ vars.INFRA_BACKEND_DOMAIN_NAME }} \
+            --environment ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
+            --resource-group${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+            --name ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} \
+            --certificate backend-cert \
+            --validation-method CNAME
 
       - name: Create FrontEnd Container App if not exists
         run: |
@@ -286,7 +292,7 @@ jobs:
               --target-port ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_PORT }}
           fi
 
-      - name: Add Container API Java IPs to SQL Firewall
+      - name: Add Backend Container IPs to SQL Firewall
         run: |
           RG="${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}"
           APP_NAME="${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }}"
