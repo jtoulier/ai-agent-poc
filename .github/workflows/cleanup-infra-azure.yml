@@ -59,6 +59,7 @@ jobs:
   job-drop-loganalytics-containerappenvironment:
     name: Drop Log Analytics and Container App Environment
     runs-on: ubuntu-latest
+    needs: [job-drop-frontend-containerapp, job-drop-backend-containerapp]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -197,6 +198,7 @@ jobs:
   job-drop-resource-group:
     name: Drop Resource Group
     runs-on: ubuntu-latest
+    needs:[job-drop-loganalytics-containerappenvironment, job-drop-acr, job-drop-sql]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
