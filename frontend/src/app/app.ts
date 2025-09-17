@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -13,40 +14,18 @@ interface Message {
   selector: 'app-root',
   standalone: true,
   imports: [CommonModule, FormsModule, HttpClientModule],
-  template: `
-    <div class="app-container">
-      <!-- Header -->
-      <header class="app-header">
-        <div class="logo">Credits GPT</div>
-      </header>
-
-      <!-- Mensajes -->
-      <main class="responses">
-        <div *ngFor="let msg of responses" class="response" [ngClass]="msg.who">
-          <span>{{ msg.text }}</span>
-        </div>
-      </main>
-
-      <!-- Caja de entrada -->
-      <footer class="input-box">
-        <textarea
-          #msgInput
-          [(ngModel)]="userInput"
-          (input)="autoResize(msgInput)"
-          (keydown.enter)="handleEnter($event)"
-          placeholder="Escribe tu mensaje..."></textarea>
-        <button (click)="sendMessage()">➤</button>
-      </footer>
-    </div>
-  `,
+  templateUrl: './app.html',
   styleUrls: ['./app.scss']
 })
 export class App {
   userInput: string = '';
   responses: Message[] = [];
 
-  constructor(private http: HttpClient) {}
-
+  constructor(private http: HttpClient, private titleService: Title) {
+    // Cambiar el título del navegador al iniciar la app
+    this.titleService.setTitle('CreditsGPT - Gestiona tus créditos con IA');
+  }
+  
   sendMessage() {
     const text = this.userInput.trim();
     if (!text) return;
