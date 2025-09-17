@@ -16,12 +16,9 @@ export class MessageService {
 
   // Llamada al API de chistes (puedes reemplazar por otros servicios)
   getJoke(): Observable<{ setup: string; punchline: string }> {
-    /*
     return this.http.get<{ setup: string; punchline: string }>(
       'https://official-joke-api.appspot.com/random_joke'
     );
-    */
-   return <any>"Hola mundo"
   }
 
   // Método genérico que podrías usar para otros APIs
