@@ -22,10 +22,14 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @Slf4j
 @ApplicationScoped
 @Path("/orders")
+@Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class OrderRest {
 
@@ -51,6 +55,14 @@ public class OrderRest {
     @POST
     @Path("/")
     @Transactional
+    @APIResponse(
+        responseCode = "201",
+        description = "Order created successfully",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = OrderCreationResponse.class)
+        )
+    )    
     public Response createOrder(
         OrderCreationRequest orderCreationRequest
     ) {
@@ -76,6 +88,14 @@ public class OrderRest {
 
     @GET
     @Path("/{orderId}")
+    @APIResponse(
+        responseCode = "200",
+        description = "Order retrieved successfully",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = OrderRetrievalResponse.class)
+        )
+    )    
     public Response getOrder(
         @PathParam("orderId") Long orderId
     ) {
