@@ -262,7 +262,7 @@ jobs:
         run: |
           SUCCESS=0
           for i in $(seq 1 $MAX_ATTEMPTS); do
-            INDEX_PAD=$(printf "%03d" "$i)
+            INDEX_PAD=$(printf "%03d" "$i")
             MAX_ATTEMPTS_PAD=$(printf "%03d" "$MAX_ATTEMPTS")
 
             echo "[$INDEX_PAD/$MAX_ATTEMPTS_PAD] Checking TXT record for $DNS_NAME..."
@@ -275,6 +275,7 @@ jobs:
               echo "⏳ No TXT record found yet, waiting ${SLEEP_TIME}s..."
               sleep $SLEEP_TIME
             fi
+          done
 
           if [ $SUCCESS -eq 0 ]; then
             echo "❌ ERROR: TXT record for $DNS_NAME not found after $MAX_ATTEMPTS attempts"
@@ -331,7 +332,7 @@ jobs:
         run: |
           SUCCESS=0
           for i in $(seq 1 $MAX_ATTEMPTS); do
-            INDEX_PAD=$(printf "%03d" "$i)
+            INDEX_PAD=$(printf "%03d" "$i")
             MAX_ATTEMPTS_PAD=$(printf "%03d" "$MAX_ATTEMPTS")
 
             echo "[$INDEX_PAD/$MAX_ATTEMPTS_PAD] Checking CNAME record for $DNS_NAME..."
@@ -344,6 +345,7 @@ jobs:
               echo "⏳ No CNAME record found yet, waiting ${SLEEP_TIME}s..."
               sleep $SLEEP_TIME
             fi
+          done
 
           if [ $SUCCESS -eq 0 ]; then
             echo "❌ ERROR: CNAME record for $DNS_NAME not found after $MAX_ATTEMPTS attempts"
@@ -382,7 +384,7 @@ jobs:
 
           SUCCESS=0
           for i in $(seq 1 $MAX_ATTEMPTS); do
-            INDEX_PAD=$(printf "%03d" "$i)
+            INDEX_PAD=$(printf "%03d" "$i")
             MAX_ATTEMPTS_PAD=$(printf "%03d" "$MAX_ATTEMPTS")
 
             echo "[$INDEX_PAD/$MAX_ATTEMPTS_PAD] Checking if certificate is ready ..."
@@ -400,6 +402,7 @@ jobs:
               echo "⏳ Certificate not ready yet (current state: '$EXISTING'), waiting ${SLEEP_TIME}s ..."
               sleep $SLEEP_TIME
             fi
+          done
 
           if [ $SUCCESS -eq 0 ]; then
             echo "❌ ERROR: Certificate $CERT_NAME not ready after $MAX_ATTEMPTS attempts"
@@ -507,7 +510,7 @@ jobs:
         run: |
           SUCCESS=0
           for i in $(seq 1 $MAX_ATTEMPTS); do
-            INDEX_PAD=$(printf "%03d" "$i)
+            INDEX_PAD=$(printf "%03d" "$i")
             MAX_ATTEMPTS_PAD=$(printf "%03d" "$MAX_ATTEMPTS")
 
             echo "[$INDEX_PAD/$MAX_ATTEMPTS_PAD] Checking TXT record for $DNS_NAME..."
@@ -520,6 +523,7 @@ jobs:
               echo "⏳ No TXT record found yet, waiting ${SLEEP_TIME}s..."
               sleep $SLEEP_TIME
             fi
+          done
 
           if [ $SUCCESS -eq 0 ]; then
             echo "❌ ERROR: TXT record for $DNS_NAME not found after $MAX_ATTEMPTS attempts"
@@ -576,7 +580,7 @@ jobs:
         run: |
           SUCCESS=0
           for i in $(seq 1 $MAX_ATTEMPTS); do
-            INDEX_PAD=$(printf "%03d" "$i)
+            INDEX_PAD=$(printf "%03d" "$i")
             MAX_ATTEMPTS_PAD=$(printf "%03d" "$MAX_ATTEMPTS")
 
             echo "[$INDEX_PAD/$MAX_ATTEMPTS_PAD] Checking CNAME record for $DNS_NAME..."
@@ -589,6 +593,7 @@ jobs:
               echo "⏳ No CNAME record found yet, waiting ${SLEEP_TIME}s..."
               sleep $SLEEP_TIME
             fi
+          done
 
           if [ $SUCCESS -eq 0 ]; then
             echo "❌ ERROR: CNAME record for $DNS_NAME not found after $MAX_ATTEMPTS attempts"
@@ -627,7 +632,7 @@ jobs:
 
           SUCCESS=0
           for i in $(seq 1 $MAX_ATTEMPTS); do
-            INDEX_PAD=$(printf "%03d" "$i)
+            INDEX_PAD=$(printf "%03d" "$i")
             MAX_ATTEMPTS_PAD=$(printf "%03d" "$MAX_ATTEMPTS")
 
             echo "[$INDEX_PAD/$MAX_ATTEMPTS_PAD] Checking if certificate is ready ..."
@@ -645,6 +650,7 @@ jobs:
               echo "⏳ Certificate not ready yet (current state: '$EXISTING'), waiting ${SLEEP_TIME}s ..."
               sleep $SLEEP_TIME
             fi
+          done
 
           if [ $SUCCESS -eq 0 ]; then
             echo "❌ ERROR: Certificate $CERT_NAME not ready after $MAX_ATTEMPTS attempts"
