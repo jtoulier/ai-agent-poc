@@ -4,15 +4,32 @@
     <div class="logo">CreditsGPT</div>
   </header>
 
+  <!-- Login Modal -->
+  <div *ngIf="!loggedIn" class="login-modal">
+    <div class="login-card">
+      <h2>Login</h2>
+
+      <label for="login">Login</label>
+      <input id="login" type="text" [(ngModel)]="loginUser" placeholder="Usuario" />
+
+      <label for="password">Password</label>
+      <input id="password" type="password" [(ngModel)]="loginPassword" placeholder="Contraseña" />
+
+      <button (click)="login()">Ingresar</button>
+
+      <div class="error" *ngIf="loginError">{{ loginError }}</div>
+    </div>
+  </div>
+
   <!-- Mensajes -->
-  <main class="responses">
+  <main *ngIf="loggedIn" class="responses">
     <div *ngFor="let msg of responses" class="response" [ngClass]="msg.who">
       <span>{{ msg.text }}</span>
     </div>
   </main>
 
   <!-- Caja de entrada -->
-  <footer class="input-box">
+  <footer *ngIf="loggedIn" class="input-box">
     <textarea
       #msgInput
       [(ngModel)]="userInput"

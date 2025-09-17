@@ -5,6 +5,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { MessageService, Message } from './services/message.service';
+import { AuthService } from './services/auth.service';
+import { LoginResponse } from './models/login-response.model';
+
 
 @Component({
   selector: 'app-root',
@@ -14,13 +17,48 @@ import { MessageService, Message } from './services/message.service';
   styleUrls: ['./app.scss']
 })
 export class App {
+  // 🔹 Login
+  loginUser = '';
+  loginPassword = '';
+  loginError = '';
+  loggedIn = false;
+  threadId = '';
+  fullName = '';
+
+  // 🔹 Chat
   userInput = '';
   responses: Message[] = [];
 
-  constructor(private titleService: Title, private messageService: MessageService) {
+  constructor(private titleService: Title, private messageService: MessageService, private authService: AuthService) {
     this.titleService.setTitle('CreditsGPT - Gestiona tus créditos con IA');
   }
 
+  // 🔹 Login
+  login() {
+    this.loginError = '';
+    if (!this.loginUser || !this.loginPassword) {
+      this.loginError = 'Debe ingresar login y password';
+      return;
+    }
+
+    // Llamada al API REST
+    this.authService.login(this.loginUser, this.loginPassword).subscribe({
+      next: (res: LoginResponse) => {
+        if (res.threadId) {
+          this.threadId = res.threadId;
+          this.fullName = res.fullName || '';
+          this.loggedIn = true;
+        } else {
+          this.loginError = 'Error inesperado al iniciar sesión';
+        }
+      },
+      error: (err) => {
+        this.loginError = err?.error?.message || 'Usuario y/o password incorrectos';
+      }
+    });
+  }
+
+  // 🔹 Chat
   sendMessage() {
     const text = this.userInput.trim();
     if (!text) return;
@@ -30,7 +68,7 @@ export class App {
 
     // Llamada al Service
     this.messageService.getJoke().subscribe({
-      next: joke => {
+      next: (joke) => {
         const reply = `${joke.setup}\n${joke.punchline}`;
         this.responses.unshift({ who: 'bot', text: reply });
       },
