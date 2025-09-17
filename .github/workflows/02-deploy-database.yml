@@ -1,0 +1,73 @@
+name: WF02 - Deploy Database to Azure
+
+on:
+  workflow_dispatch:
+
+jobs:
+  job-deploy-db:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Add current GitHub Actions runner IP to SQL Server firewall
+        run: |
+          echo "${{ secrets.INFRA_AZURE_SQLSERVER_ADMIN_LOGINPASSWORD }}"
+          echo '${{ secrets.INFRA_AZURE_SQLSERVER_ADMIN_LOGINPASSWORD }}'
+          echo ${{ secrets.INFRA_AZURE_SQLSERVER_ADMIN_LOGINPASSWORD }}
+
+          RG="${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}"
+          SQL_SERVER="${{ vars.INFRA_AZURE_SQLSERVER_NAME }}"
+
+          # Obtener la IP pública del runner
+          RUNNER_IP=$(curl -s https://api.ipify.org)
+          echo "Runner public IP: $RUNNER_IP"
+
+          # Nombrar la regla (puedes cambiar el prefijo)
+          NOMBREREGLA="TempGitHubRunner"
+
+          if az sql server firewall-rule show \
+                --resource-group "$RG" \
+                --server "$SQL_SERVER" \
+                --name "$NOMBREREGLA" \
+                &>/dev/null; then
+            echo "⚠️ Rule $NOMBREREGLA already exist. Updating it to IP $RUNNER_IP ..."
+            az sql server firewall-rule update \
+                --resource-group "$RG" \
+                --server "$SQL_SERVER" \
+                --name "$NOMBREREGLA" \
+                --start-ip-address "$RUNNER_IP" \
+                --end-ip-address "$RUNNER_IP"
+          else
+            echo "✅ Rule $NOMBREREGLA does not exist. Creating rule IP $RUNNER_IP ..."
+            az sql server firewall-rule create \
+                --resource-group "$RG" \
+                --server "$SQL_SERVER" \
+                --name "$NOMBREREGLA" \
+                --start-ip-address "$RUNNER_IP" \
+                --end-ip-address "$RUNNER_IP"
+          fi
+
+      - name: Install sqlcmd
+        run: |
+          curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+          curl https://packages.microsoft.com/config/ubuntu/22.04/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
+          sudo apt-get update
+          sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18 mssql-tools unixodbc-dev
+          echo "PATH=/opt/mssql-tools/bin:$PATH" >> $GITHUB_ENV
+
+      - name: Execute schema.sql
+        run: |
+          echo "⏳ Running schema.sql ..."
+          sqlcmd -S "${{ vars.INFRA_AZURE_SQLSERVER_NAME }}.database.windows.net" \
+            -d "${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }}" \
+            -U "${{ vars.INFRA_AZURE_SQLSERVER_ADMIN_LOGINNAME }}" \
+            -P '${{ secrets.INFRA_AZURE_SQLSERVER_ADMIN_LOGINPASSWORD }}' \
+            -i ./database/schema.sql \
+            -b

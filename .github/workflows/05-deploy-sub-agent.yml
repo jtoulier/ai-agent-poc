@@ -1,0 +1,11 @@
+name: WF05 - Deploy Sub Agent to Azure
+
+on:
+  workflow_dispatch:
+
+jobs:
+  dummy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Do nothing
+        run: echo "✅ Dummy job executed successfully"
