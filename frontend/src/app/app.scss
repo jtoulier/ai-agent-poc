@@ -27,12 +27,28 @@ app-root {
   font-family: Inter, Arial, sans-serif;
 }
 
+.user-info {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: $accent;
+  color: #fff;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  z-index: 1100; // sobre el header
+}
+
 .app-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
   background: $bg;
   color: $text;
+  padding-top: 2.5rem; // suficiente para que no tape user-info
 }
 
 // 🔹 Header

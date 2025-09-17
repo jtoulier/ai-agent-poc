@@ -1,5 +1,10 @@
 <div class="app-container">
-  <!-- Header -->
+  <!-- 🔹 Info usuario logueado -->
+  <div *ngIf="loggedIn" class="user-info">
+    <span><strong>{{ fullName }}</strong></span>
+    <span>Thread: {{ threadId }}</span>
+  </div>
+    <!-- Header -->
   <header class="app-header">
     <div class="logo">CreditsGPT</div>
   </header>
