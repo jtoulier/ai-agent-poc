@@ -16,10 +16,10 @@
       <h2>Login</h2>
 
       <label for="login">Login</label>
-      <input id="login" type="text" [(ngModel)]="loginUser" placeholder="Usuario" />
+      <input id="login" type="text" [(ngModel)]="loginUser" placeholder="Usuario" autofocus />
 
       <label for="password">Password</label>
-      <input id="password" type="password" [(ngModel)]="loginPassword" placeholder="Contraseña" />
+      <input id="password" type="password" [(ngModel)]="loginPassword" placeholder="Contraseña" (keydown.enter)="login()" />
 
       <button (click)="login()">Ingresar</button>
 
