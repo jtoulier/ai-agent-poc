@@ -8,6 +8,10 @@ $text: #ececec;
 $user-text: #fff;
 $accent: #19c37d;
 
+// Colores "darken" manuales para reemplazar funciones deprecadas
+$header-border: #1a1a1a; // borde del header
+$accent-hover: #169066; // hover del botón
+
 * {
   box-sizing: border-box;
 }
@@ -39,7 +43,7 @@ app-root {
   font-weight: bold;
   font-size: 1.2rem;
   color: #fff;
-  border-bottom: 1px solid darken($header, 5%);
+  border-bottom: 1px solid $header-border; // reemplazo safe
 }
 
 // 🔹 Mensajes
@@ -50,11 +54,9 @@ app-root {
   flex-direction: column-reverse;
   padding: 1rem;
   gap: 0.75rem;
-
-  // 👇 contenedor centrado
   max-width: 1200px;
   width: 100%;
-  margin: 0 auto; // centra en la pantalla
+  margin: 0 auto;
 
   .response {
     padding: 0.75rem 1rem;
@@ -86,10 +88,8 @@ app-root {
   align-items: flex-end;
   padding: 0.75rem;
   background: $header;
-  border-top: 1px solid darken($header, 5%);
+  border-top: 1px solid $header-border; // safe
   flex-shrink: 0;
-
-  // 👇 centrado igual que los mensajes
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
@@ -123,7 +123,7 @@ app-root {
     transition: background 0.2s;
 
     &:hover {
-      background: darken($accent, 8%);
+      background: $accent-hover; // safe
     }
   }
 }
