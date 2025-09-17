@@ -378,7 +378,7 @@ jobs:
       - name: Wait until managed certificate for Backend is ready
         env:
           CERT_NAME: "${{ vars.INFRA_BACKEND_DOMAIN_NAME }}-cert"
-          MAX_ATTEMPTS: 24
+          MAX_ATTEMPTS: 40
           SLEEP_TIME: 15
         run: |
 
@@ -626,7 +626,7 @@ jobs:
       - name: Wait until managed certificate for Frontend is ready
         env:
           CERT_NAME: "${{ vars.INFRA_FRONTEND_DOMAIN_NAME }}-cert"
-          MAX_ATTEMPTS: 24
+          MAX_ATTEMPTS: 40
           SLEEP_TIME: 15
         run: |
 
