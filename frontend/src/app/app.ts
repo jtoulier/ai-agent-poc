@@ -58,6 +58,34 @@ export class App {
     });
   }
 
+// 🔹 Logoff
+  logoff() {
+    this.authService.logoff().subscribe({
+      next: () => {
+        // limpiar todas las variables
+        this.loggedIn = false;
+        this.threadId = '';
+        this.fullName = '';
+        this.userInput = '';
+        this.responses = [];
+        this.loginUser = '';
+        this.loginPassword = '';
+        this.loginError = '';
+      },
+      error: () => {
+        // en caso de error en logoff, aún limpiamos localmente
+        this.loggedIn = false;
+        this.threadId = '';
+        this.fullName = '';
+        this.userInput = '';
+        this.responses = [];
+        this.loginUser = '';
+        this.loginPassword = '';
+        this.loginError = '';
+      }
+    });  
+  }
+
   // 🔹 Chat
   sendMessage() {
     const text = this.userInput.trim();

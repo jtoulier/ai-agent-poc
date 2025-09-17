@@ -27,6 +27,7 @@ app-root {
   font-family: Inter, Arial, sans-serif;
 }
 
+// 🔹 Info usuario logueado
 .user-info {
   position: fixed;
   top: 0;
@@ -38,8 +39,24 @@ app-root {
   padding: 0.5rem 1rem;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   box-shadow: 0 2px 6px rgba(0,0,0,0.4);
   z-index: 1100; // sobre el header
+
+  .logoff-btn {
+    background: #ff4d4f;
+    border: none;
+    border-radius: 8px;
+    padding: 0.25rem 0.75rem;
+    color: #fff;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #e04344; // color fijo en lugar de darken()
+    }
+  }
 }
 
 .app-container {

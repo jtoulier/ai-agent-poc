@@ -9,7 +9,8 @@ import { LoginResponse } from '../models/login-response.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = 'TU_API_LOGIN_URL_AQUI'; // <- reemplaza con tu endpoint real
+  private loginURL = 'TU_API_LOGIN_URL_AQUI'; // <- reemplaza con tu endpoint real
+  private logoffUrl = 'https://mi-api/logoff'; // endpoint logoff
 
   constructor(private http: HttpClient) {}
 
@@ -20,7 +21,7 @@ export class AuthService {
    * @returns Observable con el resultado del login
    */
   login(user: string, password: string): Observable<LoginResponse> {
-    //return this.http.post<LoginResponse>(this.apiUrl, { user, password });
+    //return this.http.post<LoginResponse>(this.loginURL, { user, password });
     if (user === 'demo' && password === '1234') {
       const response: LoginResponse = {
         threadId: 'asdf-1234-qwer-5678',
@@ -33,6 +34,15 @@ export class AuthService {
     return throwError(() => ({
       error: { message: 'Usuario y/o password incorrectos' }
     })).pipe(delay(500));
-  }    
+  }  
+  
+  
+  // 🔹 Logoff
+  logoff(): Observable<any> {
+    // Temporalmente simulamos logoff
+    return of({ message: 'Sesión cerrada' });
+    // En producción:
+    // return this.http.post<any>(this.logoffUrl, {});
+  }  
 }
 

@@ -3,6 +3,7 @@
   <div *ngIf="loggedIn" class="user-info">
     <span><strong>{{ fullName }}</strong></span>
     <span>Thread: {{ threadId }}</span>
+    <button class="logoff-btn" (click)="logoff()">Cerrar sesión</button>
   </div>
     <!-- Header -->
   <header class="app-header">
