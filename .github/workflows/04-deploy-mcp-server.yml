@@ -4,8 +4,83 @@ on:
   workflow_dispatch:
 
 jobs:
-  dummy:
+  job-build-and-push:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Do nothing
-        run: echo "✅ Dummy job executed successfully"
+      # 1️⃣ Descargar el repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Login a Azure
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: microsoft   # Microsoft Build of OpenJDK
+          # distribution: temurin   # OpenJDK de Adoptium
+          java-version: 21
+
+      # 3️⃣ Build Maven project
+      - name: Build Maven project
+        working-directory: ./mcpserver
+        run: |
+          echo "📦 Building Maven project..."
+          mvn clean package -DskipTests
+
+      # 4️⃣ Login al Azure Container Registry
+      - name: Login to Azure Container Registry
+        run: |
+          echo "🔑 Logging into ACR..."
+          az acr login \
+            --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+            --name ${{ vars.INFRA_AZURE_ACR_NAME }}
+
+      # 5️⃣ Build Docker image
+      - name: Build Docker image
+        working-directory: ./mcpserver
+        run: |
+          IMAGE_NAME="${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io/${{ vars.INFRA_MCPSERVER_IMAGE_NAME }}:${{ vars.INFRA_MCPSERVER_IMAGE_VERSION }}"
+          echo "🐳 Building Docker image $IMAGE_NAME ..."
+          docker build --file src/main/docker/Dockerfile --tag $IMAGE_NAME .
+
+      # 6️⃣ Push Docker image to ACR
+      - name: Push Docker image
+        run: |
+          IMAGE_NAME="${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io/${{ vars.INFRA_MCPSERVER_IMAGE_NAME }}:${{ vars.INFRA_MCPSERVER_IMAGE_VERSION }}"
+          echo "⬆️ Pushing Docker image $IMAGE_NAME ..."
+          docker push $IMAGE_NAME
+
+      - name: Update Container App image
+        run: |
+          CONTAINER_APP_NAME="${{ vars.INFRA_AZURE_CONTAINERAPP_MCPSERVER_NAME }}"
+          RESOURCE_GROUP="${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}"
+          ACR_NAME="${{ vars.INFRA_AZURE_ACR_NAME }}"
+          IMAGE_NAME="${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io/${{ vars.INFRA_MCPSERVER_IMAGE_NAME }}:${{ vars.INFRA_MCPSERVER_IMAGE_VERSION }}"
+
+          echo "🔄 Updating Container App $CONTAINER_APP_NAME to image $IMAGE_NAME ..."
+
+          az containerapp update \
+            --name "$CONTAINER_APP_NAME" \
+            --resource-group "$RESOURCE_GROUP" \
+            --image "$IMAGE_NAME"
+
+      - name: Restart Container App
+        run: |
+          CONTAINER_APP_NAME="${{ vars.INFRA_AZURE_CONTAINERAPP_MCPSERVER_NAME }}"
+          RESOURCE_GROUP="${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}"
+          ACR_NAME="${{ vars.INFRA_AZURE_ACR_NAME }}"
+          IMAGE_NAME="${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io/${{ vars.INFRA_MCPSERVER_IMAGE_NAME }}:${{ vars.INFRA_MCPSERVER_IMAGE_VERSION }}"
+
+          REVISION="$(az containerapp revision list --name "$CONTAINER_APP_NAME" --resource-group "$RESOURCE_GROUP" --query "[?active==true].name" -o tsv)"
+
+          echo "🔄 Restarting Container App $CONTAINER_APP_NAME with revision $REVISION ..."
+
+          az containerapp revision restart \
+            --name "$CONTAINER_APP_NAME" \
+            --resource-group "$RESOURCE_GROUP" \
+            --revision "$REVISION"          
