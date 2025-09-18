@@ -1,5 +1,5 @@
 {
-  "name": "backend.springonly.com",
+  "name": "backend_springonly_com",
   "version": "1.0.0",
   "description": "MCP server exposing order API",
   "protocol": "mcp1",

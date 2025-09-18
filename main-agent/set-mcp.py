@@ -11,8 +11,8 @@ PROJECT_ENDPOINT = "https://aifcantolao.services.ai.azure.com/api/projects/prjca
 AGENT_ID = "asst_xf4Ohh9cGjC2k9BaBvqyUici"
 
 # MCP Server configuration
-MCP_SERVER_URL = "https://backend.springonly.com"
-MCP_SERVER_LABEL = "backend.springonly.com"
+MCP_SERVER_URL = "https://backend.springonly.com/mcp"
+MCP_SERVER_LABEL = "backend_springonly_com"
 
 # Connect to the Agents client
 agents_client = AgentsClient(
@@ -31,11 +31,19 @@ mcp_tool = McpTool(
 mcp_tool.set_approval_mode("never")  # auto-approve calls
 
 # Add tool to a ToolSet
+empty_toolset = ToolSet()
+
 toolset = ToolSet()
 toolset.add(mcp_tool)
 
 # Update existing agent with the MCP tool
 with agents_client:
+    agents_client.update_agent(
+        agent_id=AGENT_ID,
+        toolset=empty_toolset
+    )
+    print(f"Configured existing agent {AGENT_ID} with MCP server empty toolset")
+
     agents_client.update_agent(
         agent_id=AGENT_ID,
         toolset=toolset
