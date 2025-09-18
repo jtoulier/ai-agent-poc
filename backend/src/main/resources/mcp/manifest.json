@@ -1,9 +1,22 @@
 {
-  "name": "springonly-backend",
+  "name": "backend.springonly.com",
   "version": "1.0.0",
-  "description": "MCP server exposing Quarkus backend APIs",
-  "protocol": "openapi",
-  "endpoints": {
-    "openapi": "https://backend.springonly.com/q/openapi"
-  }
+  "description": "MCP server exposing order API",
+  "protocol": "mcp1",
+  "endpoints": [
+    {
+      "name": "orders",
+      "method": "POST",
+      "path": "/orders",
+      "description": "Create a new order",
+      "inputs": {
+        "order.businessId": "string",
+        "order.businessName": "string",
+        "credit.amount": "number",
+        "credit.interestRate": "number",
+        "credit.dueDate": "string",
+        "author": "string"
+      }
+    }
+  ]
 }
