@@ -27,7 +27,7 @@ jobs:
 
       # 3️⃣ Build Maven project
       - name: Build Maven project
-        working-directory: ./mcpserver
+        working-directory: ./mcp-server
         run: |
           echo "📦 Building Maven project..."
           mvn clean package -DskipTests
@@ -42,7 +42,7 @@ jobs:
 
       # 5️⃣ Build Docker image
       - name: Build Docker image
-        working-directory: ./mcpserver
+        working-directory: ./mcp-server
         run: |
           IMAGE_NAME="${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io/${{ vars.INFRA_MCPSERVER_IMAGE_NAME }}:${{ vars.INFRA_MCPSERVER_IMAGE_VERSION }}"
           echo "🐳 Building Docker image $IMAGE_NAME ..."
