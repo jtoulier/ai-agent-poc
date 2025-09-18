@@ -49,3 +49,5 @@ with agents_client:
         toolset=toolset
     )
     print(f"Configured existing agent {AGENT_ID} with MCP server {MCP_SERVER_LABEL}")
+
+    # Crea una solicitud para el agente con el MCP tool configurado usando estos datos businessId = 10587897879, businessName = EMPRESA SAC, amount: 300.1, interestRate = 5.5, dueDate = 2025-08-15, author = JOSEPH
