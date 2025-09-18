@@ -4,6 +4,32 @@ on:
   workflow_dispatch:  # Solo se ejecutará a demanda. Si el recurso no existe, no hará nada.
 
 jobs:
+  job-drop-mcpserver-containerapp:
+    name: Drop MCPServer Container App
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Drop MCPServer Container App if exists
+        run: |
+          if az containerapp show \
+              --name ${{ vars.INFRA_AZURE_CONTAINERAPP_MCPSERVER_NAME }} \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
+            echo "🗑️ Dropping Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_MCPSERVER_NAME }} ..."
+            az containerapp delete \
+                --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+                --name ${{ vars.INFRA_AZURE_CONTAINERAPP_MCPSERVER_NAME }} \
+                --yes
+          else
+            echo "⚠️ Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_MCPSERVER_NAME }} does not exist. Skipping ..."
+          fi
+
   job-drop-frontend-containerapp:
     name: Drop Frontend Container App
     runs-on: ubuntu-latest
@@ -59,7 +85,7 @@ jobs:
   job-drop-loganalytics-containerappenvironment:
     name: Drop Log Analytics and Container App Environment
     runs-on: ubuntu-latest
-    needs: [job-drop-frontend-containerapp, job-drop-backend-containerapp]
+    needs: [job-drop-mcpserver-containerapp, job-drop-frontend-containerapp, job-drop-backend-containerapp]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
