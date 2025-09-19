@@ -32,7 +32,7 @@ jobs:
         run: |
           IMAGE_NAME="${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io/${{ vars.INFRA_MCPSERVER_IMAGE_NAME }}:${{ vars.INFRA_MCPSERVER_IMAGE_VERSION }}"
           echo "🐳 Building Docker image $IMAGE_NAME ..."
-          docker build --file src/main/docker/Dockerfile --tag $IMAGE_NAME .
+          docker build --file Dockerfile --tag $IMAGE_NAME .
 
       # 6️⃣ Push Docker image to ACR
       - name: Push Docker image
