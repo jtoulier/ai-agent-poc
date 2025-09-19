@@ -1,9 +1,0 @@
-{
-  "name": "mcpserver_springonly_com",
-  "version": "1.0.0",
-  "description": "MCP server exposing Quarkus backend APIs",
-  "protocol": "mcp1",
-  "endpoints": {
-    "openapi": "https://mcpserver.springonly.com/q/openapi"
-  }
-}

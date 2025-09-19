@@ -2,6 +2,7 @@ import requests
 
 # URL de tu MCP manifest
 MANIFEST_URL = "https://mcpserver.springonly.com/mcp/manifest.json"
+MANIFEST_URL = "http://localhost:8000/mcp/manifest.json"
 
 def test_mcp_server():
     print(f"🔎 Fetching manifest: {MANIFEST_URL}")
