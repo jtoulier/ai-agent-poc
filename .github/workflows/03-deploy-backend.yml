@@ -59,7 +59,6 @@ jobs:
         run: |
           CONTAINER_APP_NAME="${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }}"
           RESOURCE_GROUP="${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}"
-          ACR_NAME="${{ vars.INFRA_AZURE_ACR_NAME }}"
           IMAGE_NAME="${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io/${{ vars.INFRA_BACKEND_IMAGE_NAME }}:${{ vars.INFRA_BACKEND_IMAGE_VERSION }}"
 
           echo "🔄 Updating Container App $CONTAINER_APP_NAME to image $IMAGE_NAME ..."
@@ -73,9 +72,7 @@ jobs:
         run: |
           CONTAINER_APP_NAME="${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }}"
           RESOURCE_GROUP="${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}"
-          ACR_NAME="${{ vars.INFRA_AZURE_ACR_NAME }}"
-          IMAGE_NAME="${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io/${{ vars.INFRA_BACKEND_IMAGE_NAME }}:${{ vars.INFRA_BACKEND_IMAGE_VERSION }}"
-
+          
           REVISION="$(az containerapp revision list --name "$CONTAINER_APP_NAME" --resource-group "$RESOURCE_GROUP" --query "[?active==true].name" -o tsv)"
 
           echo "🔄 Restarting Container App $CONTAINER_APP_NAME with revision $REVISION ..."

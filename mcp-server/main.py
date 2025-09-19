@@ -19,11 +19,11 @@ async def get_manifest():
         },
         "api": {
             "type": "openapi",
-            "url": "http://localhost:80/openapi.json"
+            "url": "http://mcpserver.springonly.com/openapi.json"
         },
-        "logo_url": "http://localhost:80/logo.png",
+        "logo_url": "http://mcpserver.springonly.com/logo.png",
         "contact_email": "support@springonly.com",
-        "legal_info_url": "http://localhost:8000/legal"
+        "legal_info_url": "http://mcpserver.springonly.com/legal"
     }
     return JSONResponse(content=manifest)
 
