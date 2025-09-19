@@ -8,11 +8,11 @@ from azure.ai.agents.models import McpTool, ToolSet
 load_dotenv()
 
 PROJECT_ENDPOINT = "https://aifcantolao.services.ai.azure.com/api/projects/prjcantolao"
-AGENT_ID = "asst_xf4Ohh9cGjC2k9BaBvqyUici"
+AGENT_ID = "asst_U7J7OmQmoXPP32ODw4N1Tlio"
 
 # MCP Server configuration
 MCP_SERVER_URL = "https://mcpserver.springonly.com/mcp"
-MCP_SERVER_LABEL = "mcpserver_springonly_com"
+MCP_SERVER_LABEL = "backend_springonly_com"
 
 # Connect to the Agents client
 agents_client = AgentsClient(
