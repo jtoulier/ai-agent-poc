@@ -42,21 +42,4 @@ jobs:
           az containerapp update \
             --name ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} \
             --resource-group $RG \
-            --image $ACR.azurecr.io/${{ vars.INFRA_FRONTEND_IMAGE_NAME }}:${{ vars.INFRA_FRONTEND_IMAGE_VERSION }}
-
-      #############################################
-      # Restart Frontend Container App
-      #############################################
-      - name: Restart Container App
-        run: |
-          CONTAINER_APP_NAME="${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }}"
-          RESOURCE_GROUP="${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}"
-
-          REVISION="$(az containerapp revision list --name "$CONTAINER_APP_NAME" --resource-group "$RESOURCE_GROUP" --query "[?active==true].name" -o tsv)"
-
-          echo "🔄 Restarting Container App $CONTAINER_APP_NAME with revision $REVISION ..."
-
-          az containerapp revision restart \
-            --name "$CONTAINER_APP_NAME" \
-            --resource-group "$RESOURCE_GROUP" \
-            --revision "$REVISION"                      
+            --image $ACR.azurecr.io/${{ vars.INFRA_FRONTEND_IMAGE_NAME }}:${{ vars.INFRA_FRONTEND_IMAGE_VERSION }}                  

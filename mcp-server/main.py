@@ -8,8 +8,7 @@ app = FastAPI()
 @app.get("/mcp/manifest.json")
 async def get_manifest():
     manifest = {
-        "schema_version": "mcp1",
-        "protocol": "mcp1",
+        "schema_version": "v1",
         "name_for_model": "backend_springonly_com",
         "name_for_human": "SpringOnly API Plugin",
         "description_for_model": "Access backend.springonly.com endpoints via this plugin.",
