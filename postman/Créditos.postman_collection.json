@@ -1,0 +1,1289 @@
+{
+	"info": {
+		"_postman_id": "a0b4ff13-f649-4618-b6ff-aa90141937a1",
+		"name": "Créditos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3247696"
+	},
+	"item": [
+		{
+			"name": "Agente",
+			"item": [
+				{
+					"name": "01 listar agentes",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{AZURE_AIFOUNDRY_RESOURCE_NAME}}.services.ai.azure.com/api/projects/{{AZURE_AIFOUNDRY_PROJECT_NAME}}/assistants?api-version=v1",
+							"protocol": "https",
+							"host": [
+								"{{AZURE_AIFOUNDRY_RESOURCE_NAME}}",
+								"services",
+								"ai",
+								"azure",
+								"com"
+							],
+							"path": [
+								"api",
+								"projects",
+								"{{AZURE_AIFOUNDRY_PROJECT_NAME}}",
+								"assistants"
+							],
+							"query": [
+								{
+									"key": "api-version",
+									"value": "v1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "01 listar agentes",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://{{AZURE_AIFOUNDRY_RESOURCE_NAME}}.services.ai.azure.com/api/projects/{{AZURE_AIFOUNDRY_PROJECT_NAME}}/assistants?api-version=v1",
+									"protocol": "https",
+									"host": [
+										"{{AZURE_AIFOUNDRY_RESOURCE_NAME}}",
+										"services",
+										"ai",
+										"azure",
+										"com"
+									],
+									"path": [
+										"api",
+										"projects",
+										"{{AZURE_AIFOUNDRY_PROJECT_NAME}}",
+										"assistants"
+									],
+									"query": [
+										{
+											"key": "api-version",
+											"value": "v1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Request-Context",
+									"value": "appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d"
+								},
+								{
+									"key": "x-ms-response-type",
+									"value": "standard"
+								},
+								{
+									"key": "x-ms-middleware-request-id",
+									"value": "a81df51c-82bb-4fba-9dcf-f201c4f8e37d"
+								},
+								{
+									"key": "openai-version",
+									"value": "2020-10-01"
+								},
+								{
+									"key": "openai-organization",
+									"value": "47ecb75a3cb1463a8bc79baa3a2b516b"
+								},
+								{
+									"key": "X-Request-ID",
+									"value": "2023067243ab4ac0fd1a9c08a6f3769f"
+								},
+								{
+									"key": "openai-processing-ms",
+									"value": "394"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=31536000; includeSubDomains; preload"
+								},
+								{
+									"key": "apim-request-id",
+									"value": "6421349d-e057-42a8-91db-0bd7bad1046d"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-ms-region",
+									"value": "East US 2"
+								},
+								{
+									"key": "azureml-served-by-cluster",
+									"value": "vienna-eastus2-01"
+								},
+								{
+									"key": "x-request-time",
+									"value": "0.591"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 22 Sep 2025 02:44:48 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"asst_pAjf9JLJgiBed8dSuDrByDSN\",\n            \"object\": \"assistant\",\n            \"created_at\": 1758507679,\n            \"name\": \"agentcantolao\",\n            \"description\": null,\n            \"model\": \"deploygpt4o\",\n            \"instructions\": \"Eres un agente formal y educado, que nunca inventa respuestas. Siempre son documentadas. Cuando te mencionen acciones con la palabra \\\"comentarios\\\" debes usar el tool \\\"tool_comments\\\" que tienes asociado\",\n            \"tools\": [\n                {\n                    \"type\": \"openapi\",\n                    \"openapi\": {\n                        \"name\": \"tool_comments\",\n                        \"description\": null,\n                        \"spec\": {\n                            \"openapi\": \"3.0.3\",\n                            \"info\": {\n                                \"title\": \"JSONPlaceholder Comments API\",\n                                \"description\": \"Retrieve comments for a specific post from JSONPlaceholder.\",\n                                \"version\": \"1.0.0\"\n                            },\n                            \"servers\": [\n                                {\n                                    \"url\": \"https://jsonplaceholder.typicode.com\"\n                                }\n                            ],\n                            \"paths\": {\n                                \"/posts/{postId}/comments\": {\n                                    \"get\": {\n                                        \"summary\": \"Get comments for a post\",\n                                        \"description\": \"Returns a list of comments associated with the specified post ID.\",\n                                        \"operationId\": \"GetPostComments\",\n                                        \"parameters\": [\n                                            {\n                                                \"name\": \"postId\",\n                                                \"in\": \"path\",\n                                                \"description\": \"ID of the post to retrieve comments for\",\n                                                \"required\": true,\n                                                \"schema\": {\n                                                    \"type\": \"integer\",\n                                                    \"example\": 1\n                                                }\n                                            }\n                                        ],\n                                        \"responses\": {\n                                            \"200\": {\n                                                \"description\": \"Successful response with a list of comments\",\n                                                \"content\": {\n                                                    \"application/json\": {\n                                                        \"schema\": {\n                                                            \"type\": \"array\",\n                                                            \"items\": {\n                                                                \"type\": \"object\",\n                                                                \"properties\": {\n                                                                    \"postId\": {\n                                                                        \"type\": \"integer\",\n                                                                        \"example\": 1\n                                                                    },\n                                                                    \"id\": {\n                                                                        \"type\": \"integer\",\n                                                                        \"example\": 1\n                                                                    },\n                                                                    \"name\": {\n                                                                        \"type\": \"string\",\n                                                                        \"example\": \"id labore ex et quam laborum\"\n                                                                    },\n                                                                    \"email\": {\n                                                                        \"type\": \"string\",\n                                                                        \"example\": \"Eliseo@gardner.biz\"\n                                                                    },\n                                                                    \"body\": {\n                                                                        \"type\": \"string\",\n                                                                        \"example\": \"laudantium enim quasi est quidem magnam voluptate ipsam eos...\"\n                                                                    }\n                                                                }\n                                                            }\n                                                        }\n                                                    }\n                                                }\n                                            },\n                                            \"404\": {\n                                                \"description\": \"Post not found\"\n                                            }\n                                        }\n                                    }\n                                }\n                            }\n                        },\n                        \"auth\": {\n                            \"type\": \"anonymous\",\n                            \"security_scheme\": {}\n                        },\n                        \"functions\": [\n                            {\n                                \"name\": \"tool_comments_GetPostComments\",\n                                \"description\": \"Returns a list of comments associated with the specified post ID.\",\n                                \"parameters\": {\n                                    \"type\": \"object\",\n                                    \"properties\": {\n                                        \"postId\": {\n                                            \"type\": \"integer\",\n                                            \"description\": \"ID of the post to retrieve comments for\"\n                                        }\n                                    },\n                                    \"required\": [\n                                        \"postId\"\n                                    ]\n                                }\n                            }\n                        ]\n                    }\n                }\n            ],\n            \"top_p\": 1,\n            \"temperature\": 1,\n            \"tool_resources\": {},\n            \"metadata\": {},\n            \"response_format\": \"auto\"\n        }\n    ],\n    \"first_id\": \"asst_pAjf9JLJgiBed8dSuDrByDSN\",\n    \"last_id\": \"asst_pAjf9JLJgiBed8dSuDrByDSN\",\n    \"has_more\": false\n}"
+						}
+					]
+				},
+				{
+					"name": "02 crear thread",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{AZURE_AIFOUNDRY_RESOURCE_NAME}}.services.ai.azure.com/api/projects/{{AZURE_AIFOUNDRY_PROJECT_NAME}}/threads?api-version=v1",
+							"protocol": "https",
+							"host": [
+								"{{AZURE_AIFOUNDRY_RESOURCE_NAME}}",
+								"services",
+								"ai",
+								"azure",
+								"com"
+							],
+							"path": [
+								"api",
+								"projects",
+								"{{AZURE_AIFOUNDRY_PROJECT_NAME}}",
+								"threads"
+							],
+							"query": [
+								{
+									"key": "api-version",
+									"value": "v1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "02 crear thread",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://{{AZURE_AIFOUNDRY_RESOURCE_NAME}}.services.ai.azure.com/api/projects/{{AZURE_AIFOUNDRY_PROJECT_NAME}}/threads?api-version=v1",
+									"protocol": "https",
+									"host": [
+										"{{AZURE_AIFOUNDRY_RESOURCE_NAME}}",
+										"services",
+										"ai",
+										"azure",
+										"com"
+									],
+									"path": [
+										"api",
+										"projects",
+										"{{AZURE_AIFOUNDRY_PROJECT_NAME}}",
+										"threads"
+									],
+									"query": [
+										{
+											"key": "api-version",
+											"value": "v1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "137"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Request-Context",
+									"value": "appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d"
+								},
+								{
+									"key": "x-ms-response-type",
+									"value": "standard"
+								},
+								{
+									"key": "x-ms-middleware-request-id",
+									"value": "ce2c570b-9215-4772-a9e4-15a9dd610e35"
+								},
+								{
+									"key": "openai-version",
+									"value": "2020-10-01"
+								},
+								{
+									"key": "openai-organization",
+									"value": "47ecb75a3cb1463a8bc79baa3a2b516b"
+								},
+								{
+									"key": "X-Request-ID",
+									"value": "788b1ab5ad73106dea98756e05acf620"
+								},
+								{
+									"key": "openai-processing-ms",
+									"value": "69"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=31536000; includeSubDomains; preload"
+								},
+								{
+									"key": "apim-request-id",
+									"value": "08517168-f5be-4ae3-ace6-45c539120672"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-ms-region",
+									"value": "East US 2"
+								},
+								{
+									"key": "azureml-served-by-cluster",
+									"value": "vienna-eastus2-01"
+								},
+								{
+									"key": "x-request-time",
+									"value": "0.184"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 22 Sep 2025 02:45:13 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"thread_82bpdZlSZ9x7NJ7GPWNZNgJ6\",\n    \"object\": \"thread\",\n    \"created_at\": 1758509113,\n    \"metadata\": {},\n    \"tool_resources\": {}\n}"
+						}
+					]
+				},
+				{
+					"name": "03 añadir mensaje user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"role\": \"user\",\r\n    \"content\": \"bien, usa esa tool para traer los comentarios de postId=2 y que el contenido tenga la palabra dolores, pero en formato tabla pero que está perfectamenta alineada\"\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{AZURE_AIFOUNDRY_RESOURCE_NAME}}.services.ai.azure.com/api/projects/{{AZURE_AIFOUNDRY_PROJECT_NAME}}/threads/{{THREAD_ID}}/messages?api-version=v1",
+							"protocol": "https",
+							"host": [
+								"{{AZURE_AIFOUNDRY_RESOURCE_NAME}}",
+								"services",
+								"ai",
+								"azure",
+								"com"
+							],
+							"path": [
+								"api",
+								"projects",
+								"{{AZURE_AIFOUNDRY_PROJECT_NAME}}",
+								"threads",
+								"{{THREAD_ID}}",
+								"messages"
+							],
+							"query": [
+								{
+									"key": "api-version",
+									"value": "v1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "03 añadir mensaje user",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"role\": \"user\",\r\n    \"content\": \"bien, usa esa tool para traer los comentarios de postId=2 y que el contenido tenga la palabra dolores, pero en formato tabla pero que está perfectamenta alineada\"\r\n  }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{AZURE_AIFOUNDRY_RESOURCE_NAME}}.services.ai.azure.com/api/projects/{{AZURE_AIFOUNDRY_PROJECT_NAME}}/threads/{{THREAD_ID}}/messages?api-version=v1",
+									"protocol": "https",
+									"host": [
+										"{{AZURE_AIFOUNDRY_RESOURCE_NAME}}",
+										"services",
+										"ai",
+										"azure",
+										"com"
+									],
+									"path": [
+										"api",
+										"projects",
+										"{{AZURE_AIFOUNDRY_PROJECT_NAME}}",
+										"threads",
+										"{{THREAD_ID}}",
+										"messages"
+									],
+									"query": [
+										{
+											"key": "api-version",
+											"value": "v1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Request-Context",
+									"value": "appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d"
+								},
+								{
+									"key": "x-ms-response-type",
+									"value": "standard"
+								},
+								{
+									"key": "x-ms-middleware-request-id",
+									"value": "632b2145-2a41-448b-8277-318d4af3c339"
+								},
+								{
+									"key": "openai-version",
+									"value": "2020-10-01"
+								},
+								{
+									"key": "openai-organization",
+									"value": "47ecb75a3cb1463a8bc79baa3a2b516b"
+								},
+								{
+									"key": "X-Request-ID",
+									"value": "be6666bca3643f39dc8cf60701116476"
+								},
+								{
+									"key": "openai-processing-ms",
+									"value": "101"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=31536000; includeSubDomains; preload"
+								},
+								{
+									"key": "apim-request-id",
+									"value": "4e205dda-6118-4594-b95b-a07717e12fd2"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-ms-region",
+									"value": "East US 2"
+								},
+								{
+									"key": "azureml-served-by-cluster",
+									"value": "vienna-eastus2-02"
+								},
+								{
+									"key": "x-request-time",
+									"value": "0.328"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 22 Sep 2025 02:48:15 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"msg_xge5CS2LAuPtRfsae4UXpT7Y\",\n    \"object\": \"thread.message\",\n    \"created_at\": 1758509296,\n    \"assistant_id\": null,\n    \"thread_id\": \"thread_82bpdZlSZ9x7NJ7GPWNZNgJ6\",\n    \"run_id\": null,\n    \"role\": \"user\",\n    \"content\": [\n        {\n            \"type\": \"text\",\n            \"text\": {\n                \"value\": \"bien, usa esa tool para traer los comentarios de postId=2 y que el contenido tenga la palabra dolores, pero en formato tabla pero que está perfectamenta alineada\",\n                \"annotations\": []\n            }\n        }\n    ],\n    \"attachments\": [],\n    \"metadata\": {}\n}"
+						}
+					]
+				},
+				{
+					"name": "04 Ejecutar el run (haz que el agente procese la thread y llame tools si decide)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"assistant_id\": \"asst_pAjf9JLJgiBed8dSuDrByDSN\"\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{AZURE_AIFOUNDRY_RESOURCE_NAME}}.services.ai.azure.com/api/projects/{{AZURE_AIFOUNDRY_PROJECT_NAME}}/threads/{{THREAD_ID}}/runs?api-version=v1",
+							"protocol": "https",
+							"host": [
+								"{{AZURE_AIFOUNDRY_RESOURCE_NAME}}",
+								"services",
+								"ai",
+								"azure",
+								"com"
+							],
+							"path": [
+								"api",
+								"projects",
+								"{{AZURE_AIFOUNDRY_PROJECT_NAME}}",
+								"threads",
+								"{{THREAD_ID}}",
+								"runs"
+							],
+							"query": [
+								{
+									"key": "api-version",
+									"value": "v1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "04 Ejecutar el run (haz que el agente procese la thread y llame tools si decide)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"assistant_id\": \"asst_pAjf9JLJgiBed8dSuDrByDSN\"\r\n  }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{AZURE_AIFOUNDRY_RESOURCE_NAME}}.services.ai.azure.com/api/projects/{{AZURE_AIFOUNDRY_PROJECT_NAME}}/threads/{{THREAD_ID}}/runs?api-version=v1",
+									"protocol": "https",
+									"host": [
+										"{{AZURE_AIFOUNDRY_RESOURCE_NAME}}",
+										"services",
+										"ai",
+										"azure",
+										"com"
+									],
+									"path": [
+										"api",
+										"projects",
+										"{{AZURE_AIFOUNDRY_PROJECT_NAME}}",
+										"threads",
+										"{{THREAD_ID}}",
+										"runs"
+									],
+									"query": [
+										{
+											"key": "api-version",
+											"value": "v1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Request-Context",
+									"value": "appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d"
+								},
+								{
+									"key": "x-ms-response-type",
+									"value": "standard"
+								},
+								{
+									"key": "x-ms-middleware-request-id",
+									"value": "c8ba8b8f-5fe3-42fd-a1e8-0f05a439aa54"
+								},
+								{
+									"key": "openai-version",
+									"value": "2020-10-01"
+								},
+								{
+									"key": "openai-organization",
+									"value": "47ecb75a3cb1463a8bc79baa3a2b516b"
+								},
+								{
+									"key": "X-Request-ID",
+									"value": "66e6f8a0ced061f21eb6a7e63f299c2f"
+								},
+								{
+									"key": "openai-processing-ms",
+									"value": "451"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=31536000; includeSubDomains; preload"
+								},
+								{
+									"key": "apim-request-id",
+									"value": "9a1b9bf3-da41-4250-8ecf-7d13f71cbc4b"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-ms-region",
+									"value": "East US 2"
+								},
+								{
+									"key": "azureml-served-by-cluster",
+									"value": "vienna-eastus2-02"
+								},
+								{
+									"key": "x-request-time",
+									"value": "0.572"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 22 Sep 2025 02:48:23 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"run_TnSIhhABzcbLtZH4ywoPcHMD\",\n    \"object\": \"thread.run\",\n    \"created_at\": 1758509303,\n    \"assistant_id\": \"asst_pAjf9JLJgiBed8dSuDrByDSN\",\n    \"thread_id\": \"thread_82bpdZlSZ9x7NJ7GPWNZNgJ6\",\n    \"status\": \"queued\",\n    \"started_at\": null,\n    \"expires_at\": 1758511103,\n    \"cancelled_at\": null,\n    \"failed_at\": null,\n    \"completed_at\": null,\n    \"required_action\": null,\n    \"last_error\": null,\n    \"model\": \"deploygpt4o\",\n    \"instructions\": \"Eres un agente formal y educado, que nunca inventa respuestas. Siempre son documentadas. Cuando te mencionen acciones con la palabra \\\"comentarios\\\" debes usar el tool \\\"tool_comments\\\" que tienes asociado\",\n    \"tools\": [\n        {\n            \"type\": \"openapi\",\n            \"openapi\": {\n                \"name\": \"tool_comments\",\n                \"description\": null,\n                \"spec\": {\n                    \"openapi\": \"3.0.3\",\n                    \"info\": {\n                        \"title\": \"JSONPlaceholder Comments API\",\n                        \"description\": \"Retrieve comments for a specific post from JSONPlaceholder.\",\n                        \"version\": \"1.0.0\"\n                    },\n                    \"servers\": [\n                        {\n                            \"url\": \"https://jsonplaceholder.typicode.com\"\n                        }\n                    ],\n                    \"paths\": {\n                        \"/posts/{postId}/comments\": {\n                            \"get\": {\n                                \"summary\": \"Get comments for a post\",\n                                \"description\": \"Returns a list of comments associated with the specified post ID.\",\n                                \"operationId\": \"GetPostComments\",\n                                \"parameters\": [\n                                    {\n                                        \"name\": \"postId\",\n                                        \"in\": \"path\",\n                                        \"description\": \"ID of the post to retrieve comments for\",\n                                        \"required\": true,\n                                        \"schema\": {\n                                            \"type\": \"integer\",\n                                            \"example\": 1\n                                        }\n                                    }\n                                ],\n                                \"responses\": {\n                                    \"200\": {\n                                        \"description\": \"Successful response with a list of comments\",\n                                        \"content\": {\n                                            \"application/json\": {\n                                                \"schema\": {\n                                                    \"type\": \"array\",\n                                                    \"items\": {\n                                                        \"type\": \"object\",\n                                                        \"properties\": {\n                                                            \"postId\": {\n                                                                \"type\": \"integer\",\n                                                                \"example\": 1\n                                                            },\n                                                            \"id\": {\n                                                                \"type\": \"integer\",\n                                                                \"example\": 1\n                                                            },\n                                                            \"name\": {\n                                                                \"type\": \"string\",\n                                                                \"example\": \"id labore ex et quam laborum\"\n                                                            },\n                                                            \"email\": {\n                                                                \"type\": \"string\",\n                                                                \"example\": \"Eliseo@gardner.biz\"\n                                                            },\n                                                            \"body\": {\n                                                                \"type\": \"string\",\n                                                                \"example\": \"laudantium enim quasi est quidem magnam voluptate ipsam eos...\"\n                                                            }\n                                                        }\n                                                    }\n                                                }\n                                            }\n                                        }\n                                    },\n                                    \"404\": {\n                                        \"description\": \"Post not found\"\n                                    }\n                                }\n                            }\n                        }\n                    }\n                },\n                \"auth\": {\n                    \"type\": \"anonymous\",\n                    \"security_scheme\": {}\n                },\n                \"functions\": [\n                    {\n                        \"name\": \"tool_comments_GetPostComments\",\n                        \"description\": \"Returns a list of comments associated with the specified post ID.\",\n                        \"parameters\": {\n                            \"type\": \"object\",\n                            \"properties\": {\n                                \"postId\": {\n                                    \"type\": \"integer\",\n                                    \"description\": \"ID of the post to retrieve comments for\"\n                                }\n                            },\n                            \"required\": [\n                                \"postId\"\n                            ]\n                        }\n                    }\n                ]\n            }\n        }\n    ],\n    \"tool_resources\": {},\n    \"metadata\": {},\n    \"temperature\": 1,\n    \"top_p\": 1,\n    \"max_completion_tokens\": null,\n    \"max_prompt_tokens\": null,\n    \"truncation_strategy\": {\n        \"type\": \"auto\",\n        \"last_messages\": null\n    },\n    \"incomplete_details\": null,\n    \"usage\": null,\n    \"response_format\": \"auto\",\n    \"tool_choice\": \"auto\",\n    \"parallel_tool_calls\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "05 Leer mensajes/resultados",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{AZURE_AIFOUNDRY_RESOURCE_NAME}}.services.ai.azure.com/api/projects/{{AZURE_AIFOUNDRY_PROJECT_NAME}}/threads/{{THREAD_ID}}/messages?api-version=v1",
+							"protocol": "https",
+							"host": [
+								"{{AZURE_AIFOUNDRY_RESOURCE_NAME}}",
+								"services",
+								"ai",
+								"azure",
+								"com"
+							],
+							"path": [
+								"api",
+								"projects",
+								"{{AZURE_AIFOUNDRY_PROJECT_NAME}}",
+								"threads",
+								"{{THREAD_ID}}",
+								"messages"
+							],
+							"query": [
+								{
+									"key": "api-version",
+									"value": "v1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "05 Leer mensajes/resultados",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{AZURE_AIFOUNDRY_RESOURCE_NAME}}.services.ai.azure.com/api/projects/{{AZURE_AIFOUNDRY_PROJECT_NAME}}/threads/{{THREAD_ID}}/messages?api-version=v1",
+									"protocol": "https",
+									"host": [
+										"{{AZURE_AIFOUNDRY_RESOURCE_NAME}}",
+										"services",
+										"ai",
+										"azure",
+										"com"
+									],
+									"path": [
+										"api",
+										"projects",
+										"{{AZURE_AIFOUNDRY_PROJECT_NAME}}",
+										"threads",
+										"{{THREAD_ID}}",
+										"messages"
+									],
+									"query": [
+										{
+											"key": "api-version",
+											"value": "v1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Request-Context",
+									"value": "appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d"
+								},
+								{
+									"key": "x-ms-response-type",
+									"value": "standard"
+								},
+								{
+									"key": "x-ms-middleware-request-id",
+									"value": "a2a7bbd1-61c2-4916-90e2-364244c96a99"
+								},
+								{
+									"key": "openai-version",
+									"value": "2020-10-01"
+								},
+								{
+									"key": "openai-organization",
+									"value": "47ecb75a3cb1463a8bc79baa3a2b516b"
+								},
+								{
+									"key": "X-Request-ID",
+									"value": "b37f721dfb30f67c7d16c233a9008c05"
+								},
+								{
+									"key": "openai-processing-ms",
+									"value": "104"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=31536000; includeSubDomains; preload"
+								},
+								{
+									"key": "apim-request-id",
+									"value": "9a723192-20a9-429f-a65a-292ad0bb1fc0"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-ms-region",
+									"value": "East US 2"
+								},
+								{
+									"key": "azureml-served-by-cluster",
+									"value": "vienna-eastus2-02"
+								},
+								{
+									"key": "x-request-time",
+									"value": "0.379"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 22 Sep 2025 02:48:30 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"msg_ENJML2JtnPr3FwtZozDIwvcw\",\n            \"object\": \"thread.message\",\n            \"created_at\": 1758509303,\n            \"assistant_id\": \"asst_pAjf9JLJgiBed8dSuDrByDSN\",\n            \"thread_id\": \"thread_82bpdZlSZ9x7NJ7GPWNZNgJ6\",\n            \"run_id\": \"run_TnSIhhABzcbLtZH4ywoPcHMD\",\n            \"role\": \"assistant\",\n            \"content\": [\n                {\n                    \"type\": \"text\",\n                    \"text\": {\n                        \"value\": \"Aquí tienes los comentarios relacionados con el post ID 2 que contienen la palabra \\\"dolores\\\", presentados en una tabla perfectamente alineada:\\n\\n| **Comentario ID** | **Nombre**                                           | **Correo Electrónico**         | **Cuerpo del Comentario**                                                                                                                                                          |\\n|--------------------|-----------------------------------------------------|---------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|\\n| 7                  | repellat consequatur praesentium vel minus molestias voluptatum | Dallas@ole.me                 | maiores sed dolores similique labore et inventore et quasi temporibus esse sunt id et eos voluptatem aliquam aliquid ratione corporis molestiae mollitia quia et magnam dolor       |\\n| 10                 | eaque et deleniti atque tenetur ut quo ut           | Carmen_Keeling@caroline.name   | voluptate iusto quis nobis reprehenderit ipsum amet nulla quia quas dolores velit et non aut quia necessitatibus nostrum quaerat nulla et accusamus nisi facilis                   |\\n\\nEspero que esté alineado como lo esperabas. Si necesitas más ayuda, indícalo.\",\n                        \"annotations\": []\n                    }\n                }\n            ],\n            \"attachments\": [],\n            \"metadata\": {}\n        },\n        {\n            \"id\": \"msg_xge5CS2LAuPtRfsae4UXpT7Y\",\n            \"object\": \"thread.message\",\n            \"created_at\": 1758509296,\n            \"assistant_id\": null,\n            \"thread_id\": \"thread_82bpdZlSZ9x7NJ7GPWNZNgJ6\",\n            \"run_id\": null,\n            \"role\": \"user\",\n            \"content\": [\n                {\n                    \"type\": \"text\",\n                    \"text\": {\n                        \"value\": \"bien, usa esa tool para traer los comentarios de postId=2 y que el contenido tenga la palabra dolores, pero en formato tabla pero que está perfectamenta alineada\",\n                        \"annotations\": []\n                    }\n                }\n            ],\n            \"attachments\": [],\n            \"metadata\": {}\n        },\n        {\n            \"id\": \"msg_bUw9lpWmfEYC5ltEssqVZQhW\",\n            \"object\": \"thread.message\",\n            \"created_at\": 1758509217,\n            \"assistant_id\": \"asst_pAjf9JLJgiBed8dSuDrByDSN\",\n            \"thread_id\": \"thread_82bpdZlSZ9x7NJ7GPWNZNgJ6\",\n            \"run_id\": \"run_5C3fyUYuZ2RWimHfGND9tS2x\",\n            \"role\": \"assistant\",\n            \"content\": [\n                {\n                    \"type\": \"text\",\n                    \"text\": {\n                        \"value\": \"Aquí tienes los comentarios relacionados al post con ID 2, que contienen la palabra \\\"dolores\\\", presentados en formato de tabla:\\n\\n| **Comentario ID** | **Nombre**                                            | **Correo Electrónico**        | **Cuerpo del Comentario**                                                                                                                                         |\\n|--------------------|------------------------------------------------------|-------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|\\n| 7                  | repellat consequatur praesentium vel minus molestias voluptatum | Dallas@ole.me                | maiores sed dolores similique labore et inventore et quasi temporibus esse sunt id et eos voluptatem aliquam aliquid ratione corporis molestiae mollitia quia et magnam dolor |\\n| 10                 | eaque et deleniti atque tenetur ut quo ut            | Carmen_Keeling@caroline.name | voluptate iusto quis nobis reprehenderit ipsum amet nulla quia quas dolores velit et non aut quia necessitatibus nostrum quaerat nulla et accusamus nisi facilis |\\n\\nSi necesitas más detalles o algún ajuste, por favor notifícalo.\",\n                        \"annotations\": []\n                    }\n                }\n            ],\n            \"attachments\": [],\n            \"metadata\": {}\n        },\n        {\n            \"id\": \"msg_bvHpsrkck0eEnmQB0jqvLycb\",\n            \"object\": \"thread.message\",\n            \"created_at\": 1758509212,\n            \"assistant_id\": null,\n            \"thread_id\": \"thread_82bpdZlSZ9x7NJ7GPWNZNgJ6\",\n            \"run_id\": null,\n            \"role\": \"user\",\n            \"content\": [\n                {\n                    \"type\": \"text\",\n                    \"text\": {\n                        \"value\": \"bien, usa esa tool para traer los comentarios de postId=2 y que el contenido tenga la palabra dolores, pero en formato tabla\",\n                        \"annotations\": []\n                    }\n                }\n            ],\n            \"attachments\": [],\n            \"metadata\": {}\n        },\n        {\n            \"id\": \"msg_jT75uHK4dgtC4v1oYTOAwSn2\",\n            \"object\": \"thread.message\",\n            \"created_at\": 1758509166,\n            \"assistant_id\": \"asst_pAjf9JLJgiBed8dSuDrByDSN\",\n            \"thread_id\": \"thread_82bpdZlSZ9x7NJ7GPWNZNgJ6\",\n            \"run_id\": \"run_KgehAI8PW7tpKL9kfNh5ALqj\",\n            \"role\": \"assistant\",\n            \"content\": [\n                {\n                    \"type\": \"text\",\n                    \"text\": {\n                        \"value\": \"Aquí están los comentarios asociados al post con el ID 2 que contienen la palabra \\\"dolores\\\":\\n\\n1. **Comentario ID 7**:\\n   - **Nombre**: repellat consequatur praesentium vel minus molestias voluptatum\\n   - **Correo electrónico**: Dallas@ole.me\\n   - **Cuerpo**: \\\"maiores sed dolores similique labore et inventore et quasi temporibus esse sunt id et eos voluptatem aliquam aliquid ratione corporis molestiae mollitia quia et magnam dolor\\\"\\n\\n2. **Comentario ID 10**:\\n   - **Nombre**: eaque et deleniti atque tenetur ut quo ut\\n   - **Correo electrónico**: Carmen_Keeling@caroline.name\\n   - **Cuerpo**: \\\"voluptate iusto quis nobis reprehenderit ipsum amet nulla quia quas dolores velit et non aut quia necessitatibus nostrum quaerat nulla et accusamus nisi facilis\\\"\\n\\nSi necesitas más información, no dudes en indicarlo.\",\n                        \"annotations\": []\n                    }\n                }\n            ],\n            \"attachments\": [],\n            \"metadata\": {}\n        },\n        {\n            \"id\": \"msg_GcCyhMiGaI5YmJEJ5cXc6INS\",\n            \"object\": \"thread.message\",\n            \"created_at\": 1758509157,\n            \"assistant_id\": null,\n            \"thread_id\": \"thread_82bpdZlSZ9x7NJ7GPWNZNgJ6\",\n            \"run_id\": null,\n            \"role\": \"user\",\n            \"content\": [\n                {\n                    \"type\": \"text\",\n                    \"text\": {\n                        \"value\": \"bien, usa esa tool para traer los comentarios de postId=2 y que el contenido tenga la palabra dolores\",\n                        \"annotations\": []\n                    }\n                }\n            ],\n            \"attachments\": [],\n            \"metadata\": {}\n        }\n    ],\n    \"first_id\": \"msg_ENJML2JtnPr3FwtZozDIwvcw\",\n    \"last_id\": \"msg_GcCyhMiGaI5YmJEJ5cXc6INS\",\n    \"has_more\": false\n}"
+						}
+					]
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IkhTMjNiN0RvN1RjYVUxUm9MSHdwSXEyNFZZZyIsImtpZCI6IkhTMjNiN0RvN1RjYVUxUm9MSHdwSXEyNFZZZyJ9.eyJhdWQiOiJodHRwczovL2FpLmF6dXJlLmNvbSIsImlzcyI6Imh0dHBzOi8vc3RzLndpbmRvd3MubmV0LzE3NzMxMzU0LWUxOGYtNDk3MC1iMDM2LWRmOTE2ZmUwZjczNC8iLCJpYXQiOjE3NTg1MDgwNjcsIm5iZiI6MTc1ODUwODA2NywiZXhwIjoxNzU4NTEyMTYwLCJhY3IiOiIxIiwiYWlvIjoiQVpRQWEvOFpBQUFBV21iMzJNYmNxODFpbG80Ri9udEV2UitiNUxha1VvRG41VlB1Y3ZSR0RXSHNyTjZPQVowd29YeU5Td1FVamY2cnowd1V3TDdYcDJ0MGxmOTBkbHV3bzJudWgvdVVMU0tRNFNGSXpIYzQ5Qmh4SEE0c2FiU2FyZmdRd3RWRFUrcU5XaDVta0dVaStPRnA2c1VrMlRVWEU2S3ZLN3hxR01pcC9ZZEo0dkhTWlFNM1Q0dzlaelpoRCtSa3BpTHNqSVhmIiwiYWx0c2VjaWQiOiIxOmxpdmUuY29tOjAwMDExRDY3NEM0OUVDMzAiLCJhbXIiOlsicHdkIiwibWZhIl0sImFwcGlkIjoiMDRiMDc3OTUtOGRkYi00NjFhLWJiZWUtMDJmOWUxYmY3YjQ2IiwiYXBwaWRhY3IiOiIwIiwiZW1haWwiOiJqdG91bGllckBob3RtYWlsLmNvbSIsImZhbWlseV9uYW1lIjoiVG91bGllciBQaWdoaSIsImdpdmVuX25hbWUiOiJKb3NlcGgiLCJncm91cHMiOlsiNjg0OGU0ZDQtMzk1Yi00NzE1LWJiZmYtNzJjMWZiYjdlZDZiIiwiZmMwYzZmZDktMmE2Yi00YmMzLWJmOTEtYTM5ODFjMTE0YmY1Il0sImlkcCI6ImxpdmUuY29tIiwiaWR0eXAiOiJ1c2VyIiwiaXBhZGRyIjoiMzguMjUuMzAuMTI2IiwibmFtZSI6Ikpvc2VwaCBUb3VsaWVyIFBpZ2hpIiwib2lkIjoiMGM0MzkzNTEtMzliYi00NWRmLTkzZDgtYWQzNmQxNWExNGFiIiwicHVpZCI6IjEwMDMzRkZGQTA3MEZFMTUiLCJyaCI6IjEuQVNZQVZCTnpGNF9oY0Vtd050LVJiLUQzTkY5dnBoamYyeGRNbmRjV05IRXFuTDVTQWNNbUFBLiIsInNjcCI6InVzZXJfaW1wZXJzb25hdGlvbiIsInNpZCI6IjAwOGIzMGU5LWFlZWYtM2QxZi03MzY1LTIyZThkMDhlYWNlYiIsInN1YiI6IlpySXVRZURabC01NGVxWWlQOHZKc1ZRdng0UUxXbWJOb3lHaXdqQWlvbEEiLCJ0aWQiOiIxNzczMTM1NC1lMThmLTQ5NzAtYjAzNi1kZjkxNmZlMGY3MzQiLCJ1bmlxdWVfbmFtZSI6ImxpdmUuY29tI2p0b3VsaWVyQGhvdG1haWwuY29tIiwidXRpIjoiTDA5UWh3Ui1Oa2FmXzNuUmsyRjlBQSIsInZlciI6IjEuMCIsInhtc19mdGQiOiJMdG1hWXNQZm1uRUw0ZjlLWVBHN0JZM090eFEwRG5RRGJ6VFVEZmN4SkU4QmRYTmxZWE4wTFdSemJYTSIsInhtc19pZHJlbCI6IjE4IDEifQ.E6GtAu29szbdDEl_6AYLOUdJEa7r_M-FFQqWSn3lTnFKFD_fYQZ6Kh3ai1cLR3FKQKk1Ai8eGG6cs1--CvSy48gr7ln1NGURSAJxkbxIoyapNNACP81_q-Cu_gbDPI8ee-gqruqIRQI4fUoyzp10Yo1m9ustNuS8__Scv_JlHAd5uWMupaG3rTh9hALIM4jSK6jW74CgwCgDDAOnh10Uvs0BusPDaC3rZE3wbX36x2F8v6bnHXH8218VX5mdditrxxwyhF8TdcNTWd6YijTYt-k4JefLNu51PVn-uVUkPqu7YKNdVckVUr_fNea7kfcw6o2M_oZ_Sg0apqPoXsCh_A",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "getOrder",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/orders/1",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"orders",
+						"1"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getOrder",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/orders/232",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"orders",
+								"232"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json;charset=UTF-8"
+						},
+						{
+							"key": "content-length",
+							"value": "320"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"order\": {\n        \"orderId\": 232,\n        \"businessId\": \"20509381667\",\n        \"businessName\": \"PERUMUNDO TOURS EIRL\",\n        \"orderState\": \"EN PROCESO\",\n        \"writtenAt\": \"2025-08-05T12:59:10.7860557\",\n        \"author\": \"JOSEPH\"\n    },\n    \"credit\": {\n        \"orderId\": 232,\n        \"amount\": 125.32,\n        \"interestRate\": 6.25,\n        \"dueDate\": \"2025-08-05\",\n        \"writtenAt\": \"2025-08-05T12:59:10.7860557\",\n        \"author\": \"JOSEPH\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Open API",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{MCPSERVER_URL}}/q/openapi",
+					"host": [
+						"{{MCPSERVER_URL}}"
+					],
+					"path": [
+						"q",
+						"openapi"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getOrder",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/orders/232",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"orders",
+								"232"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json;charset=UTF-8"
+						},
+						{
+							"key": "content-length",
+							"value": "320"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"order\": {\n        \"orderId\": 232,\n        \"businessId\": \"20509381667\",\n        \"businessName\": \"PERUMUNDO TOURS EIRL\",\n        \"orderState\": \"EN PROCESO\",\n        \"writtenAt\": \"2025-08-05T12:59:10.7860557\",\n        \"author\": \"JOSEPH\"\n    },\n    \"credit\": {\n        \"orderId\": 232,\n        \"amount\": 125.32,\n        \"interestRate\": 6.25,\n        \"dueDate\": \"2025-08-05\",\n        \"writtenAt\": \"2025-08-05T12:59:10.7860557\",\n        \"author\": \"JOSEPH\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "MCP manifest",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{MCPSERVER_URL}}/mcp/manifest.json",
+					"host": [
+						"{{MCPSERVER_URL}}"
+					],
+					"path": [
+						"mcp",
+						"manifest.json"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getOrder",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/orders/232",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"orders",
+								"232"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json;charset=UTF-8"
+						},
+						{
+							"key": "content-length",
+							"value": "320"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"order\": {\n        \"orderId\": 232,\n        \"businessId\": \"20509381667\",\n        \"businessName\": \"PERUMUNDO TOURS EIRL\",\n        \"orderState\": \"EN PROCESO\",\n        \"writtenAt\": \"2025-08-05T12:59:10.7860557\",\n        \"author\": \"JOSEPH\"\n    },\n    \"credit\": {\n        \"orderId\": 232,\n        \"amount\": 125.32,\n        \"interestRate\": 6.25,\n        \"dueDate\": \"2025-08-05\",\n        \"writtenAt\": \"2025-08-05T12:59:10.7860557\",\n        \"author\": \"JOSEPH\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "createOrder",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"order\": {\r\n        \"businessId\": \"20509381667\",\r\n        \"businessName\": \"PERUMUNDO TOURS EIRL\"\r\n    },\r\n    \"credit\": {\r\n        \"amount\": 100000.56,\r\n        \"interestRate\": 5.89,\r\n        \"dueDate\": \"2025-08-25\"\r\n    },\r\n    \"author\": \"JOSEPH\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/orders/",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"orders",
+						""
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "createOrder",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"order\": {\r\n        \"businessId\": \"20509381667\",\r\n        \"businessName\": \"PERUMUNDO TOURS EIRL\"\r\n    },\r\n    \"credit\": {\r\n        \"amount\": 100000.56,\r\n        \"interestRate\": 5.89,\r\n        \"dueDate\": \"2025-08-25\"\r\n    },\r\n    \"author\": \"JOSEPH\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/orders/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"orders",
+								""
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json;charset=UTF-8"
+						},
+						{
+							"key": "content-length",
+							"value": "15"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"orderId\": 125\n}"
+				}
+			]
+		},
+		{
+			"name": "approveOrder",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"author\": \"ERIKA\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/orders/1/approve",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"orders",
+						"1",
+						"approve"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "approveOrder",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"author\": \"ERIKA\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/orders/233/approve",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"orders",
+								"233",
+								"approve"
+							]
+						}
+					},
+					"status": "No Content",
+					"code": 204,
+					"_postman_previewlanguage": null,
+					"header": [],
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "rejectOrder",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"author\": \"ERIKA\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/orders/2/reject",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"orders",
+						"2",
+						"reject"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "rejectOrder",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"author\": \"ERIKA\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/orders/23/reject",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"orders",
+								"23",
+								"reject"
+							]
+						}
+					},
+					"status": "No Content",
+					"code": 204,
+					"_postman_previewlanguage": null,
+					"header": [],
+					"cookie": [],
+					"body": null
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BASE_URL",
+			"value": "http://localhost:8080"
+		},
+		{
+			"key": "BASE_URL_LOCAL_REST",
+			"value": "http://localhost:8080"
+		},
+		{
+			"key": "BASE_URL_FUNCTIONS",
+			"value": "http://localhost:7071/api"
+		},
+		{
+			"key": "BASE_URL_CONTAINERAPPS_REST",
+			"value": "https://cappcantolao.salmonbeach-dbe8836b.eastus.azurecontainerapps.io"
+		},
+		{
+			"key": "MCPSERVER_URL",
+			"value": ""
+		},
+		{
+			"key": "AZURE_AIFOUNDRY_RESOURCE_NAME",
+			"value": ""
+		},
+		{
+			"key": "AZURE_AIFOUNDRY_PROJECT_NAME",
+			"value": ""
+		},
+		{
+			"key": "THREAD_ID",
+			"value": ""
+		},
+		{
+			"key": "ASSISTANT_ID",
+			"value": ""
+		}
+	]
+}

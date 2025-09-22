@@ -1,0 +1,74 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "JSONPlaceholder Comments API",
+        "description": "Retrieve comments for a specific post from JSONPlaceholder.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://jsonplaceholder.typicode.com"
+        }
+    ],
+    "paths": {
+        "/posts/{postId}/comments": {
+            "get": {
+                "summary": "Get comments for a post",
+                "description": "Returns a list of comments associated with the specified post ID.",
+                "operationId": "GetPostComments",
+                "parameters": [
+                    {
+                        "name": "postId",
+                        "in": "path",
+                        "description": "ID of the post to retrieve comments for",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response with a list of comments",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "postId": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "id labore ex et quam laborum"
+                                            },
+                                            "email": {
+                                                "type": "string",
+                                                "example": "Eliseo@gardner.biz"
+                                            },
+                                            "body": {
+                                                "type": "string",
+                                                "example": "laudantium enim quasi est quidem magnam voluptate ipsam eos..."
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Post not found"
+                    }
+                }
+            }
+        }
+    }
+}
