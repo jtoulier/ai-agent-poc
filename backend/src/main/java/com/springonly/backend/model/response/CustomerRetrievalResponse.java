@@ -1,5 +1,6 @@
 package com.springonly.backend.model.response;
 
+import com.springonly.backend.model.response.auxiliar.CustomerResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderCreationResponse {
-    private Long orderId;
+public class CustomerRetrievalResponse {
+    private CustomerResponse customer;
 }
