@@ -1,6 +1,6 @@
 package com.springonly.backend.model.response;
 
-import com.springonly.backend.model.dto.CustomerDTO;
+import com.springonly.backend.model.dto.LoanDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomerRetrievalResponse {
-    private CustomerDTO customer;
+public class LoanRetrievalResponse {
+    private LoanDTO loan;
 }

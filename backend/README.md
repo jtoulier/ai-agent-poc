@@ -45,8 +45,8 @@ LoginResponse
 
 - Obtener cartera de clientes dado un ejecutivo de cuentas
 GET /relationship-managers/{relationshipManagerId}/customers
-listRelationshipManagerCustomers
-RelationshipManagerCustomersRetrievalResponse
+listCustomers
+CustomersRetrievalResponse
 {
   "customers": [
   - {
@@ -88,9 +88,8 @@ CustomerRetrievalResponse
 
 - Obtener los préstamos de un cliente
 GET /customers/{customerId}/loans
-listCustomerLoans
-CustomerLoansRetrievalResponse
-
+listLoans
+LoansRetrievalResponse
 {
     "loans": [
         {
@@ -117,10 +116,10 @@ CustomerLoansRetrievalResponse
 }
 
 
-- Obtener el detalle completo de un préstamo de un cliente
-GET /customers/{customerId}/loans/{loanId}
-getCustomerLoan
-CustomerLoanRetrievalResponse
+- Obtener el detalle de un préstamo de un cliente (sin cronograma)
+GET /loans/{loanId}
+getLoan
+LoanRetrievalResponse
 {
   "loan": { 
     "loanId": 101,
@@ -131,70 +130,53 @@ CustomerLoanRetrievalResponse
     "numberOfMonthlyPayments": 24,
     "loanStateId": "VIGENTE",
     "writtenAt": "2025-09-01T09:00:00-05:00"
-  }, 
-  "payments": [
-    {
-      "paymentNumber": 1,
-      "dueDate": "2025-10-01",
-      "principalAmount": 4000.00,
-      "interestAmount": 1041.67,
-      "totalPaymentAmount": 5041.67,
-      "paymentStateId": "PENDIENTE",
-      "writtenAt": "2025-09-01T09:00:00-05:00"
-    },
-    {
-      "paymentNumber": 2,
-      "dueDate": "2025-11-01",
-      "principalAmount": 4000.00,
-      "interestAmount": 1000.00,
-      "totalPaymentAmount": 5000.00,
-      "paymentStateId": "PENDIENTE",
-      "writtenAt": "2025-09-01T09:00:00-05:00"
-    }
-  ]
+  }
 }
 
+- Obtener los pagos o cronograma de un préstamo
+GET /loans/{loanId}/payments
+listPayments
+PaymentsRetrievalResponse
+{
+    "payments": [
+        {
+            "paymentNumber": 1,
+            "dueDate": "2025-10-01",
+            "principalAmount": 4000.00,
+            "interestAmount": 1041.67,
+            "totalPaymentAmount": 5041.67,
+            "paymentStateId": "PENDIENTE",
+            "writtenAt": "2025-09-01T09:00:00-05:00"
+        },
+        {
+            "paymentNumber": 2,
+            "dueDate": "2025-11-01",
+            "principalAmount": 4000.00,
+            "interestAmount": 1000.00,
+            "totalPaymentAmount": 5000.00,
+            "paymentStateId": "PENDIENTE",
+            "writtenAt": "2025-09-01T09:00:00-05:00"
+        }
+    ]
+}
 
 - Crear un préstamo y su cronograma para un cliente
 POST /customers/{customerId}/loans
-createCustomerLoan
-CustomerLoanCreationRequest
+createLoan
+LoanCreationRequest
 {
   "currencyId": "PEN",
   "principalAmount": 100000.00,
   "interestRate": 12.50,
   "numberOfMonthlyPayments": 24
 }
-CustomerLoanCreationResponse
-{
-  "loan": {
-    "loanId": 201,
-    "currencyId": "PEN",
-    "principalAmount": 100000.00,
-    "interestRate": 12.50,
-    "loanDisbursementDate": "2025-09-23",
-    "numberOfMonthlyPayments": 24,
-    "loanStateId": "VIGENTE",
-    "writtenAt": "2025-09-23T11:00:00-05:00"
-  },
-  "payments": [
-    {
-      "paymentNumber": 1,
-      "dueDate": "2025-10-23",
-      "principalAmount": 4166.67,
-      "interestAmount": 1041.67,
-      "totalPaymentAmount": 5208.34,
-      "paymentStateId": "PENDIENTE",
-      "writtenAt": "2025-09-23T11:00:00-05:00"
-    }
-  ]
-}
+204
 
 
 - Pagar la cuota vigente de un préstamo el mismo día de su vencimiento
 POST /loans/{loanId}/payments/{paymentNumber}/pay
-payLoanPayment
-LoanPaymentPaymentResponse
+payPayment
+PaymentPaymentResponse
 {
   "loanId": 201,
   "paymentNumber": 1,

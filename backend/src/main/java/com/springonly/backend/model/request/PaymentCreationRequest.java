@@ -8,12 +8,13 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
-@Data
 @AllArgsConstructor
+@Data
 @NoArgsConstructor
-public class CustomerLoanCreationRequest {
-    private String currencyId;
+public class PaymentCreationRequest {
+    private Integer loanId;
+    private Short paymentNumber;
+    private LocalDate dueDate;
     private BigDecimal principalAmount;
-    private BigDecimal interestRate;
-    private Short numberOfMonthlyPayments;
+    private BigDecimal interestAmount;
 }

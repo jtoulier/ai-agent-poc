@@ -1,12 +1,6 @@
 package com.springonly.backend.rest;
 
 import com.springonly.backend.apiclient.RandomJokeApiClient;
-import com.springonly.backend.mapper.OrderApprovalMapper;
-import com.springonly.backend.mapper.OrderCreationMapper;
-import com.springonly.backend.mapper.OrderRejectionMapper;
-import com.springonly.backend.mapper.OrderRetrievalMapper;
-import com.springonly.backend.model.dto.CreditDTO;
-import com.springonly.backend.model.dto.OrderDTO;
 import com.springonly.backend.model.dto.auxiliar.OrderAndCreditAuxiliarDTO;
 import com.springonly.backend.model.request.OrderApprovalRequest;
 import com.springonly.backend.model.request.OrderCreationRequest;
@@ -21,10 +15,10 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
 @ApplicationScoped
