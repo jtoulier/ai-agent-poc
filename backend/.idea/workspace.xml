@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="533b2072-edab-4355-8a14-c4c38ff6da44" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/RelationshipManagerMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/openapi/openapi.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/entity/CustomerEntity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/entity/LoanEntity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/entity/PaymentEntity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/entity/RelationshipManagerEntity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/CustomerMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/CustomerMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/LoanCreationMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/LoanMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/LoanMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/LoginMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/PaymentCreationMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/PaymentMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/PaymentMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/CustomerDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/CustomerDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/LoanCreationRequestDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/LoanCreationResponseDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/LoanDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/LoanDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/PaymentCreationDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/PaymentDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/PaymentDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/RelationshipManagerDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/RelationshipManagerDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/LoanCreationRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/LoginRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/LoginRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/PaymentCreationRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/CustomerRetrievalResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/CustomersRetrievalResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/LoanCreationResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/LoanRetrievalResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/LoansRetrievalResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/LoginResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/LoginResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/PaymentPaymentResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/PaymentsRetrievalResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/CustomerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/CustomerRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/LoanRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/LoanRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/PaymentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/PaymentRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/RelationshipManagerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/RelationshipManagerRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/rest/OrderRest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/CustomerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/CustomerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/LoanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/LoanService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/LoginService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/OrderService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/PaymentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/PaymentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "jtoulier"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/jtoulier/ai-agent-poc.git",
+    "accountId": "f2ab3f03-da3d-4cae-a98e-f2e3c82d8e7a"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 6
+}]]></component>
+  <component name="ProjectId" id="33UezuNsNCs5jXPqIFxADpUObHx" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "settings.editor.selected.configurable": "Errors"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration default="true" type="AZURE_FUNCTION_SUPPORT" factoryName="Run Functions">
+      <option name="appName" />
+      <option name="appServicePlanName" />
+      <option name="appServicePlanResourceGroup" />
+      <option name="appSettingsKey" value="83bf6ab8-2e4a-4ae3-aacc-add3a7f355f6" />
+      <option name="artifact" />
+      <option name="debugOptions" />
+      <option name="deployment" />
+      <option name="deploymentStagingDirectoryPath" />
+      <option name="funcPath" />
+      <option name="functionHostArguments" />
+      <option name="hostJsonPath" />
+      <option name="insightsName" />
+      <option name="instrumentationKey" />
+      <option name="javaVersion" />
+      <option name="localSettingsJsonPath" />
+      <option name="moduleName" />
+      <option name="os" />
+      <option name="pricingTier" />
+      <option name="providerMap">
+        <map />
+      </option>
+      <option name="region" />
+      <option name="resourceGroup" />
+      <option name="stagingFolder" />
+      <option name="subscription" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="533b2072-edab-4355-8a14-c4c38ff6da44" name="Changes" comment="" />
+      <created>1759376347000</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1759376347000</updated>
+    </task>
+    <servers />
+  </component>
+</project>
