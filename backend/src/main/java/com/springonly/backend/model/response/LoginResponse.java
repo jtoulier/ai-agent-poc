@@ -1,15 +1,14 @@
 package com.springonly.backend.model.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.UUID;
+import lombok.AllArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class LoginResponse {
-    private String relationshipManagerName;
-    private UUID threadId;
+    private boolean success;
+    private String message;
+    private RelationshipManagerResponse relationshipManager;
 }

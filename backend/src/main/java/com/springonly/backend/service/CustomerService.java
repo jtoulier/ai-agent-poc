@@ -1,40 +1,35 @@
 package com.springonly.backend.service;
 
-import com.springonly.backend.entity.CustomerEntity;
-import com.springonly.backend.mapper.CustomerMapper;
 import com.springonly.backend.model.dto.CustomerDTO;
 import com.springonly.backend.repository.CustomerRepository;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import lombok.extern.slf4j.Slf4j;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
-@Slf4j
 @ApplicationScoped
 public class CustomerService {
-    @Inject
-    CustomerRepository customerRepository;
 
     @Inject
-    CustomerMapper customerMapper;
+    CustomerRepository repo;
 
-    public CustomerDTO getCustomer(
-        String customerId
-    ) {
-        CustomerEntity customerEntity = customerRepository.findByCustomerId(customerId);
-
-        return customerMapper.fromEntityToDTO(customerEntity);
+    public List<CustomerDTO> listAll() {
+        return repo.listAllDTOs();
     }
 
-    public List<CustomerDTO> listCustomers(
-        String relationshipManagerId
-    ) {
-        List<CustomerEntity> customerEntities =
-            customerRepository.findByRelationshipManagerId(
-                relationshipManagerId
-            );
+    public CustomerDTO getById(String id) {
+        return repo.findDTOById(id);
+    }
 
-        return customerMapper.fromEntitiesToDTOs(customerEntities);
+    public CustomerDTO create(CustomerDTO dto) {
+        dto.setWrittenAt(OffsetDateTime.now());
+        return repo.save(dto);
+    }
+
+    public CustomerDTO patch(CustomerDTO dto) {
+        dto.setWrittenAt(OffsetDateTime.now());
+        return repo.update(dto);
     }
 }

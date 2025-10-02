@@ -7,10 +7,11 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
-@AllArgsConstructor
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class CustomerDTO {
+
     private String customerId;
     private String customerName;
     private String customerTypeId;

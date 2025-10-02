@@ -1,18 +1,21 @@
 package com.springonly.backend.mapper;
 
-import com.springonly.backend.entity.PaymentEntity;
-import com.springonly.backend.model.dto.PaymentDTO;
-import com.springonly.backend.model.response.PaymentPaymentResponse;
-import com.springonly.backend.model.response.PaymentsRetrievalResponse;
 import org.mapstruct.Mapper;
-
-import java.util.List;
+import org.mapstruct.Mapping;
+import com.springonly.backend.model.entity.Payment;
+import com.springonly.backend.model.dto.PaymentDTO;
+import com.springonly.backend.model.request.PaymentRequest;
+import com.springonly.backend.model.response.PaymentResponse;
 
 @Mapper(componentModel = "cdi")
 public interface PaymentMapper {
-    PaymentDTO fromEntityToDTO(PaymentEntity paymentEntity);
-    List<PaymentDTO> fromEntitiesToDTOs(List<PaymentEntity> paymentEntities);
 
-    PaymentPaymentResponse fromDTOToResponse(PaymentDTO paymentDTO);
-    PaymentsRetrievalResponse fromDTOsToResponse(List<PaymentDTO> paymentDTOs);
+    PaymentDTO fromRequest(PaymentRequest req);
+
+    @Mapping(target = "totalPaymentAmount", expression = "java(dto.getPrincipalAmount().add(dto.getInterestAmount()))")
+    PaymentResponse toResponse(PaymentDTO dto);
+
+    Payment toEntity(PaymentDTO dto);
+
+    PaymentDTO toDTO(Payment entity);
 }

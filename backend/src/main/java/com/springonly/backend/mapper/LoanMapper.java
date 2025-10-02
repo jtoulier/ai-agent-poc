@@ -1,18 +1,15 @@
 package com.springonly.backend.mapper;
 
-import com.springonly.backend.entity.LoanEntity;
-import com.springonly.backend.model.dto.LoanDTO;
-import com.springonly.backend.model.response.LoanRetrievalResponse;
-import com.springonly.backend.model.response.LoansRetrievalResponse;
 import org.mapstruct.Mapper;
-
-import java.util.List;
+import com.springonly.backend.model.entity.Loan;
+import com.springonly.backend.model.dto.LoanDTO;
+import com.springonly.backend.model.request.LoanRequest;
+import com.springonly.backend.model.response.LoanResponse;
 
 @Mapper(componentModel = "cdi")
 public interface LoanMapper {
-    LoanDTO fromEntityToDTO(LoanEntity loanEntity);
-    List<LoanDTO> fromEntitiesToDTOs(List<LoanEntity> loanEntities);
-
-    LoanRetrievalResponse fromDTOToResponse(LoanDTO loanDTO);
-    LoansRetrievalResponse fromDTOsToResponse(List<LoanDTO> loanDTOS);
+    LoanDTO fromRequest(LoanRequest req);
+    LoanResponse toResponse(LoanDTO dto);
+    Loan toEntity(LoanDTO dto);
+    LoanDTO toDTO(Loan entity);
 }

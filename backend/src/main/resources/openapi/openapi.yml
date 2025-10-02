@@ -1,0 +1,445 @@
+---
+openapi: 3.1.0
+components:
+  schemas:
+    CustomerRequest:
+      type: object
+      properties:
+        customerId:
+          type: string
+        customerName:
+          type: string
+        customerTypeId:
+          type: string
+        riskCategoryId:
+          type: string
+        lineOfCreditAmount:
+          type: number
+        relationshipManagerId:
+          type: string
+    CustomerResponse:
+      type: object
+      properties:
+        customerId:
+          type: string
+        customerName:
+          type: string
+        customerTypeId:
+          type: string
+        riskCategoryId:
+          type: string
+        lineOfCreditAmount:
+          type: number
+        relationshipManagerId:
+          type: string
+        writtenAt:
+          $ref: "#/components/schemas/OffsetDateTime"
+    LoanRequest:
+      type: object
+      properties:
+        customerId:
+          type: string
+        currencyId:
+          type: string
+        principalAmount:
+          type: number
+        interestRate:
+          type: number
+        loanDisbursementDate:
+          $ref: "#/components/schemas/LocalDate"
+        numberOfMonthlyPayments:
+          type: integer
+          format: int16
+        loanStateId:
+          type: string
+    LoanResponse:
+      type: object
+      properties:
+        loanId:
+          type: integer
+          format: int32
+        customerId:
+          type: string
+        currencyId:
+          type: string
+        principalAmount:
+          type: number
+        interestRate:
+          type: number
+        loanDisbursementDate:
+          $ref: "#/components/schemas/LocalDate"
+        numberOfMonthlyPayments:
+          type: integer
+          format: int16
+        loanStateId:
+          type: string
+        writtenAt:
+          $ref: "#/components/schemas/OffsetDateTime"
+    LocalDate:
+      type: string
+      format: date
+      examples:
+      - 2022-03-10
+    LoginRequest:
+      type: object
+      properties:
+        relationshipManagerId:
+          type: string
+        password:
+          type: string
+    OffsetDateTime:
+      type: string
+      format: date-time
+      examples:
+      - 2022-03-10T12:15:50-04:00
+    PaymentRequest:
+      type: object
+      properties:
+        dueDate:
+          $ref: "#/components/schemas/LocalDate"
+        principalAmount:
+          type: number
+        interestAmount:
+          type: number
+        paymentStateId:
+          type: string
+    PaymentResponse:
+      type: object
+      properties:
+        loanId:
+          type: integer
+          format: int32
+        paymentNumber:
+          type: integer
+          format: int16
+        dueDate:
+          $ref: "#/components/schemas/LocalDate"
+        principalAmount:
+          type: number
+        interestAmount:
+          type: number
+        totalPaymentAmount:
+          type: number
+        paymentStateId:
+          type: string
+        writtenAt:
+          $ref: "#/components/schemas/OffsetDateTime"
+    RelationshipManagerRequest:
+      type: object
+      properties:
+        relationshipManagerId:
+          type: string
+        relationshipManagerName:
+          type: string
+        password:
+          type: string
+        threadId:
+          type: string
+    RelationshipManagerResponse:
+      type: object
+      properties:
+        relationshipManagerId:
+          type: string
+        relationshipManagerName:
+          type: string
+        threadId:
+          type: string
+        writtenAt:
+          $ref: "#/components/schemas/OffsetDateTime"
+paths:
+  /api/customers:
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CustomerResponse"
+      summary: List
+      tags:
+      - Customer Resource
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomerRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Create
+      tags:
+      - Customer Resource
+  /api/customers/{id}:
+    patch:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomerRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Patch
+      tags:
+      - Customer Resource
+    get:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+      summary: Get
+      tags:
+      - Customer Resource
+  /api/loans:
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LoanResponse"
+      summary: List
+      tags:
+      - Loan Resource
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoanRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Create
+      tags:
+      - Loan Resource
+  /api/loans/{id}:
+    patch:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoanRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Patch
+      tags:
+      - Loan Resource
+    get:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+      summary: Get
+      tags:
+      - Loan Resource
+  /api/payments:
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PaymentResponse"
+      summary: List
+      tags:
+      - Payment Resource
+  /api/payments/{loanId}/{paymentNumber}:
+    patch:
+      parameters:
+      - name: loanId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: paymentNumber
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int16
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Patch
+      tags:
+      - Payment Resource
+    get:
+      parameters:
+      - name: loanId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: paymentNumber
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int16
+      responses:
+        "200":
+          description: OK
+      summary: Get
+      tags:
+      - Payment Resource
+    post:
+      parameters:
+      - name: loanId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: paymentNumber
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int16
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Create
+      tags:
+      - Payment Resource
+  /api/relationship-managers:
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RelationshipManagerResponse"
+      summary: List
+      tags:
+      - Relationship Manager Resource
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RelationshipManagerRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Create
+      tags:
+      - Relationship Manager Resource
+  /api/relationship-managers/login:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Login
+      tags:
+      - Relationship Manager Resource
+  /api/relationship-managers/{id}:
+    patch:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RelationshipManagerRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Patch
+      tags:
+      - Relationship Manager Resource
+    get:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+      summary: Get
+      tags:
+      - Relationship Manager Resource
+info:
+  title: Credit API REST
+  version: 1.0.0

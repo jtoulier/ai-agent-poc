@@ -5,10 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class LoginRequest
-{
+@AllArgsConstructor
+public class LoginRequest {
     private String relationshipManagerId;
     private String password;
 }
