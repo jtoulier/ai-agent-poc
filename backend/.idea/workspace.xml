@@ -4,56 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="533b2072-edab-4355-8a14-c4c38ff6da44" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/RelationshipManagerMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/openapi/openapi.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/entity/CustomerEntity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/entity/LoanEntity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/entity/PaymentEntity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/entity/RelationshipManagerEntity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/CustomerMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/CustomerMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/LoanCreationMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/LoanMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/LoanMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/LoginMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/PaymentCreationMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/PaymentMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/PaymentMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/CustomerDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/CustomerDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/LoanCreationRequestDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/LoanCreationResponseDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/LoanDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/LoanDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/PaymentCreationDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/PaymentDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/PaymentDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/RelationshipManagerDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/RelationshipManagerDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/LoanCreationRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/LoginRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/LoginRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/PaymentCreationRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/CustomerRetrievalResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/CustomersRetrievalResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/LoanCreationResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/LoanRetrievalResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/LoansRetrievalResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/LoginResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/LoginResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/PaymentPaymentResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/PaymentsRetrievalResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/CustomerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/CustomerRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/LoanRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/LoanRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/PaymentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/PaymentRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/RelationshipManagerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/RelationshipManagerRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/rest/OrderRest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/CustomerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/CustomerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/LoanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/LoanService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/LoginService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/OrderService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/PaymentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/PaymentService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-    </list>
+    <list default="true" id="533b2072-edab-4355-8a14-c4c38ff6da44" name="Changes" comment="crud de nuevo con chatgpt" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="ChangesViewManager" show_ignored="true" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
@@ -128,6 +85,35 @@
       <option name="presentableId" value="Default" />
       <updated>1759376347000</updated>
     </task>
+    <task id="LOCAL-00001" summary="crud de nuevo con chatgpt">
+      <option name="closed" value="true" />
+      <created>1759377334352</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1759377334352</updated>
+    </task>
+    <task id="LOCAL-00002" summary="crud de nuevo con chatgpt">
+      <option name="closed" value="true" />
+      <created>1759377428666</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1759377428666</updated>
+    </task>
+    <task id="LOCAL-00003" summary="crud de nuevo con chatgpt">
+      <option name="closed" value="true" />
+      <created>1759377509964</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1759377509964</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="crud de nuevo con chatgpt" />
+    <option name="LAST_COMMIT_MESSAGE" value="crud de nuevo con chatgpt" />
   </component>
 </project>

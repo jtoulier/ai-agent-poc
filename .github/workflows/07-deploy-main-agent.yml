@@ -7,133 +7,43 @@ jobs:
   dummy:
     runs-on: ubuntu-latest
     steps:
-      - name: Do nothing
-        run: echo "✅ Dummy job executed successfully"
+      - name: Show pre requisites
+        run: |
+          echo "⚠️ Prerequisites:"
+          echo ""
+          echo "1. Create an Azure AI Foundry resource"
+          echo "1.a Ir a https://ai.azure.com/resources"
+          echo "1.b Dar clic en 'Create new'"
+          echo ""
+          echo "2.a. Seleccionar 'Azure AI Foundry resource'"
+          echo "2.b. Dar clic en 'Next'"
+          echo ""
+          echo "3.a Nombrar al Project como '${{ vars.INFRA_AZURE_AIFOUNDRY_PROJECT_NAME }}'"
+          echo "3.b Expandir 'Advanced options'"
+          echo "3.c Nombrar al Azure AI Foundry resource como '${{ vars.INFRA_AZURE_AIFOUNDRY_RESOURCE_NAME }}'"
+          echo "3.d Seleccionar la suscripción '${{ vars.INFRA_AZURE_SUBSCRIPTION_NAME }}'"
+          echo "3.e Seleccionar el grupo de recursos '${{ vars.INFRA_AZURE_RESOURCE_GROUP_NAME }}'"
+          echo "3.f Seleccionar la región '${{ vars.INFRA_AZURE_REGION_NAME }}'"
+          echo "3.g Dar clic en 'Create'"
+          echo ""
+          echo "4.a Esperar a que se cree el recurso (puede tardar varios minutos)"
+          echo ""
+          echo "5.a En el menú lateral izquierdo, ubicar 'Build and customize' y luego dar clic en 'Agents'"
+          echo "5.b Se debe abrir automáticamente la pantalla 'Deploy a model'"
+          echo "5.c Seleccionar el modelo '${{ vars.INFRA_AZURE_AIFOUNDRY_MODEL_NAME }}'"
+          echo "5.d Dar clic en 'Confirm'"
+          echo "5.e Nombrar el Deployment como '${{ vars.INFRA_AZURE_AIFOUNDRY_DEPLOYMENT_NAME }}'"
+          echo "5.f Dar clic en 'Deploy'"
+          echo ""
+          echo "6.a Tomar nota"
 
-
-
-INFRA_AZURE_SUBSCRIPTION_ID=8e6b4c8b-ff8c-4715-bea2-4f94aac0a93b
-INFRA_AZURE_RESOURCEGROUP_NAME=rgcantolao
-INFRA_AZURE_LOCATION=eastus
 
 INFRA_AZURE_AIFOUNDRY_RESOURCE_NAME=aifcantolao
 INFRA_AZURE_AIFOUNDRY_PROJECT_NAME=prjcantolao
 INFRA_AZURE_AIFOUNDRY_PROJECT_DESCRIPTION="Proyecto de agente conversacional con Azure AI Foundry"
 
-INFRA_AZURE_AIFOUNDRY_MODEL_NAME=gpt-4o
-INFRA_AZURE_AIFOUNDRY_DEPLOYMENT_NAME=depcantolao
 INFRA_AZURE_AIFOUNDRY_AGENT_NAME=agentcantolao
 
-INFRA_AZURE_AIFOUNDRY_AGENT_ACTION_TOOL_NAME=tool_comments
-INFRA_AZURE_AIFOUNDRY_AGENT_ACTION_TOOL_DESCRIPTION="Herramienta para obtener comentarios externos"
-INFRA_AZURE_AIFOUNDRY_AGENT_ACTION_TOOL_SCHEMALOCATION=.actions/tools/schema-comments.json
-INFRA_AZURE_AIFOUNDRY_AGENT_INSTRUCTIONS=.actions/instructions/instructions.txt
+INFRA_AZURE_AIFOUNDRY_AGENT_ACTION_TOOL_NAME=tool_credits
+INFRA_AZURE_AIFOUNDRY_AGENT_INSTRUCTIONS=./main-agent/instructions/credits.txt
 
-
-az extension add --name ml
-
-# Configuraciones previas
-az login
-az account set --subscription ${INFRA_AZURE_SUBSCRIPTION_ID}
-az configure --defaults group=${INFRA_AZURE_RESOURCEGROUP_NAME} location=${INFRA_AZURE_LOCATION}
-
-# Buscar si existe el recurso Azure AI Foundry o si está en cuarentena (deletedAccounts)
-DELETED_ACCOUNT=$(az rest --method get \
-  --uri "https://management.azure.com/subscriptions/${INFRA_AZURE_SUBSCRIPTION_ID}/providers/Microsoft.CognitiveServices/deletedAccounts?api-version=2023-05-01" \
-  --query "value[?name=='${INFRA_AZURE_AIFOUNDRY_RESOURCE_NAME}']" -o tsv)
-
-if [ -n "$DELETED_ACCOUNT" ]; then
-  echo "⚠️  El recurso '${INFRA_AZURE_AIFOUNDRY_RESOURCE_NAME}' está en cuarentena. Procediendo a purgarlo..."
-
-  az rest --method delete \
-    --uri "https://management.azure.com/subscriptions/${INFRA_AZURE_SUBSCRIPTION_ID}/providers/Microsoft.CognitiveServices/locations/${INFRA_AZURE_LOCATION}/resourceGroups/${INFRA_AZURE_RESOURCEGROUP_NAME}/deletedAccounts/${INFRA_AZURE_AIFOUNDRY_RESOURCE_NAME}?api-version=2023-05-01"
-
-  echo "✅ Recurso '${INFRA_AZURE_AIFOUNDRY_RESOURCE_NAME}' purgado definitivamente."
-else
-  echo "ℹ️  El recurso '${INFRA_AZURE_AIFOUNDRY_RESOURCE_NAME}' no está en cuarentena (ya purgado o nunca existió)."
-fi
-
-
-# Crear el recurso Azure AI Foundry
-az cognitiveservices account create \
-  --name ${INFRA_AZURE_AIFOUNDRY_RESOURCE_NAME} \
-  --resource-group ${INFRA_AZURE_RESOURCEGROUP_NAME} \
-  --kind AIServices \
-  --sku S0 \
-  --location ${INFRA_AZURE_LOCATION} \
-  --yes
-
-# Asignarle un dominio personalizado
-az cognitiveservices account update \
-  --name ${INFRA_AZURE_AIFOUNDRY_RESOURCE_NAME} \
-  --resource-group ${INFRA_AZURE_RESOURCEGROUP_NAME} \
-  --custom-domain ${INFRA_AZURE_AIFOUNDRY_RESOURCE_NAME}
-
-# Actualizar ciertas configuraciones del recurso
-URI="https://management.azure.com/subscriptions/${INFRA_AZURE_SUBSCRIPTION_ID}/resourceGroups/${INFRA_AZURE_RESOURCEGROUP_NAME}/providers/Microsoft.CognitiveServices/accounts/${INFRA_AZURE_AIFOUNDRY_RESOURCE_NAME}?api-version=2025-06-01"
-
-# JSON con los cambios
-BODY=$(cat <<EOF
-{
-  "properties": {
-    "armFeatures": null,
-    "disableLocalAuth": false,
-    "networkAcls": {
-      "defaultAction": "Allow",
-      "ipRules": [],
-      "virtualNetworkRules": []
-    }
-  }
-}
-EOF
-)
-
-az rest --method patch --uri "$URI" --headers "Content-Type=application/json" --body "$BODY"
-
-
-# Crear el proyecto dentro del recurso Azure AI Foundry
-URI="https://management.azure.com/subscriptions/${INFRA_AZURE_SUBSCRIPTION_ID}/resourceGroups/${INFRA_AZURE_RESOURCEGROUP_NAME}/providers/Microsoft.CognitiveServices/accounts/${INFRA_AZURE_AIFOUNDRY_RESOURCE_NAME}/projects/${INFRA_AZURE_AIFOUNDRY_PROJECT_NAME}?api-version=2025-06-01"
-
-BODY=$(cat <<JSON
-{
-  "location": "${INFRA_AZURE_LOCATION}",
-  "properties": {
-    "displayName": "${INFRA_AZURE_AIFOUNDRY_PROJECT_NAME}",
-    "description": "${INFRA_AZURE_AIFOUNDRY_PROJECT_DESCRIPTION}"
-  }
-}
-JSON
-)
-
-az rest --method put --uri "$URI" --body "$BODY" --headers "Content-Type=application/json"
-
-pip install azure-ai-ml azure-identity
-
-
-python <<EOF
-from azure.ai.ml import MLClient
-from azure.identity import DefaultAzureCredential
-from azure.ai.ml.entities import Project
-
-ml_client = MLClient(
-    credential=DefaultAzureCredential(),
-    subscription_id="${INFRA_AZURE_SUBSCRIPTION_ID}",
-    resource_group_name="${INFRA_AZURE_RESOURCEGROUP_NAME}",
-)
-
-for hub in ml_client.hubs.list():
-    print(hub.name, hub.id)
-EOF
-project = Project(
-    name="${INFRA_AZURE_AISERVICEPROJECT_NAME}",
-    hub_id="${INFRA_AZURE_AISERVICE_NAME}",  # Si estás utilizando un hub
-    display_name="${INFRA_AZURE_AISERVICEPROJECT_DISPLAYNAME}"
-)
-
-ml_client.projects.create_or_update(project)
-EOF
-
-az cognitiveservices account show --name aifcantolao > aifcantolao.json
-
-
-az rest --method delete --uri "https://management.azure.com/subscriptions/8e6b4c8b-ff8c-4715-bea2-4f94aac0a93b/providers/Microsoft.CognitiveServices/locations/westus/resourceGroups/rgcantolao/deletedAccounts/aifcantolao?api-version=2023-05-01"
