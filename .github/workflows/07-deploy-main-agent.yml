@@ -106,7 +106,15 @@ jobs:
                   \"tools\": [
                     {
                       \"type\": \"openapi\",
-                      \"openapi_spec\": \"$OPENAPI_SPEC\",)
+                      \"openapi\": {
+                        \"name": \"tool name\",
+                        \"description\": \"tool description\",
+                        \"spec\": $OPENAPI_SPEC,
+                        \"auth\": {
+                           \"type\": \"anonymous\",
+                           \"security_scheme\": {}
+                        }
+                      }
                     }
                   ]
                 }"
