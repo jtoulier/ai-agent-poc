@@ -39,3 +39,23 @@ def main():
         print(f"🔎 Agente encontrado: id={agent.id}, name={agent.name}")
         agent_id = agent.id
     else:
+        print(f"⚠️ No existe agente con nombre '{agent_name}', se creará nuevo.")
+        agent_id = None
+
+    # Construir el objeto Agent (nuevo o actualizado)
+    new_agent = Agent(
+        id=agent_id,  # None si es creación
+        name=agent_name,
+        instructions=instructions_text,
+        tools=[OpenApiTool(openapi=openapi_json)]
+    )
+
+    result = agents_ops.create_or_update(
+        agent_id=agent_id if agent_id else agent_name,
+        body=new_agent
+    )
+
+    print("✅ Agente configurado/actualizado:", result)
+
+if __name__ == "__main__":
+    main()
