@@ -89,7 +89,12 @@ jobs:
           echo "🛠️ Configurando instrucciones y herramientas del agente principal..."
 
           # Escapar las instrucciones para JSON
-          INSTRUCTIONS=$(cat ./main-agent/instructions/credits.txt | sed 's/"/\\"/g')      
+          INSTRUCTIONS=$(cat ./main-agent/instructions/credits.txt | sed 's/"/\\"/g')
+          OPENAPI_SPEC=$(cat ./backend/src/main/resources/openapi/openapi-simple.json | sed 's/"/\\"/g' | tr -d '\n')
+
+          echo $INSTRUCTIONS
+          echo $OPENAPI_SPEC
+
 
           # Crear o actualizar el agente
           curl -v -X POST https://$PROJECT_ENDPOINT/assistants/$AGENT_ID?api-version=2025-05-01 \
@@ -104,7 +109,6 @@ jobs:
                       \"openapi_spec\": $(cat ./backend/src/main/resources/openapi/openapi.json)
                     }
                   ]
-                }" \
-            | jq
-
+                }"
+                
           echo "✅ Agente configurado correctamente"
