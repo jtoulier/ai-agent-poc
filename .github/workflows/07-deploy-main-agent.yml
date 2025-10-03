@@ -11,7 +11,6 @@ jobs:
         run: |
           echo "⚠️ Prerequisites:"
           echo ""
-          echo "1. Create an Azure AI Foundry resource"
           echo "1.a Ir a https://ai.azure.com/resources"
           echo "1.b Dar clic en 'Create new'"
           echo ""
@@ -35,15 +34,10 @@ jobs:
           echo "5.e Nombrar el Deployment como '${{ vars.INFRA_AZURE_AIFOUNDRY_DEPLOYMENT_NAME }}'"
           echo "5.f Dar clic en 'Deploy'"
           echo ""
-          echo "6.a Tomar nota"
-
-
-INFRA_AZURE_AIFOUNDRY_RESOURCE_NAME=aifcantolao
-INFRA_AZURE_AIFOUNDRY_PROJECT_NAME=prjcantolao
-INFRA_AZURE_AIFOUNDRY_PROJECT_DESCRIPTION="Proyecto de agente conversacional con Azure AI Foundry"
-
-INFRA_AZURE_AIFOUNDRY_AGENT_NAME=agentcantolao
-
-INFRA_AZURE_AIFOUNDRY_AGENT_ACTION_TOOL_NAME=tool_credits
-INFRA_AZURE_AIFOUNDRY_AGENT_INSTRUCTIONS=./main-agent/instructions/credits.txt
+          echo "6.a Dar clic en el nombre del Agente creado. Tiene un nombre aleatorio"
+          echo "6.b Nombrar el Agent name como '${{ vars.INFRA_AZURE_AIFOUNDRY_AGENT_NAME }}'"
+          echo "6.c Dar clic en una zona en blanco de la pantalla para que se guarden los cambios"
+          echo ""
+          echo "7.a Tomar nota del valor de 'Agent ID'"
+          echo "asst_zkMVQBcHIa9jIGxBu4A1BmTY"
 
