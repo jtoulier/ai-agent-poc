@@ -4,7 +4,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  dummy:
+  job-dummy:
+    name: Prerequisites for Deploying Main Agent to Azure
     runs-on: ubuntu-latest
     steps:
       - name: Show pre requisites
@@ -39,5 +40,37 @@ jobs:
           echo "6.c Dar clic en una zona en blanco de la pantalla para que se guarden los cambios"
           echo ""
           echo "7.a Tomar nota del valor de 'Agent ID'"
-          echo "asst_zkMVQBcHIa9jIGxBu4A1BmTY"
 
+  job-configure-main-agent:
+    name: Configure Main Agent instructions and tools
+    runs-on: ubuntu-latest
+    needs: job-dummy
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Set up Azure ML CLI extension
+        run: |
+          az extension add -n ml -y
+
+      - name: Upload agent instructions
+        run: |
+          az ml agent update \
+            --name main-agent \
+            --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+            --workspace-name ${{ vars.INFRA_AZURE_AIFOUNDRY_PROJECT_NAME }} \
+            --set instructions=@./main-agent/instructions/credits.txt
+
+      - name: Register OpenAPI tool
+        run: |
+          az ml agent tool add \
+            --agent-name main-agent \
+            --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+            --workspace-name ${{ vars.INFRA_AZURE_AIFOUNDRY_PROJECT_NAME }} \
+            --tool-type openapi \
+            --spec-file ./backend/src/main/resources/openapi/openapi.json
