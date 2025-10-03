@@ -45,7 +45,7 @@ jobs:
     name: Configure Main Agent instructions and tools
     runs-on: ubuntu-latest
     env:
-      PROJECT_ENDPOINT: https://${{ vars.INFRA_AZURE_AIFOUNDRY_RESOURCE_NAME }}.services.ai.azure.com/api/projects/${{ vars.INFRA_AZURE_AIFOUNDRY_PROJECT_NAME }}
+      PROJECT_ENDPOINT: ${{ vars.INFRA_AZURE_AIFOUNDRY_RESOURCE_NAME }}.services.ai.azure.com/api/projects/${{ vars.INFRA_AZURE_AIFOUNDRY_PROJECT_NAME }}
       AGENT_NAME: ${{ vars.INFRA_AZURE_AIFOUNDRY_AGENT_NAME }}
     needs: job-dummy
     steps:
@@ -68,8 +68,8 @@ jobs:
           AGENT_ID=$(curl -s \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
             -H "Content-Type: application/json" \
-            "https://$PROJECT_ENDPOINT/assistants?api-version=2025-05-01" \
-            | jq -r '.data[] | select(.name=="$AGENT_NAME") | .id')
+            https://$PROJECT_ENDPOINT/assistants?api-version=2025-05-01 \
+            | jq -r --arg AGENT_NAME "$AGENT_NAME" '.data[] | select(.name==$AGENT_NAME) | .id')
 
           echo $AGENT_ID
 
