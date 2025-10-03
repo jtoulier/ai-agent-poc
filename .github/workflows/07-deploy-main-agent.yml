@@ -47,6 +47,8 @@ jobs:
     env:
       PROJECT_ENDPOINT: ${{ vars.INFRA_AZURE_AIFOUNDRY_RESOURCE_NAME }}.services.ai.azure.com/api/projects/${{ vars.INFRA_AZURE_AIFOUNDRY_PROJECT_NAME }}
       AGENT_NAME: ${{ vars.INFRA_AZURE_AIFOUNDRY_AGENT_NAME }}
+      TOOL_NAME: ${{ vars.INFRA_AZURE_AIFOUNDRY_AGENT_TOOL_NAME }}
+      TOOL_DESCRIPTION: ${{ vars.INFRA_AZURE_AIFOUNDRY_AGENT_TOOL_DESCRIPTION }}
     needs: job-dummy
     steps:
       - name: Checkout repo
@@ -90,8 +92,7 @@ jobs:
 
           # Escapar las instrucciones para JSON
           INSTRUCTIONS=$(cat ./main-agent/instructions/credits.txt | sed 's/"/\\"/g')
-          OPENAPI_SPEC=$(cat ./backend/src/main/resources/openapi/openapi-simple.json | sed 's/"/\\"/g' | tr -d '\n')
-          OPENAPI_SPEC=$(cat ./backend/src/main/resources/openapi/openapi-simple.json)
+          OPENAPI_SPEC=$(cat ./backend/src/main/resources/openapi/openapi.json)
 
           echo $INSTRUCTIONS
           echo $OPENAPI_SPEC
@@ -108,8 +109,8 @@ jobs:
                     {
                       \"type\": \"openapi\",
                       \"openapi\": {
-                        \"name\": \"toolname\",
-                        \"description\": \"tool description\",
+                        \"name\": \"$TOOL_NAME\",
+                        \"description\": \"$TOOL_DESCRIPTION\",
                         \"spec\": $OPENAPI_SPEC,
                         \"auth\": {
                            \"type\": \"anonymous\",
