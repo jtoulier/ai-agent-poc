@@ -54,23 +54,20 @@ jobs:
         with:
           creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
 
-      - name: Set up Azure ML CLI extension
-        run: |
-          az extension add -n ml -y
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
 
-      - name: Upload agent instructions
+      - name: Install dependencies
         run: |
-          az ml agent update \
-            --name main-agent \
-            --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
-            --workspace-name ${{ vars.INFRA_AZURE_AIFOUNDRY_PROJECT_NAME }} \
-            --set instructions=@./main-agent/instructions/credits.txt
+          pip install azure-identity azure-ai-projects azure-ai-agents
 
-      - name: Register OpenAPI tool
+      - name: Configure agent via Python
         run: |
-          az ml agent tool add \
-            --agent-name main-agent \
-            --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
-            --workspace-name ${{ vars.INFRA_AZURE_AIFOUNDRY_PROJECT_NAME }} \
-            --tool-type openapi \
-            --spec-file ./backend/src/main/resources/openapi/openapi.json
+          python main-agent/configure-main-agent.py
+        env:
+          AGENT_NAME: ${{ vars.INFRA_AZURE_AIFOUNDRY_AGENT_NAME }}
+          PROJECT_ENDPOINT: https://${{ vars.INFRA_AZURE_AIFOUNDRY_RESOURCE_NAME }}.services.ai.azure.com/api/projects/${{ vars.INFRA_AZURE_AIFOUNDRY_PROJECT_NAME }}
+          INSTRUCTIONS_PATH: main-agent/instructions/credits.txt
+          OPENAPI_SPEC_PATH: backend/src/main/resources/openapi/openapi.json
