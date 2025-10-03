@@ -92,7 +92,7 @@ jobs:
           INSTRUCTIONS=$(cat ./main-agent/instructions/credits.txt | sed 's/"/\\"/g')      
 
           # Crear o actualizar el agente
-          curl -X PUT "https://$PROJECT_ENDPOINT/assistants/$AGENT_ID?api-version=2025-05-01" \
+          curl -v -X PUT https://$PROJECT_ENDPOINT/assistants/$AGENT_ID?api-version=2025-05-01 \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
             -H "Content-Type: application/json" \
             -d "{
