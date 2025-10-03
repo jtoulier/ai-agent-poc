@@ -60,7 +60,7 @@ jobs:
       - name: Configure Main Agent instructions and tools
         run: |
           ACCESS_TOKEN=$(az account get-access-token \
-            --resource https://ml.azure.com \
+            --resource https://ai.azure.com \
             --query accessToken -o tsv)
 
           echo "🔎 Buscando agente con nombre: $AGENT_NAME"
@@ -68,8 +68,8 @@ jobs:
           AGENT_ID=$(curl -s \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
             -H "Content-Type: application/json" \
-            "https://$PROJECT_ENDPOINT/agents?api-version=2024-05-01-preview" \
-            | jq -r --arg NAME "$AGENT_NAME" '.value[] | select(.name==$NAME) | .id')
+            "https://$PROJECT_ENDPOINT/assistants?api-version=2025-05-01" \
+            | jq -r '.data[] | select(.name=="$AGENT_NAME") | .id')
 
           if [ -z "$AGENT_ID" ]; then
             echo "❌ No se encontró el agente con nombre $AGENT_NAME"
@@ -85,7 +85,7 @@ jobs:
           INSTRUCTIONS=$(cat ./main-agent/instructions/credits.txt | sed 's/"/\\"/g')      
 
           # Crear o actualizar el agente
-          curl -s -X PUT "https://$PROJECT_ENDPOINT/agents/$AGENT_ID?api-version=2024-05-01-preview" \
+          curl -s -X PUT "https://$PROJECT_ENDPOINT/assistants/$AGENT_ID?api-version=2025-05-01" \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
             -H "Content-Type: application/json" \
             -d "{
