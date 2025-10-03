@@ -108,7 +108,7 @@ jobs:
                     {
                       \"type\": \"openapi\",
                       \"openapi\": {
-                        \"name\": \"tool name\",
+                        \"name\": \"toolname\",
                         \"description\": \"tool description\",
                         \"spec\": $OPENAPI_SPEC,
                         \"auth\": {
