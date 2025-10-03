@@ -65,6 +65,11 @@ jobs:
 
           echo "🔎 Buscando agente con nombre: $AGENT_NAME"
 
+          curl \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            -H "Content-Type: application/json" \
+            https://$PROJECT_ENDPOINT/assistants?api-version=2025-05-01
+
           AGENT_ID=$(curl -s \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
             -H "Content-Type: application/json" \
