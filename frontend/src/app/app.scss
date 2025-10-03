@@ -1,16 +1,17 @@
-// 🎨 Variables de tema
-$bg: #343541;
-$header: #202123;
-$input-bg: #40414f;
-$user-bubble: #0b93f6;
-$bot-bubble: #444654;
-$text: #ececec;
-$user-text: #fff;
-$accent: #19c37d;
+// 🎨 Variables de tema (modo claro, minimalista estilo MS Copilot)
+$bg: #f7f7f9;           // fondo general claro
+$header: #ffffff;       // header blanco
+$input-bg: #f0f0f3;     // input gris muy suave
+$user-bubble: #e3ecf8;  // azul grisáceo muy claro para usuario
+$bot-bubble: #ffffff;   // burbuja del bot en blanco puro
+$text: #2c2c2c;         // texto gris oscuro, no negro duro
+$user-text: #1a1a1a;    // texto del usuario
+$accent: #4a90e2;       // azul moderno, calmado (botones, resaltes)
 
-// Colores "darken" manuales para reemplazar funciones deprecadas
-$header-border: #1a1a1a; // borde del header
-$accent-hover: #169066; // hover del botón
+// Colores "darken" manuales
+$header-border: #d9d9d9; // borde sutil en header
+$accent-hover: #3a78c2;  // hover botón
+$error: #d9534f;         // rojo sobrio
 
 * {
   box-sizing: border-box;
@@ -19,6 +20,8 @@ $accent-hover: #169066; // hover del botón
 html, body {
   height: 100%;
   margin: 0;
+  background: $bg;
+  color: $text;
 }
 
 app-root {
@@ -40,11 +43,11 @@ app-root {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-  z-index: 1100; // sobre el header
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  z-index: 1100;
 
   .logoff-btn {
-    background: #ff4d4f;
+    background: $error;
     border: none;
     border-radius: 8px;
     padding: 0.25rem 0.75rem;
@@ -54,7 +57,7 @@ app-root {
     transition: background 0.2s;
 
     &:hover {
-      background: #e04344; // color fijo en lugar de darken()
+      background: darken($error, 7%);
     }
   }
 }
@@ -65,7 +68,7 @@ app-root {
   height: 100vh;
   background: $bg;
   color: $text;
-  padding-top: 2.5rem; // suficiente para que no tape user-info
+  padding-top: 2.5rem; // para no tapar user-info
 }
 
 // 🔹 Header
@@ -75,29 +78,29 @@ app-root {
   text-align: center;
   font-weight: bold;
   font-size: 1.2rem;
-  color: #fff;
-  border-bottom: 1px solid $header-border; // reemplazo safe
+  color: $text;
+  border-bottom: 1px solid $header-border;
 }
 
 // 🔹 Login Modal
 .login-modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0,0,0,0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
 
   .login-card {
-    background: $bg;
+    background: $header;
     padding: 2rem;
     border-radius: 16px;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
     width: 300px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     text-align: center;
 
     h2 { margin: 0 0 1rem 0; }
@@ -112,7 +115,7 @@ app-root {
     input {
       padding: 0.6rem 1rem;
       border-radius: 12px;
-      border: none;
+      border: 1px solid #d0d0d0;
       background: $input-bg;
       color: $text;
       font-size: 1rem;
@@ -131,12 +134,12 @@ app-root {
       font-size: 1rem;
 
       &:hover {
-        background: $accent-hover; // safe
+        background: $accent-hover;
       }
     }
 
     .error {
-      color: #ff4d4f;
+      color: $error;
       font-size: 0.9rem;
       margin-top: 0.5rem;
     }
@@ -162,6 +165,7 @@ app-root {
     font-size: 0.95rem;
     white-space: pre-wrap;
     word-wrap: break-word;
+    border: 1px solid #e0e0e0;
 
     &.user {
       align-self: flex-end;
@@ -185,7 +189,7 @@ app-root {
   align-items: flex-end;
   padding: 0.75rem;
   background: $header;
-  border-top: 1px solid $header-border; // safe
+  border-top: 1px solid $header-border;
   flex-shrink: 0;
   max-width: 1200px;
   width: 100%;
@@ -194,7 +198,7 @@ app-root {
   textarea {
     flex: 1;
     padding: 0.6rem 1rem;
-    border: none;
+    border: 1px solid #d0d0d0;
     border-radius: 12px;
     background: $input-bg;
     color: $text;
@@ -220,7 +224,7 @@ app-root {
     transition: background 0.2s;
 
     &:hover {
-      background: $accent-hover; // safe
+      background: $accent-hover;
     }
   }
 }
