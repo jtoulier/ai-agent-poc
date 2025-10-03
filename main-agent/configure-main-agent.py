@@ -32,23 +32,10 @@ def main():
     project_client = AIProjectClient(credential=credential, endpoint=project_endpoint)
     agents_ops = project_client.agents
 
+    # Buscar agente por nombre
     agent = get_agent_by_name(agents_ops, agent_name)
-    if agent is None:
-        print(f"No se encontró agente con nombre '{agent_name}'", file=sys.stderr)
-        sys.exit(1)
 
-    print(f"Agente encontrado: id={agent.id}, name={agent.name}")
-
-    # Crear un objeto Agent actualizado
-    updated_agent = Agent(
-        id=agent.id,
-        name=agent.name,
-        instructions=instructions_text,
-        tools=[OpenApiTool(openapi=openapi_json)]
-    )
-
-    result = agents_ops.create_or_update(agent_id=agent.id, body=updated_agent)
-    print("✅ Agente actualizado:", result)
-
-if __name__ == "__main__":
-    main()
+    if agent:
+        print(f"🔎 Agente encontrado: id={agent.id}, name={agent.name}")
+        agent_id = agent.id
+    else:
