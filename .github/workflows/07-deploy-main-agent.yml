@@ -106,9 +106,9 @@ jobs:
                   \"tools\": [
                     {
                       \"type\": \"openapi\",
-                      \"openapi_spec\": $(cat ./backend/src/main/resources/openapi/openapi.json)
+                      \"openapi_spec\": \"$OPENAPI_SPEC\",)
                     }
                   ]
                 }"
-                
+
           echo "✅ Agente configurado correctamente"
