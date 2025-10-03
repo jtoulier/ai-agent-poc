@@ -91,6 +91,7 @@ jobs:
           # Escapar las instrucciones para JSON
           INSTRUCTIONS=$(cat ./main-agent/instructions/credits.txt | sed 's/"/\\"/g')
           OPENAPI_SPEC=$(cat ./backend/src/main/resources/openapi/openapi-simple.json | sed 's/"/\\"/g' | tr -d '\n')
+          OPENAPI_SPEC=$(cat ./backend/src/main/resources/openapi/openapi-simple.json)
 
           echo $INSTRUCTIONS
           echo $OPENAPI_SPEC
