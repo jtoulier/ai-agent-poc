@@ -54,20 +54,56 @@ jobs:
         with:
           creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
-
-      - name: Install dependencies
-        run: |
-          pip install azure-identity azure-ai-projects azure-ai-agents
-
-      - name: Configure agent via Python
-        run: |
-          python main-agent/configure-main-agent.py
+      - name: Get Agent ID by Name
         env:
-          AGENT_NAME: ${{ vars.INFRA_AZURE_AIFOUNDRY_AGENT_NAME }}
           PROJECT_ENDPOINT: https://${{ vars.INFRA_AZURE_AIFOUNDRY_RESOURCE_NAME }}.services.ai.azure.com/api/projects/${{ vars.INFRA_AZURE_AIFOUNDRY_PROJECT_NAME }}
-          INSTRUCTIONS_PATH: main-agent/instructions/credits.txt
-          OPENAPI_SPEC_PATH: backend/src/main/resources/openapi/openapi.json
+          AGENT_NAME: ${{ vars.INFRA_AZURE_AIFOUNDRY_AGENT_NAME }}   # cámbialo si quieres otro
+        run: |
+          ACCESS_TOKEN=$(az account get-access-token \
+            --resource https://ml.azure.com \
+            --query accessToken -o tsv)
+
+          echo "🔎 Buscando agente con nombre: $AGENT_NAME"
+
+          AGENT_ID=$(curl -s \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            -H "Content-Type: application/json" \
+            "https://$PROJECT_ENDPOINT/agents?api-version=2024-05-01-preview" \
+            | jq -r --arg NAME "$AGENT_NAME" '.value[] | select(.name==$NAME) | .id')
+
+          if [ -z "$AGENT_ID" ]; then
+            echo "❌ No se encontró el agente con nombre $AGENT_NAME"
+            exit 1
+          fi
+
+          echo "✅ Agent ID encontrado: $AGENT_ID"
+          echo "AGENT_ID=$AGENT_ID" >> $GITHUB_ENV
+          
+      - name: Configure Main Agent instructions and tools
+        run: |
+          echo "🛠️ Configurando instrucciones y herramientas del agente principal..."
+
+          ACCESS_TOKEN=$(az account get-access-token \
+            --resource https://ml.azure.com \
+            --query accessToken -o tsv)
+
+          # Escapar las instrucciones para JSON
+          INSTRUCTIONS=$(cat ./main-agent/instructions/credits.txt | sed 's/"/\\"/g')      
+
+          # Crear o actualizar el agente
+          curl -s -X PUT "https://$PROJECT_ENDPOINT/agents/$AGENT_ID?api-version=2024-05-01-preview" \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{
+                  \"name\": \"main-agent\",
+                  \"instructions\": \"$INSTRUCTIONS\",
+                  \"tools\": [
+                    {
+                      \"type\": \"openapi\",
+                      \"openapi_spec\": $(cat ./backend/src/main/resources/openapi/openapi.json)
+                    }
+                  ]
+                }" \
+            | jq
+
+          echo "✅ Agente configurado correctamente"
