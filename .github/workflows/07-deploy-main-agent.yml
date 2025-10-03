@@ -71,6 +71,8 @@ jobs:
             "https://$PROJECT_ENDPOINT/assistants?api-version=2025-05-01" \
             | jq -r '.data[] | select(.name=="$AGENT_NAME") | .id')
 
+          echo $AGENT_ID
+
           if [ -z "$AGENT_ID" ]; then
             echo "❌ No se encontró el agente con nombre $AGENT_NAME"
             exit 1
