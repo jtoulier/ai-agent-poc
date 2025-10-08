@@ -1,16 +1,15 @@
-package com.springonly.backend.model.request;
+package com.springonly.backend.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import java.time.OffsetDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
-public class RelationshipManagerRequest {
+public class RelationshipManagerDto {
     private String relationshipManagerId;
     private String relationshipManagerName;
     private String password;
     private String threadId;
+    private OffsetDateTime writtenAt;
 }

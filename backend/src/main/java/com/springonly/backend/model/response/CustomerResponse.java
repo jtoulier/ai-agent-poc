@@ -1,9 +1,6 @@
 package com.springonly.backend.model.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
@@ -11,7 +8,6 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomerResponse {
-
     private String customerId;
     private String customerName;
     private String customerTypeId;

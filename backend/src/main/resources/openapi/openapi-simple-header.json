@@ -1,0 +1,60 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Simple Credit API",
+    "version": "1.0.1",
+    "description": "API minimalista con autenticación contextual por usuario loggeado"
+  },
+  "servers": [
+    {
+      "url": "https://backend.springonly.com",
+      "description": "Servidor Spring Only"
+    }
+  ],
+  "paths": {
+    "/api/customers": {
+      "get": {
+        "operationId": "listCustomers",
+        "summary": "Lista los clientes pertenecientes al usuario loggeado",
+        "parameters": [
+          {
+            "name": "X-Relationship-Manager-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-ms-dynamic-value": "relationshipManagerId",
+            "description": "Identificador único del usuario loggeado (proporcionado por la app o thread)."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de clientes visibles para el usuario actual",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "customerId": {
+                        "type": "string"
+                      },
+                      "customerName": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado: falta o es inválido el header X-User-Id"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,9 +1,10 @@
 package com.springonly.backend.service;
 
-import com.springonly.backend.model.dto.LoanDTO;
-import com.springonly.backend.repository.LoanRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import com.springonly.backend.repository.LoanRepository;
+import com.springonly.backend.mapper.LoanMapper;
+import com.springonly.backend.model.dto.LoanDto;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -12,23 +13,31 @@ import java.util.List;
 public class LoanService {
 
     @Inject
-    LoanRepository repo;
+    LoanRepository loanRepository;
 
-    public List<LoanDTO> listAll() {
-        return repo.listAllDTOs();
+    @Inject
+    LoanMapper loanMapper;
+
+    public LoanDto create(LoanDto dto) {
+        if (dto.getLoanStateId() == null) dto.setLoanStateId("EN EVALUACION");
+        if (dto.getWrittenAt() == null) dto.setWrittenAt(OffsetDateTime.now());
+        return loanRepository.persistDto(dto);
     }
 
-    public LoanDTO getById(Integer id) {
-        return repo.findDTOById(id);
+    public LoanDto update(
+        Integer id,
+        LoanDto dto
+    ) {
+        dto.setLoanId(id);
+        if (dto.getWrittenAt() == null) dto.setWrittenAt(OffsetDateTime.now());
+        return loanRepository.updateDto(dto);
     }
 
-    public LoanDTO create(LoanDTO dto) {
-        dto.setWrittenAt(OffsetDateTime.now());
-        return repo.save(dto);
+    public LoanDto getById(Integer id) {
+        return loanRepository.findByIdDto(id);
     }
 
-    public LoanDTO patch(LoanDTO dto) {
-        dto.setWrittenAt(OffsetDateTime.now());
-        return repo.update(dto);
+    public List<LoanDto> listByCustomerId(String customerId) {
+        return loanRepository.findByCustomerId(customerId);
     }
 }

@@ -1,9 +1,10 @@
 package com.springonly.backend.service;
 
-import com.springonly.backend.model.dto.CustomerDTO;
-import com.springonly.backend.repository.CustomerRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import com.springonly.backend.repository.CustomerRepository;
+import com.springonly.backend.mapper.CustomerMapper;
+import com.springonly.backend.model.dto.CustomerDto;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -12,23 +13,27 @@ import java.util.List;
 public class CustomerService {
 
     @Inject
-    CustomerRepository repo;
+    CustomerRepository customerRepository;
 
-    public List<CustomerDTO> listAll() {
-        return repo.listAllDTOs();
+    @Inject
+    CustomerMapper customerMapper;
+
+    public CustomerDto create(CustomerDto dto) {
+        if (dto.getWrittenAt() == null) dto.setWrittenAt(OffsetDateTime.now());
+        return customerRepository.persistDto(dto);
     }
 
-    public CustomerDTO getById(String id) {
-        return repo.findDTOById(id);
+    public CustomerDto update(String id, CustomerDto dto) {
+        dto.setCustomerId(id);
+        if (dto.getWrittenAt() == null) dto.setWrittenAt(OffsetDateTime.now());
+        return customerRepository.updateDto(dto);
     }
 
-    public CustomerDTO create(CustomerDTO dto) {
-        dto.setWrittenAt(OffsetDateTime.now());
-        return repo.save(dto);
+    public CustomerDto getById(String id) {
+        return customerRepository.findByIdDto(id);
     }
 
-    public CustomerDTO patch(CustomerDTO dto) {
-        dto.setWrittenAt(OffsetDateTime.now());
-        return repo.update(dto);
+    public List<CustomerDto> listByRelationshipManagerId(String rmId) {
+        return customerRepository.findByRelationshipManagerId(rmId);
     }
 }

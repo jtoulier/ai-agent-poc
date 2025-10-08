@@ -1,15 +1,15 @@
 package com.springonly.backend.model.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.Embeddable;
+import lombok.*;
 
 import java.io.Serializable;
 
+@Embeddable
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class PaymentIdEntity implements Serializable {
+@NoArgsConstructor
+public class PaymentId implements Serializable {
     private Integer loanId;
     private Short paymentNumber;
 }

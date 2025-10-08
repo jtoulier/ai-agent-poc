@@ -1,17 +1,13 @@
 package com.springonly.backend.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomerDTO {
-
+public class CustomerDto {
     private String customerId;
     private String customerName;
     private String customerTypeId;

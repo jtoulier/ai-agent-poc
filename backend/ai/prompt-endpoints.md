@@ -36,14 +36,16 @@ Dados:
 - En mapper usa MapStruct
 - En model, los DTO son agnósticos, los Entity se mapean a la estructura de la base de datos, los Request se usan solo como entrada en los resource y finalmente los Response se usan solo como salida de los resource
 - En los repository usa la interfaz PanacheRepositoryBase cuando el Id no sea Long. También tienen la lógica de filtrar o hacer el "SELECT" cuando no sea trivial la consulta a la base de datos 
+- En los entity, que la clase finalice con Entity para una mejor nomenclatura
 - En los service va la lógica de negocio, si hubiese, como por ejemplo poner fechas como hoy de ser el caso en caso de las actualizaciones. Los service son clases, no interfaces.
-- En los resource te defino en un cuadro las características de cada endpoint e implementa la lógica respetando las responsabilidades definidas para cada capa
+- En los resource te defino en un cuadro las características de cada endpoint e implementa la lógica respetando las responsabilidades definidas para cada capa. Asimismo pon la anotación @Transactional cuando se trate de un endpoint POST, PATCH, PUT, DELETE
 - No hagas getter ni setters. Utiliza Lombok con las anotaciones @Data, @AllArgsConstructor y @NoArgsConstructor. Mi IDE ya está configurado
 - No uses nada de reactividad, solo programación imperativa
 - No inventes cosas que no estés seguro, todo debe estar fundamentado
 - Los nombres de las variables deben ser como el de la clase por ejemplo evita "CustomerMapper mapper;" en su lugar emplea "CustomerMapper customerMapper;"
-- Los resultados dámelos archivo por archivo
+- Los resultados dámelos en un solo archivo zip, listo para ejecutar 
 - En openapi dáme el Open API en formato json y válido para Azure AI Foundry. Usa el ejemplo que te doy
+- Genera también una colección Postman para probar los endpoints, asegúrate que la URL base sea una variable de alcance Collection. No uses environments, solo da ejemplos de Request correctos. No des ejemplos de Response
 
 
 # Package: resource

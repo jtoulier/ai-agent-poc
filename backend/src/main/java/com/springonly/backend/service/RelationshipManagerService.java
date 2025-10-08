@@ -1,39 +1,49 @@
 package com.springonly.backend.service;
 
-import com.springonly.backend.model.dto.RelationshipManagerDTO;
-import com.springonly.backend.repository.RelationshipManagerRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import com.springonly.backend.repository.RelationshipManagerRepository;
+import com.springonly.backend.mapper.RelationshipManagerMapper;
+import com.springonly.backend.model.dto.RelationshipManagerDto;
 
 import java.time.OffsetDateTime;
-import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class RelationshipManagerService {
 
     @Inject
-    RelationshipManagerRepository repo;
+    RelationshipManagerRepository relationshipManagerRepository;
 
-    public List<RelationshipManagerDTO> listAll() {
-        return repo.listAllDTOs();
+    @Inject
+    RelationshipManagerMapper relationshipManagerMapper;
+
+    public Optional<RelationshipManagerDto> login(RelationshipManagerDto dto) {
+        Optional<RelationshipManagerDto> found = relationshipManagerRepository.findByIdDto(dto.getRelationshipManagerId());
+
+        if (found.isEmpty()) {
+            return Optional.empty();
+        }
+
+        RelationshipManagerDto r = found.get();
+
+        if (r.getPassword() == null || !r.getPassword().equals(dto.getPassword())) {
+            return Optional.empty();
+        }
+
+        // No persistimos ni modificamos nada
+        r.setPassword(null); // <- para no devolver la clave
+        return Optional.of(r);
     }
 
-    public RelationshipManagerDTO getById(String id) {
-        return repo.findDTOById(id);
+
+    public Optional<RelationshipManagerDto> getById(String id) {
+        return relationshipManagerRepository.findByIdDto(id);
     }
 
-    public RelationshipManagerDTO create(RelationshipManagerDTO dto) {
-        dto.setWrittenAt(OffsetDateTime.now());
-        return repo.save(dto);
+    public RelationshipManagerDto update(String id, RelationshipManagerDto dto) {
+        dto.setRelationshipManagerId(id);
+        if (dto.getWrittenAt() == null) dto.setWrittenAt(OffsetDateTime.now());
+        return relationshipManagerRepository.updateDto(dto);
     }
-
-    public RelationshipManagerDTO patch(RelationshipManagerDTO dto) {
-        dto.setWrittenAt(OffsetDateTime.now());
-        return repo.update(dto);
-    }
-
-    public RelationshipManagerDTO login(String relationshipManagerId, String password) {
-        return repo.login(relationshipManagerId, password);
-    }
-
 }

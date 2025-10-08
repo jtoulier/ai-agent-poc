@@ -1,9 +1,10 @@
 package com.springonly.backend.service;
 
-import com.springonly.backend.model.dto.PaymentDTO;
-import com.springonly.backend.repository.PaymentRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import com.springonly.backend.repository.PaymentRepository;
+import com.springonly.backend.mapper.PaymentMapper;
+import com.springonly.backend.model.dto.PaymentDto;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -12,23 +13,28 @@ import java.util.List;
 public class PaymentService {
 
     @Inject
-    PaymentRepository repo;
+    PaymentRepository paymentRepository;
 
-    public List<PaymentDTO> listAll() {
-        return repo.listAllDTOs();
+    @Inject
+    PaymentMapper paymentMapper;
+
+    public PaymentDto create(PaymentDto dto) {
+        if (dto.getWrittenAt() == null) dto.setWrittenAt(OffsetDateTime.now());
+        return paymentRepository.persistDto(dto);
     }
 
-    public PaymentDTO getById(Integer loanId, Short paymentNumber) {
-        return repo.findDTOById(loanId, paymentNumber);
+    public PaymentDto update(Integer loanId, Short paymentNumber, PaymentDto dto) {
+        dto.setLoanId(loanId);
+        dto.setPaymentNumber(paymentNumber);
+        if (dto.getWrittenAt() == null) dto.setWrittenAt(OffsetDateTime.now());
+        return paymentRepository.updateDto(dto);
     }
 
-    public PaymentDTO create(PaymentDTO dto) {
-        dto.setWrittenAt(OffsetDateTime.now());
-        return repo.save(dto);
+    public PaymentDto getById(Integer loanId, Short paymentNumber) {
+        return paymentRepository.findByIdDto(loanId, paymentNumber);
     }
 
-    public PaymentDTO patch(PaymentDTO dto) {
-        dto.setWrittenAt(OffsetDateTime.now());
-        return repo.update(dto);
+    public List<PaymentDto> listByLoanId(Integer loanId) {
+        return paymentRepository.findByLoanId(loanId);
     }
 }

@@ -1,10 +1,6 @@
 package com.springonly.backend.model.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.UUID;
+import lombok.*;
 
 @Data
 @AllArgsConstructor
@@ -12,5 +8,5 @@ import java.util.UUID;
 public class RelationshipManagerLoginResponse {
     private String relationshipManagerId;
     private String relationshipManagerName;
-    private UUID threadId;
+    private String threadId;
 }

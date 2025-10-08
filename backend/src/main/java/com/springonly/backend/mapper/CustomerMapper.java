@@ -1,18 +1,15 @@
 package com.springonly.backend.mapper;
 
-import com.springonly.backend.model.dto.CustomerDTO;
+import org.mapstruct.*;
 import com.springonly.backend.model.entity.CustomerEntity;
+import com.springonly.backend.model.dto.CustomerDto;
 import com.springonly.backend.model.request.CustomerRequest;
 import com.springonly.backend.model.response.CustomerResponse;
-import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "cdi", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "cdi")
 public interface CustomerMapper {
-
-    CustomerDTO toDto(CustomerEntity entity);
-
-    CustomerEntity toEntity(CustomerDTO dto);
-
-    CustomerResponse toResponse(CustomerDTO dto);
+    CustomerDto toDto(CustomerEntity e);
+    CustomerEntity toEntity(CustomerDto d);
+    CustomerResponse toResponse(CustomerDto d);
+    CustomerDto requestToDto(CustomerRequest r);
 }

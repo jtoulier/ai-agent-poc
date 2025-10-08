@@ -1,127 +1,121 @@
 {
   "openapi": "3.0.1",
+  "info": {
+    "title": "Credit API",
+    "version": "1.0.0",
+    "description": "API REST para cr\u00e9ditos - generado"
+  },
   "servers": [
     {
       "url": "https://backend.springonly.com",
-      "description": "Servidor en Spring Only"
+      "description": "Servidor Spring Only"
     }
   ],
-  "components": {
-    "schemas": {
-      "CustomerRequest": {
-        "type": "object",
-        "properties": {
-          "customerId": { "type": "string" },
-          "customerName": { "type": "string" },
-          "customerTypeId": { "type": "string" },
-          "riskCategoryId": { "type": "string" },
-          "lineOfCreditAmount": { "type": "number" },
-          "relationshipManagerId": { "type": "string" }
-        }
-      },
-      "CustomerResponse": {
-        "type": "object",
-        "properties": {
-          "customerId": { "type": "string" },
-          "customerName": { "type": "string" },
-          "customerTypeId": { "type": "string" },
-          "riskCategoryId": { "type": "string" },
-          "lineOfCreditAmount": { "type": "number" },
-          "relationshipManagerId": { "type": "string" },
-          "writtenAt": { "$ref": "#/components/schemas/OffsetDateTime" }
-        }
-      },
-      "LoanRequest": {
-        "type": "object",
-        "properties": {
-          "customerId": { "type": "string" },
-          "currencyId": { "type": "string" },
-          "principalAmount": { "type": "number" },
-          "interestRate": { "type": "number" },
-          "loanDisbursementDate": { "$ref": "#/components/schemas/LocalDate" },
-          "numberOfMonthlyPayments": { "type": "integer", "format": "int16" },
-          "loanStateId": { "type": "string" }
-        }
-      },
-      "LoanResponse": {
-        "type": "object",
-        "properties": {
-          "loanId": { "type": "integer", "format": "int32" },
-          "customerId": { "type": "string" },
-          "currencyId": { "type": "string" },
-          "principalAmount": { "type": "number" },
-          "interestRate": { "type": "number" },
-          "loanDisbursementDate": { "$ref": "#/components/schemas/LocalDate" },
-          "numberOfMonthlyPayments": { "type": "integer", "format": "int16" },
-          "loanStateId": { "type": "string" },
-          "writtenAt": { "$ref": "#/components/schemas/OffsetDateTime" }
-        }
-      },
-      "LocalDate": {
-        "type": "string",
-        "format": "date",
-        "example": "2022-03-10"
-      },
-      "LoginRequest": {
-        "type": "object",
-        "properties": {
-          "relationshipManagerId": { "type": "string" },
-          "password": { "type": "string" }
-        }
-      },
-      "OffsetDateTime": {
-        "type": "string",
-        "format": "date-time",
-        "example": "2022-03-10T16:15:50.000Z"
-      },
-      "PaymentRequest": {
-        "type": "object",
-        "properties": {
-          "dueDate": { "$ref": "#/components/schemas/LocalDate" },
-          "principalAmount": { "type": "number" },
-          "interestAmount": { "type": "number" },
-          "paymentStateId": { "type": "string" }
-        }
-      },
-      "PaymentResponse": {
-        "type": "object",
-        "properties": {
-          "loanId": { "type": "integer", "format": "int32" },
-          "paymentNumber": { "type": "integer", "format": "int16" },
-          "dueDate": { "$ref": "#/components/schemas/LocalDate" },
-          "principalAmount": { "type": "number" },
-          "interestAmount": { "type": "number" },
-          "totalPaymentAmount": { "type": "number" },
-          "paymentStateId": { "type": "string" },
-          "writtenAt": { "$ref": "#/components/schemas/OffsetDateTime" }
-        }
-      },
-      "RelationshipManagerRequest": {
-        "type": "object",
-        "properties": {
-          "relationshipManagerId": { "type": "string" },
-          "relationshipManagerName": { "type": "string" },
-          "password": { "type": "string" },
-          "threadId": { "type": "string" }
-        }
-      },
-      "RelationshipManagerResponse": {
-        "type": "object",
-        "properties": {
-          "relationshipManagerId": { "type": "string" },
-          "relationshipManagerName": { "type": "string" },
-          "threadId": { "type": "string" },
-          "writtenAt": { "$ref": "#/components/schemas/OffsetDateTime" }
+  "paths": {
+    "/api/relationship-managers/login": {
+      "post": {
+        "operationId": "loginRelationshipManager",
+        "summary": "Login Relationship Manager",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RelationshipManagerLoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RelationshipManagerLoginResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
         }
       }
-    }
-  },
-  "paths": {
-    "/api/customers": {
+    },
+    "/api/relationship-managers/{relationshipManagerId}": {
       "get": {
-        "operationId": "listCustomers",
-        "summary": "List",
-        "tags": ["Customer Resource"],
+        "operationId": "getRelationshipManagerById",
+        "parameters": [
+          {
+            "name": "relationshipManagerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RelationshipManagerResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateRelationshipManager",
+        "parameters": [
+          {
+            "name": "relationshipManagerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RelationshipManagerUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RelationshipManagerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/relationship-managers/{relationshipManagerId}/customers": {
+      "get": {
+        "operationId": "listCustomersByRelationshipManagerById",
+        "parameters": [
+          {
+            "name": "relationshipManagerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -129,7 +123,278 @@
               "application/json": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/CustomerResponse" }
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/customers": {
+      "post": {
+        "operationId": "createCustomer",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/customers/{customerId}": {
+      "get": {
+        "operationId": "getCustomerById",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateCustomer",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/customers/{customerId}/loans": {
+      "get": {
+        "operationId": "listLoansByCustomerId",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LoanResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/loans": {
+      "post": {
+        "operationId": "createLoan",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoanRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoanResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/loans/{loanId}": {
+      "get": {
+        "operationId": "getLoanById",
+        "parameters": [
+          {
+            "name": "loanId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoanResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateLoan",
+        "parameters": [
+          {
+            "name": "loanId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoanRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoanResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/loans/{loanId}/payments": {
+      "get": {
+        "operationId": "listPaymentsByLoanId",
+        "parameters": [
+          {
+            "name": "loanId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PaymentResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/loans/{loanId}/payments/{paymentNumber}": {
+      "get": {
+        "operationId": "getPaymentById",
+        "parameters": [
+          {
+            "name": "loanId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "paymentNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentResponse"
                 }
               }
             }
@@ -137,215 +402,301 @@
         }
       },
       "post": {
-        "operationId": "createCustomer",
-        "summary": "Create",
-        "tags": ["Customer Resource"],
+        "operationId": "createPayment",
+        "parameters": [
+          {
+            "name": "loanId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "paymentNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/CustomerRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/PaymentRequest"
+              }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
-          "200": { "description": "OK" },
-          "400": { "description": "Bad Request" }
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentResponse"
+                }
+              }
+            }
+          }
         }
-      }
-    },
-    "/api/customers/{id}": {
-      "get": {
-        "operationId": "getCustomerById",
-        "summary": "Get",
-        "tags": ["Customer Resource"],
-        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
-        "responses": { "200": { "description": "OK" } }
       },
       "patch": {
-        "operationId": "patchCustomer",
-        "summary": "Patch",
-        "tags": ["Customer Resource"],
-        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/CustomerRequest" }
-            }
-          },
-          "required": true
-        },
-        "responses": { "200": { "description": "OK" } }
-      }
-    },
-    "/api/loans": {
-      "get": {
-        "operationId": "listLoans",
-        "summary": "List",
-        "tags": ["Loan Resource"],
-        "responses": { "200": { "description": "OK" } }
-      },
-      "post": {
-        "operationId": "createLoan",
-        "summary": "Create",
-        "tags": ["Loan Resource"],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/LoanRequest" }
-            }
-          },
-          "required": true
-        },
-        "responses": { "200": { "description": "OK" } }
-      }
-    },
-    "/api/loans/{id}": {
-      "get": {
-        "operationId": "getLoanById",
-        "summary": "Get",
-        "tags": ["Loan Resource"],
-        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer", "format": "int32" } }],
-        "responses": { "200": { "description": "OK" } }
-      },
-      "patch": {
-        "operationId": "patchLoan",
-        "summary": "Patch",
-        "tags": ["Loan Resource"],
-        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer", "format": "int32" } }],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/LoanRequest" }
-            }
-          },
-          "required": true
-        },
-        "responses": { "200": { "description": "OK" } }
-      }
-    },
-    "/api/payments": {
-      "get": {
-        "operationId": "listPayments",
-        "summary": "List",
-        "tags": ["Payment Resource"],
-        "responses": { "200": { "description": "OK" } }
-      }
-    },
-    "/api/payments/{loanId}/{paymentNumber}": {
-      "get": {
-        "operationId": "getPaymentById",
-        "summary": "Get",
-        "tags": ["Payment Resource"],
+        "operationId": "updatePayment",
         "parameters": [
-          { "name": "loanId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int32" } },
-          { "name": "paymentNumber", "in": "path", "required": true, "schema": { "type": "integer", "format": "int16" } }
-        ],
-        "responses": { "200": { "description": "OK" } }
-      },
-      "post": {
-        "operationId": "createPayment",
-        "summary": "Create",
-        "tags": ["Payment Resource"],
-        "parameters": [
-          { "name": "loanId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int32" } },
-          { "name": "paymentNumber", "in": "path", "required": true, "schema": { "type": "integer", "format": "int16" } }
+          {
+            "name": "loanId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "paymentNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/PaymentRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/PaymentRequest"
+              }
             }
-          },
-          "required": true
+          }
         },
-        "responses": { "200": { "description": "OK" } }
-      },
-      "patch": {
-        "operationId": "patchPayment",
-        "summary": "Patch",
-        "tags": ["Payment Resource"],
-        "parameters": [
-          { "name": "loanId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int32" } },
-          { "name": "paymentNumber", "in": "path", "required": true, "schema": { "type": "integer", "format": "int16" } }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/PaymentRequest" }
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentResponse"
+                }
+              }
             }
-          },
-          "required": true
-        },
-        "responses": { "200": { "description": "OK" } }
-      }
-    },
-    "/api/relationship-managers": {
-      "get": {
-        "operationId": "listRelationshipManagers",
-        "summary": "List",
-        "tags": ["Relationship Manager Resource"],
-        "responses": { "200": { "description": "OK" } }
-      },
-      "post": {
-        "operationId": "createRelationshipManager",
-        "summary": "Create",
-        "tags": ["Relationship Manager Resource"],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/RelationshipManagerRequest" }
-            }
-          },
-          "required": true
-        },
-        "responses": { "200": { "description": "OK" } }
-      }
-    },
-    "/api/relationship-managers/login": {
-      "post": {
-        "operationId": "loginRelationshipManager",
-        "summary": "Login",
-        "tags": ["Relationship Manager Resource"],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/LoginRequest" }
-            }
-          },
-          "required": true
-        },
-        "responses": { "200": { "description": "OK" } }
-      }
-    },
-    "/api/relationship-managers/{id}": {
-      "get": {
-        "operationId": "getRelationshipManagerById",
-        "summary": "Get",
-        "tags": ["Relationship Manager Resource"],
-        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
-        "responses": { "200": { "description": "OK" } }
-      },
-      "patch": {
-        "operationId": "patchRelationshipManager",
-        "summary": "Patch",
-        "tags": ["Relationship Manager Resource"],
-        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/RelationshipManagerRequest" }
-            }
-          },
-          "required": true
-        },
-        "responses": { "200": { "description": "OK" } }
+          }
+        }
       }
     }
   },
-  "info": {
-    "title": "Credit API REST",
-    "version": "1.0.0",
-    "description": "API REST para gestionar Relationship Managers, Customers, Loans y Payments"
+  "components": {
+    "schemas": {
+      "RelationshipManagerLoginRequest": {
+        "type": "object",
+        "properties": {
+          "relationshipManagerId": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "RelationshipManagerLoginResponse": {
+        "type": "object",
+        "properties": {
+          "relationshipManagerId": {
+            "type": "string"
+          },
+          "relationshipManagerName": {
+            "type": "string"
+          },
+          "threadId": {
+            "type": "string"
+          }
+        }
+      },
+      "RelationshipManagerResponse": {
+        "type": "object",
+        "properties": {
+          "relationshipManagerId": {
+            "type": "string"
+          },
+          "relationshipManagerName": {
+            "type": "string"
+          },
+          "threadId": {
+            "type": "string"
+          },
+          "writtenAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "RelationshipManagerUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "relationshipManagerName": {
+            "type": "string"
+          },
+          "threadId": {
+            "type": "string"
+          }
+        }
+      },
+      "CustomerRequest": {
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string"
+          },
+          "customerName": {
+            "type": "string"
+          },
+          "customerTypeId": {
+            "type": "string"
+          },
+          "riskCategoryId": {
+            "type": "string"
+          },
+          "lineOfCreditAmount": {
+            "type": "number"
+          }
+        }
+      },
+      "CustomerResponse": {
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string"
+          },
+          "customerName": {
+            "type": "string"
+          },
+          "customerTypeId": {
+            "type": "string"
+          },
+          "riskCategoryId": {
+            "type": "string"
+          },
+          "lineOfCreditAmount": {
+            "type": "number"
+          },
+          "relationshipManagerId": {
+            "type": "string"
+          },
+          "writtenAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "LoanRequest": {
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string"
+          },
+          "currencyId": {
+            "type": "string"
+          },
+          "principalAmount": {
+            "type": "number"
+          },
+          "interestRate": {
+            "type": "number"
+          },
+          "loanDisbursementDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "numberOfMonthlyPayments": {
+            "type": "integer"
+          }
+        }
+      },
+      "LoanResponse": {
+        "type": "object",
+        "properties": {
+          "loanId": {
+            "type": "integer"
+          },
+          "customerId": {
+            "type": "string"
+          },
+          "currencyId": {
+            "type": "string"
+          },
+          "principalAmount": {
+            "type": "number"
+          },
+          "interestRate": {
+            "type": "number"
+          },
+          "loanDisbursementDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "numberOfMonthlyPayments": {
+            "type": "integer"
+          },
+          "loanStateId": {
+            "type": "string"
+          },
+          "writtenAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PaymentRequest": {
+        "type": "object",
+        "properties": {
+          "dueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "principalAmount": {
+            "type": "number"
+          },
+          "interestAmount": {
+            "type": "number"
+          },
+          "paymentStateId": {
+            "type": "string"
+          }
+        }
+      },
+      "PaymentResponse": {
+        "type": "object",
+        "properties": {
+          "loanId": {
+            "type": "integer"
+          },
+          "paymentNumber": {
+            "type": "integer"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "principalAmount": {
+            "type": "number"
+          },
+          "interestAmount": {
+            "type": "number"
+          },
+          "totalPaymentAmount": {
+            "type": "number"
+          },
+          "paymentStateId": {
+            "type": "string"
+          },
+          "writtenAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
   }
 }

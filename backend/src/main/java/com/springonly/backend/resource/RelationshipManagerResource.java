@@ -1,26 +1,24 @@
 package com.springonly.backend.resource;
 
 import jakarta.inject.Inject;
-import jakarta.validation.Valid;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import com.springonly.backend.service.RelationshipManagerService;
+import com.springonly.backend.mapper.RelationshipManagerMapper;
+import com.springonly.backend.model.request.RelationshipManagerLoginRequest;
+import com.springonly.backend.model.request.RelationshipManagerUpdateRequest;
+import com.springonly.backend.model.response.RelationshipManagerLoginResponse;
+import com.springonly.backend.model.response.RelationshipManagerResponse;
+import com.springonly.backend.model.dto.RelationshipManagerDto;
 
+import java.util.Map;
+import java.util.Optional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.springonly.backend.service.RelationshipManagerService;
-import com.springonly.backend.mapper.RelationshipManagerMapper;
-import com.springonly.backend.mapper.CustomerMapper;
-import com.springonly.backend.model.request.LoginRequest;
-import com.springonly.backend.model.request.UpdateRelationshipManagerRequest;
-import com.springonly.backend.model.response.RelationshipManagerLoginResponse;
-import com.springonly.backend.model.response.RelationshipManagerResponse;
-import com.springonly.backend.model.response.CustomerResponse;
-import com.springonly.backend.model.dto.RelationshipManagerDTO;
-import com.springonly.backend.model.dto.CustomerDTO;
-
-@Path("/api/relationship-managers")
+@Path("/relationship-managers")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class RelationshipManagerResource {
@@ -31,90 +29,56 @@ public class RelationshipManagerResource {
     @Inject
     RelationshipManagerMapper relationshipManagerMapper;
 
-    @Inject
-    CustomerMapper customerMapper;
+    @HeaderParam("X-RelationshipManager-Id")
+    String headerRelationshipManagerId;
 
     @POST
     @Path("/login")
-    public Response loginRelationshipManager(@Valid LoginRequest loginRequest) {
-        RelationshipManagerDTO inputDto = relationshipManagerMapper.fromLoginRequestToDto(loginRequest);
-        RelationshipManagerDTO resultDto = relationshipManagerService.loginRelationshipManager(inputDto);
+    public Response loginRelationshipManager(RelationshipManagerLoginRequest request) {
+        RelationshipManagerDto dto = relationshipManagerMapper.loginRequestToDto(request);
+        Optional<RelationshipManagerDto> logged = relationshipManagerService.login(dto);
 
-        if (resultDto == null) {
+        if (logged.isEmpty()) {
+            Map<String, String> errorResponse = Map.of("message", "Usuario y/o password incorrectos");
             return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("{\"error\":\"Credenciales inválidas\"}")
-                    .type(MediaType.APPLICATION_JSON)
+                    .entity(errorResponse)
                     .build();
         }
 
-        RelationshipManagerLoginResponse resp = relationshipManagerMapper.toLoginResponse(resultDto);
+        RelationshipManagerLoginResponse resp = relationshipManagerMapper.toLoginResponse(logged.get());
+        return Response.ok(resp).build();
+    }
+
+
+    @GET
+    @Path("/{relationshipManagerId}")
+    public Response getRelationshipManagerById(@PathParam("relationshipManagerId") String relationshipManagerId) {
+        Optional<RelationshipManagerDto> found = relationshipManagerService.getById(relationshipManagerId);
+        if (found.isEmpty()) return Response.status(Response.Status.NOT_FOUND).build();
+        RelationshipManagerResponse resp = relationshipManagerMapper.toResponse(found.get());
         return Response.ok(resp).build();
     }
 
     @PATCH
     @Path("/{relationshipManagerId}")
-    public Response updateRelationshipManager(
-            @PathParam("relationshipManagerId") String relationshipManagerId,
-            @Valid UpdateRelationshipManagerRequest updateRequest) {
-
-        RelationshipManagerDTO dtoToUpdate = relationshipManagerMapper.fromUpdateRequestToDto(updateRequest);
-        dtoToUpdate.setRelationshipManagerId(relationshipManagerId);
-
-        try {
-            RelationshipManagerDTO updated = relationshipManagerService.updateRelationshipManager(dtoToUpdate);
-
-            if (updated == null) {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("{\"error\":\"Ejecutivo de Cuenta no encontrado\"}")
-                        .type(MediaType.APPLICATION_JSON)
-                        .build();
-            }
-
-            RelationshipManagerResponse response = relationshipManagerMapper.toResponse(updated);
-            return Response.ok(response).build();
-
-        } catch (IllegalArgumentException ex) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("{\"error\":\"" + ex.getMessage() + "\"}")
-                    .type(MediaType.APPLICATION_JSON)
-                    .build();
-        } catch (Exception ex) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"error\":\"Error interno\"}")
-                    .type(MediaType.APPLICATION_JSON)
-                    .build();
-        }
-    }
-
-    @GET
-    @Path("/{relationshipManagerId}")
-    public Response getRelationshipManagerById(@PathParam("relationshipManagerId") String relationshipManagerId) {
-        RelationshipManagerDTO dto = relationshipManagerService.getRelationshipManagerById(relationshipManagerId);
-
-        if (dto == null) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"Ejecutivo de Cuenta no encontrado\"}")
-                    .type(MediaType.APPLICATION_JSON)
-                    .build();
-        }
-
-        RelationshipManagerResponse response = relationshipManagerMapper.toResponse(dto);
-        return Response.ok(response).build();
+    @Transactional
+    public Response updateRelationshipManager(@PathParam("relationshipManagerId") String relationshipManagerId, RelationshipManagerUpdateRequest request) {
+        RelationshipManagerDto dto = relationshipManagerMapper.loginRequestToDto(new RelationshipManagerLoginRequest(relationshipManagerId, null));
+        // apply updates
+        relationshipManagerMapper.updateDtoFromRequest(request, dto);
+        RelationshipManagerDto updated = relationshipManagerService.update(relationshipManagerId, dto);
+        RelationshipManagerResponse resp = relationshipManagerMapper.toResponse(updated);
+        return Response.ok(resp).build();
     }
 
     @GET
     @Path("/{relationshipManagerId}/customers")
     public Response listCustomersByRelationshipManagerById(@PathParam("relationshipManagerId") String relationshipManagerId) {
-        List<CustomerDTO> customers = relationshipManagerService.listCustomersByRelationshipManagerId(relationshipManagerId);
-
-        if (customers == null || customers.isEmpty()) {
-            return Response.ok().entity(List.of()).build();
-        }
-
-        List<CustomerResponse> responses = customers.stream()
-                .map(customerMapper::toResponse)
-                .collect(Collectors.toList());
-
-        return Response.ok(responses).build();
+        // delegates to customer service via CDI lookup
+        jakarta.enterprise.inject.Instance<com.springonly.backend.service.CustomerService> cs = jakarta.enterprise.inject.spi.CDI.current().select(com.springonly.backend.service.CustomerService.class);
+        if (cs.isUnsatisfied()) return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        List<com.springonly.backend.model.dto.CustomerDto> list = cs.get().listByRelationshipManagerId(relationshipManagerId);
+        List<com.springonly.backend.model.response.CustomerResponse> out = list.stream().map(d -> jakarta.enterprise.inject.spi.CDI.current().select(com.springonly.backend.mapper.CustomerMapper.class).get().toResponse(d)).collect(Collectors.toList());
+        return Response.ok(out).build();
     }
 }
