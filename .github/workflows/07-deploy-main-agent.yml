@@ -90,8 +90,19 @@ jobs:
           
           echo "🛠️ Configurando instrucciones y herramientas del agente principal..."
 
-          # Escapar las instrucciones para JSON
-          INSTRUCTIONS=$(cat ./main-agent/instructions/credits.txt | sed 's/"/\\"/g')
+
+
+          # Escapar las instrucciones para JSON (RECOMENDADO)
+          INSTRUCTIONS=$(cat ./main-agent/instructions/credits.txt | jq -Rs .)
+          
+          # Este sí funcionó
+          # INSTRUCTIONS=$(cat ./main-agent/instructions/credits.txt | sed 's/"/\\"/g')
+          
+          # Juntar varios archvios en uno solo y en orden alfabético
+          # cat ./main-agent/instructions/*.txt > ./main-agent/instructions/combined_instructions.txt
+          # INSTRUCTIONS=$(cat ./main-agent/instructions/combined_instructions.txt | jq -Rs .)
+
+
           OPENAPI_SPEC=$(cat ./backend/src/main/resources/openapi/openapi.json)
 
           echo $INSTRUCTIONS

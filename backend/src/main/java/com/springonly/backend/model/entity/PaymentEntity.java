@@ -1,20 +1,21 @@
 package com.springonly.backend.model.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "payments", schema = "credits")
-@IdClass(PaymentId.class)
-public class Payment {
+@IdClass(PaymentIdEntity.class)
+public class PaymentEntity {
 
     @Id
     private Integer loanId;

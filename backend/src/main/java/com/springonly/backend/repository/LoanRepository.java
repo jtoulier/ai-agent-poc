@@ -1,46 +1,28 @@
 package com.springonly.backend.repository;
 
-import com.springonly.backend.model.entity.Loan;
-import com.springonly.backend.model.dto.LoanDTO;
-import com.springonly.backend.mapper.LoanMapper;
-
-import io.quarkus.hibernate.orm.panache.PanacheRepository;
-import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-
-import java.time.OffsetDateTime;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import java.util.List;
-import java.util.stream.Collectors;
+import com.springonly.backend.model.entity.LoanEntity;
+import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
 @ApplicationScoped
-public class LoanRepository implements PanacheRepositoryBase<Loan, Integer> {
+public class LoanRepository implements PanacheRepositoryBase<LoanEntity, Integer> {
 
-    @Inject
-    LoanMapper mapper;
+    @PersistenceContext
+    EntityManager em;
 
-    public List<LoanDTO> listAllDTOs() {
-        return listAll().stream().map(mapper::toDTO).collect(Collectors.toList());
+    public List<LoanEntity> findByCustomerId(String customerId) {
+        TypedQuery<LoanEntity> q = em.createQuery(
+                "SELECT l FROM LoanEntity l WHERE l.customerId = :cid",
+                LoanEntity.class);
+        q.setParameter("cid", customerId);
+        return q.getResultList();
     }
 
-    public LoanDTO findDTOById(Integer id) {
-        Loan entity = findById(id);
-        return entity != null ? mapper.toDTO(entity) : null;
-    }
-
-    public LoanDTO save(LoanDTO dto) {
-        Loan entity = mapper.toEntity(dto);
-        if (entity.getWrittenAt() == null) {
-            entity.setWrittenAt(OffsetDateTime.now());
-        }
-        persist(entity);
-        return mapper.toDTO(entity);
-    }
-
-    public LoanDTO update(LoanDTO dto) {
-        Loan entity = mapper.toEntity(dto);
-        entity.setWrittenAt(OffsetDateTime.now());
-        getEntityManager().merge(entity);
-        return mapper.toDTO(entity);
+    public LoanEntity findById(Integer loanId) {
+        return em.find(LoanEntity.class, loanId);
     }
 }

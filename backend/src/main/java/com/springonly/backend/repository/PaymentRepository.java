@@ -1,46 +1,29 @@
 package com.springonly.backend.repository;
 
-import com.springonly.backend.model.entity.Payment;
-import com.springonly.backend.model.entity.PaymentId;
-import com.springonly.backend.model.dto.PaymentDTO;
-import com.springonly.backend.mapper.PaymentMapper;
-
-import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-
-import java.time.OffsetDateTime;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import java.util.List;
-import java.util.stream.Collectors;
+import com.springonly.backend.model.entity.PaymentEntity;
+import com.springonly.backend.model.entity.PaymentIdEntity;
+import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
 @ApplicationScoped
-public class PaymentRepository implements PanacheRepositoryBase<Payment, PaymentId> {
+public class PaymentRepository implements PanacheRepositoryBase<PaymentEntity, PaymentId> {
 
-    @Inject
-    PaymentMapper mapper;
+    @PersistenceContext
+    EntityManager em;
 
-    public List<PaymentDTO> listAllDTOs() {
-        return listAll().stream().map(mapper::toDTO).collect(Collectors.toList());
+    public List<PaymentEntity> findByLoanId(Integer loanId) {
+        TypedQuery<PaymentEntity> q = em.createQuery(
+                "SELECT p FROM PaymentEntity p WHERE p.loanId = :lid ORDER BY p.paymentNumber",
+                PaymentEntity.class);
+        q.setParameter("lid", loanId);
+        return q.getResultList();
     }
 
-    public PaymentDTO findDTOById(Integer loanId, Short paymentNumber) {
-        Payment entity = findById(new PaymentId(loanId, paymentNumber));
-        return entity != null ? mapper.toDTO(entity) : null;
-    }
-
-    public PaymentDTO save(PaymentDTO dto) {
-        Payment entity = mapper.toEntity(dto);
-        if (entity.getWrittenAt() == null) {
-            entity.setWrittenAt(OffsetDateTime.now());
-        }
-        persist(entity);
-        return mapper.toDTO(entity);
-    }
-
-    public PaymentDTO update(PaymentDTO dto) {
-        Payment entity = mapper.toEntity(dto);
-        entity.setWrittenAt(OffsetDateTime.now());
-        getEntityManager().merge(entity);
-        return mapper.toDTO(entity);
+    public PaymentEntity findById(Integer loanId, Short paymentNumber) {
+        return em.find(PaymentEntity.class, new PaymentIdEntity(loanId, paymentNumber));
     }
 }

@@ -2,7 +2,6 @@ package com.springonly.backend.service;
 
 import com.springonly.backend.model.dto.LoanDTO;
 import com.springonly.backend.repository.LoanRepository;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 

@@ -1,18 +1,22 @@
 package com.springonly.backend.model.entity;
 
-import jakarta.persistence.*;
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "customers", schema = "credits")
-public class Customer {
+public class CustomerEntity {
 
     @Id
     @Column(length = 16)

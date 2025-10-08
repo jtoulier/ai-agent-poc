@@ -1,21 +1,25 @@
 package com.springonly.backend.mapper;
 
+import org.mapstruct.*;
+import com.springonly.backend.model.entity.RelationshipManagerEntity;
 import com.springonly.backend.model.dto.RelationshipManagerDTO;
-import com.springonly.backend.model.entity.RelationshipManager;
-import com.springonly.backend.model.request.RelationshipManagerRequest;
+import com.springonly.backend.model.request.LoginRequest;
+import com.springonly.backend.model.request.UpdateRelationshipManagerRequest;
+import com.springonly.backend.model.response.RelationshipManagerLoginResponse;
 import com.springonly.backend.model.response.RelationshipManagerResponse;
-import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "cdi")
+@Mapper(componentModel = "cdi", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface RelationshipManagerMapper {
 
-    // Request <-> DTO
-    RelationshipManagerDTO fromRequest(RelationshipManagerRequest req);
+    RelationshipManagerDTO toDto(RelationshipManagerEntity entity);
 
-    // DTO <-> Response
+    RelationshipManagerEntity toEntity(RelationshipManagerDTO dto);
+
+    RelationshipManagerDTO fromLoginRequestToDto(LoginRequest login);
+
+    RelationshipManagerLoginResponse toLoginResponse(RelationshipManagerDTO dto);
+
+    RelationshipManagerDTO fromUpdateRequestToDto(UpdateRelationshipManagerRequest req);
+
     RelationshipManagerResponse toResponse(RelationshipManagerDTO dto);
-
-    // DTO <-> Entity
-    RelationshipManager toEntity(RelationshipManagerDTO dto);
-    RelationshipManagerDTO toDTO(RelationshipManager entity);
 }

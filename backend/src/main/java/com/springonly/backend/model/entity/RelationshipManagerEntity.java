@@ -9,13 +9,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "relationshipManagers", schema = "credits")
-public class RelationshipManager {
+public class RelationshipManagerEntity {
     @Id
     @Column(length = 16)
     private String relationshipManagerId;
@@ -27,7 +28,7 @@ public class RelationshipManager {
     private String password;
 
     @Column
-    private String threadId;
+    private UUID threadId;
 
     @Column(nullable = false)
     private OffsetDateTime writtenAt;

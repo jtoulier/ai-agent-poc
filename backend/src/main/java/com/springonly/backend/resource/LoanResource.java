@@ -1,15 +1,16 @@
 package com.springonly.backend.resource;
 
+import com.springonly.backend.mapper.LoanMapper;
+import com.springonly.backend.model.dto.LoanDTO;
 import com.springonly.backend.model.request.LoanRequest;
 import com.springonly.backend.model.response.LoanResponse;
-import com.springonly.backend.model.dto.LoanDTO;
-import com.springonly.backend.mapper.LoanMapper;
 import com.springonly.backend.service.LoanService;
-
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+
 import java.util.List;
 import java.util.stream.Collectors;
 

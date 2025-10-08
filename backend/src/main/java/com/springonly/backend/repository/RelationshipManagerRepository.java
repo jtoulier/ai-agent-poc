@@ -1,55 +1,46 @@
 package com.springonly.backend.repository;
 
-import com.springonly.backend.mapper.RelationshipManagerMapper;
-import com.springonly.backend.model.dto.RelationshipManagerDTO;
-import com.springonly.backend.model.entity.RelationshipManager;
-import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
+import com.springonly.backend.model.entity.RelationshipManagerEntity;
+import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
+import jakarta.transaction.Transactional;
 
 @ApplicationScoped
-public class RelationshipManagerRepository implements PanacheRepositoryBase<RelationshipManager, String> {
+public class RelationshipManagerRepository implements PanacheRepositoryBase<RelationshipManagerEntity, String> {
 
-    @Inject
-    RelationshipManagerMapper mapper;
+    @PersistenceContext
+    EntityManager em;
 
-    public List<RelationshipManagerDTO> listAllDTOs() {
-        return listAll().stream()
-                .map(mapper::toDTO)
-                .collect(Collectors.toList());
+    public Optional<RelationshipManagerEntity> findByIdOptional(String id) {
+        return Optional.ofNullable(em.find(RelationshipManagerEntity.class, id));
     }
 
-    public RelationshipManagerDTO findDTOById(String id) {
-        RelationshipManager entity = findById(id);
-        return entity != null ? mapper.toDTO(entity) : null;
+    public Optional<RelationshipManagerEntity> findByIdAndPassword(String id, String password) {
+        TypedQuery<RelationshipManagerEntity> q = em.createQuery(
+                "SELECT r FROM RelationshipManagerEntity r WHERE r.relationshipManagerId = :id AND r.password = :pwd",
+                RelationshipManagerEntity.class);
+        q.setParameter("id", id);
+        q.setParameter("pwd", password);
+        return q.getResultStream().findFirst();
     }
 
-    public RelationshipManagerDTO save(RelationshipManagerDTO dto) {
-        RelationshipManager entity = mapper.toEntity(dto);
-        // seguridad: si entity.writtenAt es null, lo asignamos
+    @Transactional
+    public RelationshipManagerEntity persistOrUpdate(RelationshipManagerEntity entity) {
         if (entity.getWrittenAt() == null) {
             entity.setWrittenAt(OffsetDateTime.now());
+        } else {
+            entity.setWrittenAt(OffsetDateTime.now()); // update timestamp
         }
-        persist(entity);
-        return mapper.toDTO(entity);
+        if (em.find(RelationshipManagerEntity.class, entity.getRelationshipManagerId()) == null) {
+            em.persist(entity);
+            return entity;
+        } else {
+            return em.merge(entity);
+        }
     }
-
-    public RelationshipManagerDTO update(RelationshipManagerDTO dto) {
-        RelationshipManager entity = mapper.toEntity(dto);
-        // setear writtenAt en merge para reflejar la actualización
-        entity.setWrittenAt(OffsetDateTime.now());
-        getEntityManager().merge(entity);
-        return mapper.toDTO(entity);
-    }
-
-    public RelationshipManagerDTO login(String relationshipManagerId, String password) {
-        RelationshipManager entity = find("relationshipManagerId = ?1 and password = ?2", relationshipManagerId, password)
-                .firstResult();
-        return entity != null ? mapper.toDTO(entity) : null;
-    }
-
 }

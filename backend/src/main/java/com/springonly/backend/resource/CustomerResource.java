@@ -1,15 +1,15 @@
 package com.springonly.backend.resource;
 
+import com.springonly.backend.mapper.CustomerMapper;
+import com.springonly.backend.model.dto.CustomerDTO;
 import com.springonly.backend.model.request.CustomerRequest;
 import com.springonly.backend.model.response.CustomerResponse;
-import com.springonly.backend.model.dto.CustomerDTO;
-import com.springonly.backend.mapper.CustomerMapper;
 import com.springonly.backend.service.CustomerService;
-
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,12 +25,6 @@ public class CustomerResource {
     @Inject
     CustomerMapper mapper;
 
-    @GET
-    public List<CustomerResponse> list() {
-        return service.listAll().stream()
-                .map(mapper::toResponse)
-                .collect(Collectors.toList());
-    }
 
     @GET
     @Path("{id}")

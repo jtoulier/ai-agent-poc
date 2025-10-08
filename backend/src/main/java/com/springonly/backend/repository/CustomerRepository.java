@@ -1,48 +1,28 @@
 package com.springonly.backend.repository;
 
-import com.springonly.backend.model.entity.Customer;
-import com.springonly.backend.model.dto.CustomerDTO;
-import com.springonly.backend.mapper.CustomerMapper;
-
-import io.quarkus.hibernate.orm.panache.PanacheRepository;
-import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-
-import java.time.OffsetDateTime;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import java.util.List;
-import java.util.stream.Collectors;
+import com.springonly.backend.model.entity.CustomerEntity;
+import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
 @ApplicationScoped
-public class CustomerRepository implements PanacheRepositoryBase<Customer, String> {
+public class CustomerRepository implements PanacheRepositoryBase<CustomerEntity, String> {
 
-    @Inject
-    CustomerMapper mapper;
+    @PersistenceContext
+    EntityManager em;
 
-    public List<CustomerDTO> listAllDTOs() {
-        return listAll().stream()
-                .map(mapper::toDTO)
-                .collect(Collectors.toList());
+    public List<CustomerEntity> findByRelationshipManagerId(String relationshipManagerId) {
+        TypedQuery<CustomerEntity> q = em.createQuery(
+                "SELECT c FROM CustomerEntity c WHERE c.relationshipManagerId = :rm",
+                CustomerEntity.class);
+        q.setParameter("rm", relationshipManagerId);
+        return q.getResultList();
     }
 
-    public CustomerDTO findDTOById(String id) {
-        Customer entity = findById(id);
-        return entity != null ? mapper.toDTO(entity) : null;
-    }
-
-    public CustomerDTO save(CustomerDTO dto) {
-        Customer entity = mapper.toEntity(dto);
-        if (entity.getWrittenAt() == null) {
-            entity.setWrittenAt(OffsetDateTime.now());
-        }
-        persist(entity);
-        return mapper.toDTO(entity);
-    }
-
-    public CustomerDTO update(CustomerDTO dto) {
-        Customer entity = mapper.toEntity(dto);
-        entity.setWrittenAt(OffsetDateTime.now());
-        getEntityManager().merge(entity);
-        return mapper.toDTO(entity);
+    public CustomerEntity findById(String customerId) {
+        return em.find(CustomerEntity.class, customerId);
     }
 }
