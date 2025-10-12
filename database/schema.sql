@@ -1,3 +1,7 @@
+SET ANSI_NULLS ON;
+SET QUOTED_IDENTIFIER ON;
+GO
+
 IF OBJECT_ID('credits.payments', 'U') IS NOT NULL
 BEGIN
     DROP TABLE credits.payments;
