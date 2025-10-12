@@ -24,7 +24,7 @@ public class RelationshipManagerRepository implements PanacheRepositoryBase<Rela
                     findById(relationshipManagerDTO.getRelationshipManagerId())
                 )
                 .filter(
-entity -> Objects.equals(entity.getPassword(), relationshipManagerDTO.getPassword())
+                    entity -> Objects.equals(entity.getPassword(), relationshipManagerDTO.getPassword())
                 )
                 .map(relationshipManagerMapper::fromEntityToDTO);
     }
@@ -33,13 +33,19 @@ entity -> Objects.equals(entity.getPassword(), relationshipManagerDTO.getPasswor
     public Optional<RelationshipManagerDTO> updateRelationshipManagerThreadId(
         RelationshipManagerDTO relationshipManagerDTO
     ) {
-        return Optional.ofNullable(findById(relationshipManagerDTO.getRelationshipManagerId()))
-                .map(entity -> {
-                    entity.setThreadId(relationshipManagerDTO.getThreadId());
-                    entity.setWrittenAt(relationshipManagerDTO.getWrittenAt());
-                    // Hibernate detecta los cambios y hace UPDATE al finalizar la transacción
-                    return relationshipManagerMapper.fromEntityToDTO(entity);
-                });
+        Optional<RelationshipManagerEntity> maybeEntity =
+                Optional.ofNullable(
+                    findById(relationshipManagerDTO.getRelationshipManagerId())
+                );
+
+        maybeEntity.ifPresent(entity -> {
+            entity.setThreadId(relationshipManagerDTO.getThreadId());
+            entity.setWrittenAt(relationshipManagerDTO.getWrittenAt());
+        });
+
+        return maybeEntity.map(
+            relationshipManagerMapper::fromEntityToDTO
+        );
     }
 
     public Optional<RelationshipManagerDTO> getRelationshipManagerById(
@@ -51,7 +57,5 @@ entity -> Objects.equals(entity.getPassword(), relationshipManagerDTO.getPasswor
                 )
                 .map(relationshipManagerMapper::fromEntityToDTO);
     }
-
-
 
 }

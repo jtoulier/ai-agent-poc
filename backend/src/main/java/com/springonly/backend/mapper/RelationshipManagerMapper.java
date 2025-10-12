@@ -11,15 +11,16 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "cdi")
 public interface RelationshipManagerMapper {
-
+    // Request -> DTO
     RelationshipManagerDTO fromLoginRequestToDTO(LoginRelationshipManagerRequest loginRelationshipManagerRequest);
     RelationshipManagerDTO fromUpdateThreadIdRequestToDTO(UpdateRelationshipManagerThreadIdRequest updateRelationshipManagerThreadIdRequest);
-    RelationshipManagerDTO fromGetByIdResponseToDTO(GetRelationshipManagerByIdResponse getRelationshipManagerByIdResponse);
 
+    // DTO <-> Entity
     RelationshipManagerDTO fromEntityToDTO(RelationshipManagerEntity relationshipManagerEntity);
     RelationshipManagerEntity fromDTOToEntity(RelationshipManagerDTO relationshipManagerDTO);
 
+    // Response <- DTO
     LoginRelationshipManagerResponse fromDTOToLoginResponse(RelationshipManagerDTO relationshipManagerDTO);
     UpdateRelationshipManagerThreadIdResponse fromDTOToUpdateThreadIdResponse(RelationshipManagerDTO relationshipManagerDTOto);
-    GetRelationshipManagerByIdResponse fromDTOToGetByIdResponse(RelationshipManagerDTO dto);
+    GetRelationshipManagerByIdResponse fromDTOToGetByIdResponse(RelationshipManagerDTO relationshipManagerDTO);
 }

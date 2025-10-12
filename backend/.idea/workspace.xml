@@ -5,50 +5,39 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="533b2072-edab-4355-8a14-c4c38ff6da44" name="Changes" comment="Antes de re-re-cambios">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/CustomerDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/RelationshipManagerDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/LoginRelationshipManagerRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/UpdateRelationshipManagerThreadIdRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/GetRelationshipManagerByIdResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/LoginRelationshipManagerResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/UpdateRelationshipManagerThreadIdResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/generic/CustomerResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/generic/ErrorResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/LoanMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/PaymentMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/LoanDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/PaymentDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/entity/LoanEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/entity/PaymentEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/entity/PaymentId.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/CreateCustomerRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/CreateLoanRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/CreatePaymentRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/UpdateCustomerRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/UpdateLoanRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/UpdatePaymentRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/CreateCustomerResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/CreateLoanResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/CreatePaymentResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/GetCustomerByIdResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/GetLoanByIdResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/GetPaymentByIdResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/UpdateCustomerResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/UpdateLoanResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/UpdatePaymentResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/generic/LoanResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/generic/PaymentResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ai/prompt-endpoints.md" beforeDir="false" afterPath="$PROJECT_DIR$/ai/prompt-endpoints.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/CustomerMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/CustomerMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/LoanMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/PaymentMapper.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/RelationshipManagerMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/RelationshipManagerMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/CustomerDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/LoanDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/PaymentDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/dto/RelationshipManagerDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/entity/CustomerEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/entity/CustomerEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/entity/LoanEntity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/entity/PaymentEntity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/entity/PaymentId.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/entity/RelationshipManagerEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/entity/RelationshipManagerEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/CustomerRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/LoanRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/PaymentRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/RelationshipManagerLoginRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/RelationshipManagerUpdateRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/CustomerResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/LoanResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/PaymentResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/RelationshipManagerLoginResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/RelationshipManagerResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/generic/RelationshipManagerResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/GetRelationshipManagerByIdResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/GetRelationshipManagerByIdResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/LoginRelationshipManagerResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/LoginRelationshipManagerResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/UpdateRelationshipManagerThreadIdResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/UpdateRelationshipManagerThreadIdResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/CustomerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/CustomerRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/LoanRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/PaymentRepository.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/RelationshipManagerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/RelationshipManagerRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/CustomerResource.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/LoanResource.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/RelationshipManagerResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/RelationshipManagerResource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/CustomerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/CustomerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/LoanService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/PaymentService.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/RelationshipManagerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/RelationshipManagerService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -91,19 +80,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/home/dev/ai-agent-poc/backend/src/main/resources/openapi",
-    "settings.editor.selected.configurable": "terminal"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/home/dev/ai-agent-poc/backend/src/main/resources/openapi&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;terminal&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\home\dev\ai-agent-poc\backend\src\main\resources\openapi" />
@@ -113,6 +102,9 @@
       <recent name="C:\home\dev\ai-agent-poc\backend\src\main\java\com\springonly\backend\mapper" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.springonly.backend.model.response" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.springonly.backend.model.response" />
     </key>
   </component>

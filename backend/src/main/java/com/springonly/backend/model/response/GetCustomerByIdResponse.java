@@ -4,14 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginRelationshipManagerResponse {
+public class GetCustomerByIdResponse {
+    private String customerId;
+    private String customerName;
+    private String customerTypeId;
+    private String riskCategoryId;
+    private BigDecimal lineOfCreditAmount;
     private String relationshipManagerId;
-    private String relationshipManagerName;
-    private String threadId;
     private OffsetDateTime writtenAt;
 }
