@@ -88,7 +88,7 @@ jobs:
           echo "✅ Agent ID encontrado: $AGENT_ID"
           echo "AGENT_ID=$AGENT_ID" >> $GITHUB_ENV
           
-          echo "🛠️ Configurando instrucciones y herramientas del agente principal..."
+          echo "🛠️ Configurando instrucciones del agente principal..."
 
 
 
@@ -102,10 +102,56 @@ jobs:
           # cat ./main-agent/instructions/*.txt > ./main-agent/instructions/combined_instructions.txt
           # INSTRUCTIONS=$(cat ./main-agent/instructions/combined_instructions.txt | jq -Rs .)
 
+          echo $INSTRUCTIONS
+
+
+          # Crear o actualizar el agente
+          curl -v -X POST https://$PROJECT_ENDPOINT/assistants/$AGENT_ID?api-version=2025-05-01 \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{
+                  \"name\": \"$AGENT_NAME\",
+                  \"instructions\": \"$INSTRUCTIONS\"
+                }"
+
+          echo "✅ Agente con Instrucciones configuradas correctamente"
+
+
+      - name: Configure Main Agent tools
+        if: false
+        run: |
+          ACCESS_TOKEN=$(az account get-access-token \
+            --resource https://ai.azure.com \
+            --query accessToken -o tsv)
+
+          echo "🔎 Buscando agente con nombre: $AGENT_NAME"
+
+          curl \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            -H "Content-Type: application/json" \
+            https://$PROJECT_ENDPOINT/assistants?api-version=2025-05-01
+
+          AGENT_ID=$(curl -s \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            -H "Content-Type: application/json" \
+            https://$PROJECT_ENDPOINT/assistants?api-version=2025-05-01 \
+            | jq -r --arg AGENT_NAME "$AGENT_NAME" '.data[] | select(.name==$AGENT_NAME) | .id')
+
+          echo $AGENT_ID
+
+          if [ -z "$AGENT_ID" ]; then
+            echo "❌ No se encontró el agente con nombre $AGENT_NAME"
+            exit 1
+          fi
+
+          echo "✅ Agent ID encontrado: $AGENT_ID"
+          echo "AGENT_ID=$AGENT_ID" >> $GITHUB_ENV
+          
+          echo "🛠️ Configurando herramientas del agente principal..."
+
 
           OPENAPI_SPEC=$(cat ./backend/src/main/resources/openapi/openapi.json)
 
-          echo $INSTRUCTIONS
           echo $OPENAPI_SPEC
 
 
@@ -115,7 +161,6 @@ jobs:
             -H "Content-Type: application/json" \
             -d "{
                   \"name\": \"$AGENT_NAME\",
-                  \"instructions\": \"$INSTRUCTIONS\",
                   \"tools\": [
                     {
                       \"type\": \"openapi\",
