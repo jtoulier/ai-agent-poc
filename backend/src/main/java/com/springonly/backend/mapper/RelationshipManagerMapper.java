@@ -1,4 +1,25 @@
 package com.springonly.backend.mapper;
 
-public class RelationshipManagerMapper {
+import com.springonly.backend.model.dto.RelationshipManagerDTO;
+import com.springonly.backend.model.entity.RelationshipManagerEntity;
+import com.springonly.backend.model.request.LoginRelationshipManagerRequest;
+import com.springonly.backend.model.request.UpdateRelationshipManagerThreadIdRequest;
+import com.springonly.backend.model.response.GetRelationshipManagerByIdResponse;
+import com.springonly.backend.model.response.LoginRelationshipManagerResponse;
+import com.springonly.backend.model.response.UpdateRelationshipManagerThreadIdResponse;
+import org.mapstruct.Mapper;
+
+@Mapper(componentModel = "cdi")
+public interface RelationshipManagerMapper {
+
+    RelationshipManagerDTO fromLoginRequestToDTO(LoginRelationshipManagerRequest loginRelationshipManagerRequest);
+    RelationshipManagerDTO fromUpdateThreadIdRequestToDTO(UpdateRelationshipManagerThreadIdRequest updateRelationshipManagerThreadIdRequest);
+    RelationshipManagerDTO fromGetByIdResponseToDTO(GetRelationshipManagerByIdResponse getRelationshipManagerByIdResponse);
+
+    RelationshipManagerDTO fromEntityToDTO(RelationshipManagerEntity relationshipManagerEntity);
+    RelationshipManagerEntity fromDTOToEntity(RelationshipManagerDTO relationshipManagerDTO);
+
+    LoginRelationshipManagerResponse fromDTOToLoginResponse(RelationshipManagerDTO relationshipManagerDTO);
+    UpdateRelationshipManagerThreadIdResponse fromDTOToUpdateThreadIdResponse(RelationshipManagerDTO relationshipManagerDTOto);
+    GetRelationshipManagerByIdResponse fromDTOToGetByIdResponse(RelationshipManagerDTO dto);
 }

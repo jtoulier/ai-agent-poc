@@ -1,4 +1,13 @@
 package com.springonly.backend.model.request;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class LoginRelationshipManagerRequest {
+    private String relationshipManagerId;
+    private String password;
 }

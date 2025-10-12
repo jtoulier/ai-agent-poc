@@ -1,4 +1,12 @@
 package com.springonly.backend.model.response;
 
-public class GetRelationshipManagerByIdResponse {
+import com.springonly.backend.model.response.generic.RelationshipManagerResponse;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+public class GetRelationshipManagerByIdResponse extends RelationshipManagerResponse {
 }

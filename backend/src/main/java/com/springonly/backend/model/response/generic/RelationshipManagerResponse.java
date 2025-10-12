@@ -1,4 +1,4 @@
-package com.springonly.backend.model.response;
+package com.springonly.backend.model.response.generic;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

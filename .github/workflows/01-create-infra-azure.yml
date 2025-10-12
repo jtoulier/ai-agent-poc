@@ -121,7 +121,7 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
-      
+
       - name: Create Log Analytics if not exists
         run: |
           if az monitor log-analytics workspace show \
@@ -186,8 +186,9 @@ jobs:
           done
 
   job-create-backend-containerapp:
-    name: Create Backend Container App    
+    name: Create Backend Container App
     runs-on: ubuntu-latest
+    if: false
     needs: job-create-loganalytics-containerappenvironment
     steps:
       - name: Checkout repo
@@ -232,7 +233,7 @@ jobs:
             --name ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} \
             --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
             --query "properties.customDomainVerificationId" -o tsv)
-          echo "TOKEN=$TOKEN" >> $GITHUB_ENV  
+          echo "TOKEN=$TOKEN" >> $GITHUB_ENV
 
           cat > change-backend-batch.json <<EOF
           {
@@ -355,7 +356,7 @@ jobs:
       - name: Create managed certificate if not exists
         run: |
           set -e
-          
+
           CERT_NAME="${{ vars.INFRA_BACKEND_DOMAIN_NAME }}-cert"
 
           EXISTING=$(az containerapp env certificate list \
@@ -434,7 +435,7 @@ jobs:
           fi
 
   job-create-frontend-containerapp:
-    name: Create Frontend Container App    
+    name: Create Frontend Container App
     runs-on: ubuntu-latest
     needs: job-create-loganalytics-containerappenvironment
     steps:
@@ -480,7 +481,7 @@ jobs:
             --name ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} \
             --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
             --query "properties.customDomainVerificationId" -o tsv)
-          echo "TOKEN=$TOKEN" >> $GITHUB_ENV  
+          echo "TOKEN=$TOKEN" >> $GITHUB_ENV
 
           cat > change-frontend-batch.json <<EOF
           {
@@ -603,7 +604,7 @@ jobs:
       - name: Create managed certificate if not exists
         run: |
           set -e
-          
+
           CERT_NAME="${{ vars.INFRA_FRONTEND_DOMAIN_NAME }}-cert"
 
           EXISTING=$(az containerapp env certificate list \
@@ -682,7 +683,7 @@ jobs:
           fi
 
   job-create-mcpserver-containerapp:
-    name: Create MCPServer Container App    
+    name: Create MCPServer Container App
     runs-on: ubuntu-latest
     needs: job-create-loganalytics-containerappenvironment
     steps:
@@ -728,7 +729,7 @@ jobs:
             --name ${{ vars.INFRA_AZURE_CONTAINERAPP_MCPSERVER_NAME }} \
             --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
             --query "properties.customDomainVerificationId" -o tsv)
-          echo "TOKEN=$TOKEN" >> $GITHUB_ENV  
+          echo "TOKEN=$TOKEN" >> $GITHUB_ENV
 
           cat > change-mcpserver-batch.json <<EOF
           {
@@ -851,7 +852,7 @@ jobs:
       - name: Create managed certificate if not exists
         run: |
           set -e
-          
+
           CERT_NAME="${{ vars.INFRA_MCPSERVER_DOMAIN_NAME }}-cert"
 
           EXISTING=$(az containerapp env certificate list \
@@ -941,8 +942,9 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
-  
+
       - name: Add Backend Container IPs to SQL Firewall
+        if: false
         run: |
           RG="${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}"
           APP_NAME="${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }}"
