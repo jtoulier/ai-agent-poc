@@ -32,7 +32,7 @@ RUN npm ci --omit=dev --ignore-scripts
 # Variables de entorno recomendadas (sobrescribe al ejecutar docker run / en deployment)
 ENV SERVER_NAME=sqlsrvcantolao.database.windows.net
 ENV DATABASE_NAME=dbcantolao
-ENV SQL_USER=sa
+ENV SQL_USER=cantolaoadmin
 ENV SQL_PASSWORD=P@ssw0rd1234
 ENV READONLY=false
 
