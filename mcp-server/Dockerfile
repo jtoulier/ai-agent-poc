@@ -1,50 +1,61 @@
-# ---------- Builder (compila TypeScript) ----------
+# ---------- Etapa 1: Builder ----------
 FROM node:22-slim AS builder
 
-# Directorio de trabajo
 WORKDIR /app
 
-# Copiar package.json, package-lock y tsconfig (para cachear instalación)
+# Copiar los archivos de dependencias y compilador TypeScript
 COPY package*.json tsconfig.json ./
 
-# Instalar todas las dependencias pero SIN ejecutar scripts (evita que 'prepare' lance build prematuramente)
+# Instalar dependencias completas (incluye dev), pero sin ejecutar scripts automáticos
 RUN npm ci --ignore-scripts
 
-# Copiar el código fuente (ahora sí estarán los .ts disponibles para build)
+# Copiar el código fuente
 COPY src ./src
 
-# Compilar usando la versión local de tsc y aplicar permisos (si shx está presente en devDependencies)
-# Usamos npx para invocar binarios locales de node_modules/.bin
+# Compilar TypeScript → JavaScript
 RUN npx tsc && npx shx chmod +x dist/*.js
 
-# ---------- Runtime (solo prod deps + build) ----------
+
+# ---------- Etapa 2: Runtime ----------
 FROM node:22-slim AS runtime
 
 WORKDIR /app
 
-# Copiar el artefacto compilado y package*.json/lock para instalar prod deps
+# Copiar sólo lo necesario del builder
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/package*.json ./package*.json
-# Si tu proyecto tiene package-lock.json aseguramos coherencia; si no lo tienes, este paso sigue funcionando.
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/package-lock.json ./package-lock.json
 
-# Instalar sólo dependencias de producción
-RUN npm ci --production --silent
+# Instalar únicamente dependencias de producción
+RUN npm ci --omit=dev --ignore-scripts
 
 # Variables de entorno recomendadas (sobrescribe al ejecutar docker run / en deployment)
-ENV SERVER_NAME=localhost
-ENV DATABASE_NAME=yourdb
-# Si tu servidor necesita usuario/contraseña, establece las variables correspondientes al desplegar:
-# ENV SQL_USER=sa
-# ENV SQL_PASSWORD=YourStrong!Passw0rd
+ENV SERVER_NAME=sqlsrvcantolao.database.windows.net
+ENV DATABASE_NAME=dbcantolao
+ENV SQL_USER=sa
+ENV SQL_PASSWORD=P@ssw0rd1234
 ENV READONLY=false
 
-# Puerto que tu servidor expone si usa HTTP transport (ajusta si tu server usa otro puerto)
+# Exponer puerto (ajusta si tu servidor no usa HTTP)
 EXPOSE 3000
 
-# Comando por defecto: ejecuta el entrypoint compilado
+# Comando por defecto
 CMD ["node", "dist/index.js"]
 
+# docker build -t springonly/mcpserver:latest .
+# docker run -d -p 3000:3000 --name springonly-mcpserver springonly/mcpserver:latest
+
+# docker run --rm -it \
+#   -e SERVER_NAME="localhost" \
+#   -e DATABASE_NAME="dbcantolao" \
+#   -e SQL_USER="sa" \
+#   -e SQL_PASSWORD="P@ssw0rd1234" \
+#   -e READONLY="false" \
+#   -p 3000:3000 \
+#   springonly/mcpserver:latest
 
 
-
-# docker build -t --no-cache springonly/mcpserver:latest .
+# docker ps -a
+# docker stop springonly-mcpserver
+# docker container rm springonly-mcpserver
+# docker image rm springonly/mcpserver:latest
