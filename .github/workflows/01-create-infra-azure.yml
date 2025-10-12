@@ -933,7 +933,7 @@ jobs:
   job-create-firewall-rules-sql:
     name: Create SQL Firewall Rules
     runs-on: ubuntu-latest
-    needs: [job-create-sql, job-create-backend-containerapp]
+    needs: [job-create-sql, job-create-mcpserver-containerapp]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
