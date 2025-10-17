@@ -7,7 +7,6 @@ import com.springonly.backend.model.dto.RelationshipManagerDTO;
 import com.springonly.backend.model.request.LoginRelationshipManagerRequest;
 import com.springonly.backend.model.request.UpdateRelationshipManagerThreadIdRequest;
 import com.springonly.backend.model.response.GetCustomerByIdResponse;
-import com.springonly.backend.model.response.generic.CustomerResponse;
 import com.springonly.backend.model.response.generic.ErrorResponse;
 import com.springonly.backend.service.CustomerService;
 import com.springonly.backend.service.RelationshipManagerService;
@@ -19,7 +18,6 @@ import jakarta.ws.rs.core.Response;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 @Path("/relationship-managers")
 @Produces(MediaType.APPLICATION_JSON)
@@ -43,79 +41,116 @@ public class RelationshipManagerResource {
     @POST
     @Path("/login")
     public Response loginRelationshipManager(
-            LoginRelationshipManagerRequest request
+        LoginRelationshipManagerRequest request
     ) {
         RelationshipManagerDTO fromRequestToDTO = relationshipManagerMapper.fromLoginRequestToDTO(request);
 
         return relationshipManagerService.loginRelationshipManager(fromRequestToDTO)
-                .map(
-                        dtoFromService
-                                -> Response.ok(relationshipManagerMapper.fromDTOToLoginResponse(dtoFromService)).build())
-                .orElseGet(
-                        () ->
-                                Response.status(Response.Status.UNAUTHORIZED)
-                                        .entity(new ErrorResponse("Usuario y/o password incorrectos", 401))
-                                        .build()
-                );
+            .map(
+                dtoFromService
+                ->
+                Response
+                .ok(relationshipManagerMapper.fromDTOToLoginResponse(dtoFromService))
+                .build()
+            )
+            .orElseGet(
+                () ->
+                Response
+                .status(Response.Status.UNAUTHORIZED)
+                .entity(
+                    new ErrorResponse(
+                        "Usuario y/o password incorrectos",
+                        "RM001")
+                )
+                .build()
+            );
     }
 
     @PATCH
     @Path("/{relationshipManagerId}")
     @Transactional
     public Response updateRelationshipManagerThreadId(
-            @PathParam("relationshipManagerId") String relationshipManagerId,
-            UpdateRelationshipManagerThreadIdRequest request
+        @PathParam("relationshipManagerId") String relationshipManagerId,
+        UpdateRelationshipManagerThreadIdRequest request
     ) {
         RelationshipManagerDTO fromRequestToDTO = relationshipManagerMapper.fromUpdateThreadIdRequestToDTO(request);
         fromRequestToDTO.setRelationshipManagerId(relationshipManagerId);
 
         return relationshipManagerService
                 .updateRelationshipManagerThreadId(fromRequestToDTO)
-                .map(dtoFromService ->
-                        Response.ok(relationshipManagerMapper.fromDTOToUpdateThreadIdResponse(dtoFromService)).build()
+                .map(
+                    dtoFromService
+                    ->
+                    Response.ok(relationshipManagerMapper.fromDTOToUpdateThreadIdResponse(dtoFromService))
+                    .build()
                 )
                 .orElseGet(
-                        () ->
-                                Response.status(Response.Status.NOT_FOUND)
-                                        .entity(new ErrorResponse("Relationship Manager no encontrado", 404))
-                                        .build()
+                    ()
+                    ->
+                    Response.status(Response.Status.NOT_FOUND)
+                    .entity(
+                        new ErrorResponse(
+                            "El Ejecutivo de Cuenta indicado no existe",
+                            "RM002"
+                        )
+                    )
+                    .build()
                 );
     }
 
     @GET
     @Path("/{relationshipManagerId}")
     public Response getRelationshipManagerById(
-            @PathParam("relationshipManagerId") String relationshipManagerId
+        @PathParam("relationshipManagerId") String relationshipManagerId
     ) {
         return relationshipManagerService
                 .getRelationshipManagerById(relationshipManagerId)
-                .map(dtoFromService ->
-                        Response.ok(relationshipManagerMapper.fromDTOToGetByIdResponse(dtoFromService)).build()
+                .map(
+                    dtoFromService ->
+                    Response
+                    .ok(relationshipManagerMapper.fromDTOToGetByIdResponse(dtoFromService))
+                    .build()
                 )
                 .orElseGet(
-                        () ->
-                                Response.status(Response.Status.NOT_FOUND)
-                                        .entity(new ErrorResponse("Relationship Manager no encontrado", 404))
-                                        .build()
+                    ()
+                    ->
+                    Response
+                    .status(Response.Status.NOT_FOUND)
+                    .entity(
+                        new ErrorResponse(
+                            "El Ejecutivo de Cuenta indicado no existe",
+                            "RM003")
+                    )
+                    .build()
                 );
     }
-
+    
     @GET
     @Path("/{relationshipManagerId}/customers")
     public Response listCustomersByRelationshipManagerById(
         @PathParam("relationshipManagerId") String relationshipManagerId
     ) {
-        Optional<List<CustomerDTO>> optionalDtos =
+        List<CustomerDTO> dtos =
             customerService.listCustomersByRelationshipManagerById(relationshipManagerId);
-
-        // Si el Optional está vacío, retornamos 404 o lista vacía según tu política
-        List<GetCustomerByIdResponse> responses = optionalDtos
-            .orElse(List.of()) // devuelve lista vacía si no hay resultados
-            .stream()
+        
+        if (dtos.isEmpty()) {
+            return Response
+                    .status(Response.Status.NOT_FOUND)
+                    .entity(
+                        new ErrorResponse(
+                            "El Ejecutivo de Cuentas no tiene clientes asignados",
+                            "RM002"
+                        )
+                    )
+                    .build();
+        }
+        
+        // Mapeamos y ordenamos los resultados
+        List<GetCustomerByIdResponse> responses = dtos.stream()
             .map(customerMapper::fromDTOToGetByIdResponse)
             .sorted(Comparator.comparing(GetCustomerByIdResponse::getCustomerName))
             .toList();
-
+        
         return Response.ok(responses).build();
     }
 }

@@ -15,22 +15,45 @@ public class CustomerRepository implements PanacheRepositoryBase<CustomerEntity,
     @Inject
     CustomerMapper customerMapper;
 
-    public Optional<List<CustomerDTO>> listCustomersByRelationshipManagerById(
-            String relationshipManagerId
+    public List<CustomerDTO> listCustomersByRelationshipManagerById(
+        String relationshipManagerId
     ) {
-        // Obtenemos la lista de entidades filtrando por relationshipManagerId
-        List<CustomerEntity> customerEntities = list("relationshipManagerId", relationshipManagerId);
-
-        // Si no hay resultados, retornamos Optional vacío
-        if (customerEntities.isEmpty()) {
-            return Optional.empty();
-        }
-
-        // Transformamos cada CustomerEntity a CustomerDTO usando el mapper
-        List<CustomerDTO> customerDTOs = customerEntities.stream()
+        return list("relationshipManagerId", relationshipManagerId)
+                .stream()
                 .map(customerMapper::fromEntityToDTO)
                 .toList();
+    }
 
-        return Optional.of(customerDTOs);
+    public CustomerDTO createCustomer(
+        CustomerDTO customerDTO
+    ) {
+        CustomerEntity customerEntity = customerMapper.fromDTOToEntity(customerDTO);
+        persist(customerEntity);
+
+        return customerMapper.fromEntityToDTO(customerEntity);
+    }
+
+    public Optional<CustomerDTO> updateCustomer(
+        CustomerDTO customerDTO
+    ) {
+        return Optional.ofNullable(findById(customerDTO.getCustomerId()))
+            .map(entity -> {
+                entity.setCustomerName(customerDTO.getCustomerName());
+                entity.setCustomerTypeId(customerDTO.getCustomerTypeId());
+                entity.setRiskCategoryId(customerDTO.getRiskCategoryId());
+                entity.setLineOfCreditAmount(customerDTO.getLineOfCreditAmount());
+                entity.setRelationshipManagerId(customerDTO.getRelationshipManagerId());
+                entity.setWrittenAt(customerDTO.getWrittenAt());
+
+                return customerMapper.fromEntityToDTO(entity);
+            });
+    }
+
+    public Optional<CustomerDTO> getCustomerById(
+        String customerId
+    ) {
+        return Optional.
+                ofNullable(findById(customerId))
+                .map(customerMapper::fromEntityToDTO);
     }
 }

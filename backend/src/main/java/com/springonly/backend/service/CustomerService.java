@@ -5,6 +5,7 @@ import com.springonly.backend.repository.CustomerRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,9 +14,31 @@ public class CustomerService {
     @Inject
     CustomerRepository customerRepository;
 
-    public Optional<List<CustomerDTO>> listCustomersByRelationshipManagerById(
+    public List<CustomerDTO> listCustomersByRelationshipManagerById(
         String relationshipManagerId
     ) {
         return customerRepository.listCustomersByRelationshipManagerById(relationshipManagerId);
+    }
+    
+    public CustomerDTO createCustomer(
+        CustomerDTO customerDTO
+    ) {
+        customerDTO.setWrittenAt(OffsetDateTime.now());
+        
+        return customerRepository.createCustomer(customerDTO);
+    }
+    
+    public Optional<CustomerDTO> updateCustomer(
+        CustomerDTO customerDTO
+    ) {
+        customerDTO.setWrittenAt(OffsetDateTime.now());
+        
+        return customerRepository.updateCustomer(customerDTO);
+    }
+    
+    public Optional<CustomerDTO> getCustomerById(
+        String customerId
+    ) {
+        return customerRepository.getCustomerById(customerId);
     }
 }

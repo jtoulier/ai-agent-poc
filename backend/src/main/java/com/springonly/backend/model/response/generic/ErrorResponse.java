@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ErrorResponse {
     private String message;
-    private int code; // opcional: puedes mapear al HTTP status
+    private String code;
 }
