@@ -36,17 +36,24 @@ public class CustomerRepository implements PanacheRepositoryBase<CustomerEntity,
     public Optional<CustomerDTO> updateCustomer(
         CustomerDTO customerDTO
     ) {
-        return Optional.ofNullable(findById(customerDTO.getCustomerId()))
-            .map(entity -> {
-                entity.setCustomerName(customerDTO.getCustomerName());
-                entity.setCustomerTypeId(customerDTO.getCustomerTypeId());
-                entity.setRiskCategoryId(customerDTO.getRiskCategoryId());
-                entity.setLineOfCreditAmount(customerDTO.getLineOfCreditAmount());
-                entity.setRelationshipManagerId(customerDTO.getRelationshipManagerId());
-                entity.setWrittenAt(customerDTO.getWrittenAt());
-
-                return customerMapper.fromEntityToDTO(entity);
-            });
+        return Optional
+            .ofNullable(
+                findById(customerDTO.getCustomerId())
+            )
+            .map(
+                existingCustomer
+                ->
+                {
+                    existingCustomer.setCustomerName(customerDTO.getCustomerName());
+                    existingCustomer.setCustomerTypeId(customerDTO.getCustomerTypeId());
+                    existingCustomer.setRiskCategoryId(customerDTO.getRiskCategoryId());
+                    existingCustomer.setLineOfCreditAmount(customerDTO.getLineOfCreditAmount());
+                    existingCustomer.setRelationshipManagerId(customerDTO.getRelationshipManagerId());
+                    existingCustomer.setWrittenAt(customerDTO.getWrittenAt());
+    
+                    return customerMapper.fromEntityToDTO(existingCustomer);
+                }
+            );
     }
 
     public Optional<CustomerDTO> getCustomerById(

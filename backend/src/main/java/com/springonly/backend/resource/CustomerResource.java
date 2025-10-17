@@ -1,20 +1,27 @@
 package com.springonly.backend.resource;
 
 import com.springonly.backend.mapper.CustomerMapper;
+import com.springonly.backend.mapper.LoanMapper;
 import com.springonly.backend.model.dto.CustomerDTO;
+import com.springonly.backend.model.dto.LoanDTO;
 import com.springonly.backend.model.request.CreateCustomerRequest;
 import com.springonly.backend.model.request.UpdateCustomerRequest;
 import com.springonly.backend.model.response.CreateCustomerResponse;
 import com.springonly.backend.model.response.GetCustomerByIdResponse;
+import com.springonly.backend.model.response.GetLoanByIdResponse;
 import com.springonly.backend.model.response.UpdateCustomerResponse;
 import com.springonly.backend.model.response.generic.ErrorResponse;
+import com.springonly.backend.model.response.generic.LoanResponse;
 import com.springonly.backend.service.CustomerService;
+import com.springonly.backend.service.LoanService;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 @Path("/customers")
@@ -26,6 +33,12 @@ public class CustomerResource {
     
     @Inject
     CustomerMapper customerMapper;
+    
+    @Inject
+    LoanService loanService;
+    
+    @Inject
+    LoanMapper loanMapper;
     
     @HeaderParam("X-RelationshipManager-Id")
     String headerRelationshipManagerId;
@@ -111,5 +124,40 @@ public class CustomerResource {
             customerMapper.fromDTOToGetByIdResponse(optionalDto.get());
         
         return Response.ok(response).build();
+    }
+    
+    @GET
+    @Path("/{customerId}/loans")
+    public Response listLoansByCustomerId(
+        @PathParam("customerId") String customerId
+    ) {
+        // 1️⃣ Obtenemos la lista de préstamos del servicio
+        List<LoanDTO> dtos = loanService.listLoansByCustomerId(customerId);
+        
+        // 2️⃣ Si la lista está vacía, devolvemos un 404 o lista vacía según la política de negocio
+        if (dtos.isEmpty()) {
+            return Response
+                .status(Response.Status.NOT_FOUND)
+                .entity(
+                    new ErrorResponse(
+                        "El cliente indicado no tiene préstamos registrados",
+                        "LN001"
+                    )
+                )
+                .build();
+        }
+        
+        // 3️⃣ Convertimos los DTO a Response
+        List<GetLoanByIdResponse> responses =
+            dtos
+                .stream()
+                .map(loanMapper::fromDTOToGetByIdResponse)
+                .sorted(Comparator.comparing(GetLoanByIdResponse::getLoanId))
+                .toList();
+        
+        // 4️⃣ Retornamos la lista de préstamos con 200 OK
+        return Response
+                .ok(responses)
+                .build();
     }
 }

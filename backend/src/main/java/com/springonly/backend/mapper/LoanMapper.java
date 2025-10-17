@@ -12,8 +12,8 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "cdi")
 public interface LoanMapper {
     // Request -> DTO
-    LoanDTO fromCreateRequestToDTDO(CreateLoanRequest createLoanRequest);
-    LoanDTO fromUpdateRequestToDTDO(UpdateLoanRequest updateLoanRequest);
+    LoanDTO fromCreateRequestToDTO(CreateLoanRequest createLoanRequest);
+    LoanDTO fromUpdateRequestToDTO(UpdateLoanRequest updateLoanRequest);
 
     // DTO <-> Entity
     LoanDTO fromEntityToDTO(LoanEntity loanEntity);
