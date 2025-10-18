@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="533b2072-edab-4355-8a14-c4c38ff6da44" name="Changes" comment="payments">
-      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.ask.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.edit.xml" afterDir="false" />
+    <list default="true" id="533b2072-edab-4355-8a14-c4c38ff6da44" name="Changes" comment="openapi">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/openapi/openapi.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/openapi/openapi.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -192,7 +188,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760747557425</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="openapi">
+      <option name="closed" value="true" />
+      <created>1760751733496</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1760751733496</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -214,6 +218,7 @@
     <MESSAGE value="customer" />
     <MESSAGE value="loans" />
     <MESSAGE value="payments" />
-    <option name="LAST_COMMIT_MESSAGE" value="payments" />
+    <MESSAGE value="openapi" />
+    <option name="LAST_COMMIT_MESSAGE" value="openapi" />
   </component>
 </project>

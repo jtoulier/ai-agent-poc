@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-import process from "node:process";
+
 // External imports
 import * as dotenv from "dotenv";
 import sql from "mssql";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { HttpServerTransport } from "@modelcontextprotocol/sdk/server/http.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
@@ -148,10 +148,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 // Server startup
 async function runServer() {
   try {
-    const port = process.env.PORT || 3000;
-    const transport = new HttpServerTransport({ port });
+    const transport = new StdioServerTransport();
     await server.connect(transport);
-    console.log(`✅ MCP HTTP server running on port ${port}`);
   } catch (error) {
     console.error("Fatal error running server:", error);
     process.exit(1);
