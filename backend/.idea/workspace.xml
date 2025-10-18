@@ -4,13 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="533b2072-edab-4355-8a14-c4c38ff6da44" name="Changes" comment="loans">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/PaymentRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/PaymentResource.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/PaymentService.java" afterDir="false" />
+    <list default="true" id="533b2072-edab-4355-8a14-c4c38ff6da44" name="Changes" comment="payments">
+      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.ask.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.edit.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/PaymentMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/PaymentMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/RelationshipManagerMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/RelationshipManagerMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/openapi/openapi.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/openapi/openapi.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,20 +51,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/home/dev/ai-agent-poc/backend/src/main/resources/openapi",
-    "settings.editor.selected.configurable": "preferences.sourceCode.JAVA"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/home/dev/ai-agent-poc/backend/src/main/resources/openapi&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\home\dev\ai-agent-poc\backend\src\main\resources\openapi" />
@@ -185,8 +184,27 @@
       <option name="project" value="LOCAL" />
       <updated>1760743104252</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="payments">
+      <option name="closed" value="true" />
+      <created>1760747557425</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1760747557425</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="crud de nuevo con chatgpt" />
@@ -195,6 +213,7 @@
     <MESSAGE value="Con fe otra vez. No funca el MCP SQL SErver" />
     <MESSAGE value="customer" />
     <MESSAGE value="loans" />
-    <option name="LAST_COMMIT_MESSAGE" value="loans" />
+    <MESSAGE value="payments" />
+    <option name="LAST_COMMIT_MESSAGE" value="payments" />
   </component>
 </project>
