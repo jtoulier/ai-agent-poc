@@ -41,6 +41,13 @@ jobs:
           echo ""
           echo "7.a Tomar nota del valor de 'Agent ID'"
 
+          echo "Ir a prjcantolao"
+          echo "Access control (IAM)"
+          echo "Grant access to this resource -> Add role assignment"
+          echo "Cognitive Services OpenAI Contributor"
+          echo "+ Select members -> github-sp"
+          echo "Select -> Review + assign"
+
   job-configure-main-agent:
     name: Configure Main Agent instructions and tools
     runs-on: ubuntu-latest
