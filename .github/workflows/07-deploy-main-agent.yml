@@ -41,10 +41,11 @@ jobs:
           echo ""
           echo "7.a Tomar nota del valor de 'Agent ID'"
 
+          echo "https://learn.microsoft.com/en-us/azure/ai-foundry/concepts/rbac-azure-ai-foundry#error-principal-doesnt-have-access-to-apioperation"
           echo "Ir a prjcantolao"
           echo "Access control (IAM)"
           echo "Grant access to this resource -> Add role assignment"
-          echo "Cognitive Services OpenAI Contributor"
+          echo "Azure AI Project Manager"
           echo "+ Select members -> github-sp"
           echo "Select -> Review + assign"
 
@@ -100,10 +101,10 @@ jobs:
 
 
           # Escapar las instrucciones para JSON (RECOMENDADO)
-          INSTRUCTIONS=$(cat ./main-agent/instructions/credits.txt | jq -Rs .)
+          # INSTRUCTIONS=$(cat ./main-agent/instructions/credits.txt | jq -Rs .)
           
           # Este sí funcionó
-          # INSTRUCTIONS=$(cat ./main-agent/instructions/credits.txt | sed 's/"/\\"/g')
+          INSTRUCTIONS=$(cat ./main-agent/instructions/credits.txt | sed 's/"/\\"/g')
           
           # Juntar varios archvios en uno solo y en orden alfabético
           # cat ./main-agent/instructions/*.txt > ./main-agent/instructions/combined_instructions.txt
