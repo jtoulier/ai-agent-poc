@@ -17,7 +17,6 @@ public interface RelationshipManagerMapper {
 
     // DTO <-> Entity
     RelationshipManagerDTO fromEntityToDTO(RelationshipManagerEntity relationshipManagerEntity);
-    RelationshipManagerEntity fromDTOToEntity(RelationshipManagerDTO relationshipManagerDTO);
 
     // Response <- DTO
     LoginRelationshipManagerResponse fromDTOToLoginResponse(RelationshipManagerDTO relationshipManagerDTO);

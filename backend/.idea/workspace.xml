@@ -4,17 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="533b2072-edab-4355-8a14-c4c38ff6da44" name="Changes" comment="customer">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/LoanRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/LoanResource.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/LoanService.java" afterDir="false" />
+    <list default="true" id="533b2072-edab-4355-8a14-c4c38ff6da44" name="Changes" comment="loans">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/PaymentRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/PaymentResource.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/service/PaymentService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/LoanMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/LoanMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/CreateLoanResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/CreateLoanResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/GetLoanByIdResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/GetLoanByIdResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/UpdateLoanResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/response/UpdateLoanResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/CustomerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/repository/CustomerRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/CustomerResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/CustomerResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/PaymentMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/PaymentMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/RelationshipManagerMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/mapper/RelationshipManagerMapper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -181,7 +177,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760738086106</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="loans">
+      <option name="closed" value="true" />
+      <created>1760743104252</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1760743104252</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -190,6 +194,7 @@
     <MESSAGE value="Antes de re-re-cambios" />
     <MESSAGE value="Con fe otra vez. No funca el MCP SQL SErver" />
     <MESSAGE value="customer" />
-    <option name="LAST_COMMIT_MESSAGE" value="customer" />
+    <MESSAGE value="loans" />
+    <option name="LAST_COMMIT_MESSAGE" value="loans" />
   </component>
 </project>
