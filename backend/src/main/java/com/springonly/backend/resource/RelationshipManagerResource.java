@@ -7,6 +7,9 @@ import com.springonly.backend.model.dto.RelationshipManagerDTO;
 import com.springonly.backend.model.request.LoginRelationshipManagerRequest;
 import com.springonly.backend.model.request.UpdateRelationshipManagerThreadIdRequest;
 import com.springonly.backend.model.response.GetCustomerByIdResponse;
+import com.springonly.backend.model.response.GetRelationshipManagerByIdResponse;
+import com.springonly.backend.model.response.LoginRelationshipManagerResponse;
+import com.springonly.backend.model.response.UpdateRelationshipManagerThreadIdResponse;
 import com.springonly.backend.model.response.generic.ErrorResponse;
 import com.springonly.backend.service.CustomerService;
 import com.springonly.backend.service.RelationshipManagerService;
@@ -15,19 +18,15 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import org.eclipse.microprofile.openapi.annotations.Operation;
 
 import java.util.Comparator;
 import java.util.List;
-
-import com.springonly.backend.model.response.LoginRelationshipManagerResponse;
-import com.springonly.backend.model.response.UpdateRelationshipManagerThreadIdResponse;
-import com.springonly.backend.model.response.GetRelationshipManagerByIdResponse;
-
-import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
-import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
-import org.eclipse.microprofile.openapi.annotations.media.Content;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 
 @Path("/relationship-managers")
 @Produces(MediaType.APPLICATION_JSON)
@@ -50,6 +49,7 @@ public class RelationshipManagerResource {
 
     @POST
     @Path("/login")
+    @Operation(operationId = "loginRelationshipManager", summary = "Login relationship manager", description = "Authenticate a relationship manager and return session or token details.")
     @APIResponses({
         @APIResponse(
             responseCode = "200",
@@ -97,6 +97,7 @@ public class RelationshipManagerResource {
     @PATCH
     @Path("/{relationshipManagerId}")
     @Transactional
+    @Operation(operationId = "updateRelationshipManagerThreadId", summary = "Update thread id", description = "Update the thread id information for a relationship manager.")
     @APIResponses({
         @APIResponse(
             responseCode = "200",
@@ -146,6 +147,7 @@ public class RelationshipManagerResource {
 
     @GET
     @Path("/{relationshipManagerId}")
+    @Operation(operationId = "getRelationshipManagerById", summary = "Get relationship manager", description = "Retrieve relationship manager details by id.")
     @APIResponses({
         @APIResponse(
             responseCode = "200",
@@ -191,6 +193,7 @@ public class RelationshipManagerResource {
     
     @GET
     @Path("/{relationshipManagerId}/customers")
+    @Operation(operationId = "listCustomersByRelationshipManagerById", summary = "List customers", description = "List customers assigned to a specific relationship manager.")
     @APIResponses({
         @APIResponse(
             responseCode = "200",

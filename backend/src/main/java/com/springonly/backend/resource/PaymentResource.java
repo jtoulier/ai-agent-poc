@@ -4,7 +4,9 @@ import com.springonly.backend.mapper.PaymentMapper;
 import com.springonly.backend.model.dto.PaymentDTO;
 import com.springonly.backend.model.request.CreatePaymentRequest;
 import com.springonly.backend.model.request.UpdatePaymentRequest;
+import com.springonly.backend.model.response.CreatePaymentResponse;
 import com.springonly.backend.model.response.GetPaymentByIdResponse;
+import com.springonly.backend.model.response.UpdatePaymentResponse;
 import com.springonly.backend.model.response.generic.ErrorResponse;
 import com.springonly.backend.service.PaymentService;
 import jakarta.inject.Inject;
@@ -12,18 +14,15 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import org.eclipse.microprofile.openapi.annotations.Operation;
 
 import java.util.Comparator;
 import java.util.List;
-
-import com.springonly.backend.model.response.CreatePaymentResponse;
-import com.springonly.backend.model.response.UpdatePaymentResponse;
-
-import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
-import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
-import org.eclipse.microprofile.openapi.annotations.media.Content;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 
 @Path("/loans")
 @Produces(MediaType.APPLICATION_JSON)
@@ -44,6 +43,7 @@ public class PaymentResource {
     @POST
     @Path("/{loanId}/payments/{paymentNumber}")
     @Transactional
+    @Operation(operationId = "createPayment", summary = "Create payment", description = "Create a payment for a specific loan and payment number.")
     @APIResponses({
         @APIResponse(
             responseCode = "201",
@@ -85,6 +85,7 @@ public class PaymentResource {
     @PATCH
     @Path("/{loanId}/payments/{paymentNumber}")
     @Transactional
+    @Operation(operationId = "updatePayment", summary = "Update payment", description = "Update an existing payment for a loan identified by loanId and paymentNumber.")
     @APIResponses({
         @APIResponse(
             responseCode = "200",
@@ -131,6 +132,7 @@ public class PaymentResource {
     // =======================================================
     @GET
     @Path("/{loanId}/payments")
+    @Operation(operationId = "listPaymentsByLoanId", summary = "List payments", description = "List all payments associated to a given loan.")
     @APIResponses({
         @APIResponse(
             responseCode = "200",
@@ -176,6 +178,7 @@ public class PaymentResource {
     // =======================================================
     @GET
     @Path("/{loanId}/payments/{paymentNumber}")
+    @Operation(operationId = "getPaymentById", summary = "Get payment by id", description = "Retrieve a specific payment for a loan by loanId and paymentNumber.")
     @APIResponses({
         @APIResponse(
             responseCode = "200",

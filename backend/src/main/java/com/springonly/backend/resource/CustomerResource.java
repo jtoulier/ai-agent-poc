@@ -11,7 +11,6 @@ import com.springonly.backend.model.response.GetCustomerByIdResponse;
 import com.springonly.backend.model.response.GetLoanByIdResponse;
 import com.springonly.backend.model.response.UpdateCustomerResponse;
 import com.springonly.backend.model.response.generic.ErrorResponse;
-import com.springonly.backend.model.response.generic.LoanResponse;
 import com.springonly.backend.service.CustomerService;
 import com.springonly.backend.service.LoanService;
 import jakarta.inject.Inject;
@@ -19,11 +18,12 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
-import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
-import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 
 import java.util.Comparator;
 import java.util.List;
@@ -51,6 +51,7 @@ public class CustomerResource {
     @POST
     @Path("/")
     @Transactional
+    @Operation(operationId = "createCustomer", summary = "Create customer", description = "Create a new customer and return its created representation.")
     @APIResponses({
         @APIResponse(
             responseCode = "201",
@@ -87,6 +88,7 @@ public class CustomerResource {
     @PATCH
     @Path("/{customerId}")
     @Transactional
+    @Operation(operationId = "updateCustomer", summary = "Update customer", description = "Update customer data identified by customerId.")
     @APIResponses({
         @APIResponse(
             responseCode = "200",
@@ -149,6 +151,7 @@ public class CustomerResource {
     
     @GET
     @Path("/{customerId}")
+    @Operation(operationId = "getCustomerById", summary = "Get customer by id", description = "Retrieve customer details by customerId.")
     @APIResponses({
         @APIResponse(
             responseCode = "200",
@@ -195,6 +198,7 @@ public class CustomerResource {
     
     @GET
     @Path("/{customerId}/loans")
+    @Operation(operationId = "listLoansByCustomerId", summary = "List loans by customer", description = "List loans associated with the specified customerId.")
     @APIResponses({
         @APIResponse(
             responseCode = "200",

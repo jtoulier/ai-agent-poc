@@ -1,7 +1,6 @@
 package com.springonly.backend.service;
 
 import com.springonly.backend.model.dto.PaymentDTO;
-import com.springonly.backend.repository.LoanRepository;
 import com.springonly.backend.repository.PaymentRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

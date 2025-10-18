@@ -4,6 +4,9 @@ import com.springonly.backend.mapper.LoanMapper;
 import com.springonly.backend.model.dto.LoanDTO;
 import com.springonly.backend.model.request.CreateLoanRequest;
 import com.springonly.backend.model.request.UpdateLoanRequest;
+import com.springonly.backend.model.response.CreateLoanResponse;
+import com.springonly.backend.model.response.GetLoanByIdResponse;
+import com.springonly.backend.model.response.UpdateLoanResponse;
 import com.springonly.backend.model.response.generic.ErrorResponse;
 import com.springonly.backend.service.LoanService;
 import jakarta.inject.Inject;
@@ -11,17 +14,13 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
-import java.util.Optional;
-
-import com.springonly.backend.model.response.CreateLoanResponse;
-import com.springonly.backend.model.response.UpdateLoanResponse;
-import com.springonly.backend.model.response.GetLoanByIdResponse;
-
-import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
-import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+
+import java.util.Optional;
 
 @Path("/loans")
 @Produces(MediaType.APPLICATION_JSON)
@@ -39,6 +38,7 @@ public class LoanResource {
     @POST
     @Path("/")
     @Transactional
+    @Operation(operationId = "createLoan", summary = "Create loan", description = "Create a new loan for a customer and return the created loan information.")
     @APIResponses({
         @APIResponse(
             responseCode = "201",
@@ -76,6 +76,7 @@ public class LoanResource {
     @PATCH
     @Path("/{loanId}")
     @Transactional
+    @Operation(operationId = "updateLoan", summary = "Update loan", description = "Update an existing loan's details identified by loanId.")
     @APIResponses({
         @APIResponse(
             responseCode = "200",
@@ -134,6 +135,7 @@ public class LoanResource {
     
     @GET
     @Path("/{loanId}")
+    @Operation(operationId = "getLoanById", summary = "Get loan by id", description = "Retrieve detailed information for a loan identified by loanId.")
     @APIResponses({
         @APIResponse(
             responseCode = "200",
