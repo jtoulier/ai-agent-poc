@@ -22,7 +22,7 @@ jobs:
           echo "3.b Expandir 'Advanced options'"
           echo "3.c Nombrar al Azure AI Foundry resource como '${{ vars.INFRA_AZURE_AIFOUNDRY_RESOURCE_NAME }}'"
           echo "3.d Seleccionar la suscripción '${{ vars.INFRA_AZURE_SUBSCRIPTION_NAME }}'"
-          echo "3.e Seleccionar el grupo de recursos '${{ vars.INFRA_AZURE_RESOURCE_GROUP_NAME }}'"
+          echo "3.e Seleccionar el grupo de recursos '${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}'"
           echo "3.f Seleccionar la región '${{ vars.INFRA_AZURE_LOCATION }}'"
           echo "3.g Dar clic en 'Create'"
           echo ""
