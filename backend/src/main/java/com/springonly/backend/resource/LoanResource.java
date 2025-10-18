@@ -14,6 +14,15 @@ import jakarta.ws.rs.core.Response;
 
 import java.util.Optional;
 
+import com.springonly.backend.model.response.CreateLoanResponse;
+import com.springonly.backend.model.response.UpdateLoanResponse;
+import com.springonly.backend.model.response.GetLoanByIdResponse;
+
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
 @Path("/loans")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -30,6 +39,24 @@ public class LoanResource {
     @POST
     @Path("/")
     @Transactional
+    @APIResponses({
+        @APIResponse(
+            responseCode = "201",
+            description = "Loan created successfully",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = CreateLoanResponse.class)
+            )
+        ),
+        @APIResponse(
+            responseCode = "400",
+            description = "Invalid request",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        )
+    })
     public Response createLoan(
         CreateLoanRequest request
     ) {
@@ -49,6 +76,32 @@ public class LoanResource {
     @PATCH
     @Path("/{loanId}")
     @Transactional
+    @APIResponses({
+        @APIResponse(
+            responseCode = "200",
+            description = "Loan updated successfully",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = UpdateLoanResponse.class)
+            )
+        ),
+        @APIResponse(
+            responseCode = "400",
+            description = "Invalid request",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        ),
+        @APIResponse(
+            responseCode = "404",
+            description = "Loan not found",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        )
+    })
     public Response updateLoan(
         @PathParam("loanId") Integer loanId,
         UpdateLoanRequest request
@@ -81,6 +134,24 @@ public class LoanResource {
     
     @GET
     @Path("/{loanId}")
+    @APIResponses({
+        @APIResponse(
+            responseCode = "200",
+            description = "Loan retrieved successfully",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = GetLoanByIdResponse.class)
+            )
+        ),
+        @APIResponse(
+            responseCode = "404",
+            description = "Loan not found",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        )
+    })
     public Response getLoanById(
         @PathParam("loanId") Integer loanId
     ) {

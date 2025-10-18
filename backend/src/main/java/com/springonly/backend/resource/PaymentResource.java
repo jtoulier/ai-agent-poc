@@ -16,6 +16,15 @@ import jakarta.ws.rs.core.Response;
 import java.util.Comparator;
 import java.util.List;
 
+import com.springonly.backend.model.response.CreatePaymentResponse;
+import com.springonly.backend.model.response.UpdatePaymentResponse;
+
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
+
 @Path("/loans")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -35,6 +44,24 @@ public class PaymentResource {
     @POST
     @Path("/{loanId}/payments/{paymentNumber}")
     @Transactional
+    @APIResponses({
+        @APIResponse(
+            responseCode = "201",
+            description = "Payment created successfully",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = CreatePaymentResponse.class)
+            )
+        ),
+        @APIResponse(
+            responseCode = "400",
+            description = "Invalid request",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        )
+    })
     public Response createPayment(
         @PathParam("loanId") Integer loanId,
         @PathParam("paymentNumber") Short paymentNumber,
@@ -58,6 +85,24 @@ public class PaymentResource {
     @PATCH
     @Path("/{loanId}/payments/{paymentNumber}")
     @Transactional
+    @APIResponses({
+        @APIResponse(
+            responseCode = "200",
+            description = "Payment updated successfully",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = UpdatePaymentResponse.class)
+            )
+        ),
+        @APIResponse(
+            responseCode = "404",
+            description = "Payment not found",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        )
+    })
     public Response updatePayment(
         @PathParam("loanId") Integer loanId,
         @PathParam("paymentNumber") Short paymentNumber,
@@ -86,6 +131,24 @@ public class PaymentResource {
     // =======================================================
     @GET
     @Path("/{loanId}/payments")
+    @APIResponses({
+        @APIResponse(
+            responseCode = "200",
+            description = "Payments list for loan",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(type = SchemaType.ARRAY, implementation = GetPaymentByIdResponse.class)
+            )
+        ),
+        @APIResponse(
+            responseCode = "404",
+            description = "No payments found for loan",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        )
+    })
     public Response listPaymentsByLoanId(
         @PathParam("loanId") Integer loanId
     ) {
@@ -113,6 +176,24 @@ public class PaymentResource {
     // =======================================================
     @GET
     @Path("/{loanId}/payments/{paymentNumber}")
+    @APIResponses({
+        @APIResponse(
+            responseCode = "200",
+            description = "Payment retrieved successfully",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = GetPaymentByIdResponse.class)
+            )
+        ),
+        @APIResponse(
+            responseCode = "404",
+            description = "Payment not found",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        )
+    })
     public Response getPaymentById(
         @PathParam("loanId") Integer loanId,
         @PathParam("paymentNumber") Short paymentNumber

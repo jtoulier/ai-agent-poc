@@ -19,6 +19,11 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 
 import java.util.Comparator;
 import java.util.List;
@@ -46,6 +51,24 @@ public class CustomerResource {
     @POST
     @Path("/")
     @Transactional
+    @APIResponses({
+        @APIResponse(
+            responseCode = "201",
+            description = "Customer created successfully",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = CreateCustomerResponse.class)
+            )
+        ),
+        @APIResponse(
+            responseCode = "400",
+            description = "Invalid request",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        )
+    })
     public Response createCustomer(
         CreateCustomerRequest request
     ) {
@@ -64,6 +87,32 @@ public class CustomerResource {
     @PATCH
     @Path("/{customerId}")
     @Transactional
+    @APIResponses({
+        @APIResponse(
+            responseCode = "200",
+            description = "Customer updated successfully",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = UpdateCustomerResponse.class)
+            )
+        ),
+        @APIResponse(
+            responseCode = "400",
+            description = "Invalid request",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        ),
+        @APIResponse(
+            responseCode = "404",
+            description = "Customer not found",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        )
+    })
     public Response updateCustomer(
         @PathParam("customerId") String customerId,
         UpdateCustomerRequest request
@@ -100,6 +149,24 @@ public class CustomerResource {
     
     @GET
     @Path("/{customerId}")
+    @APIResponses({
+        @APIResponse(
+            responseCode = "200",
+            description = "Customer retrieved successfully",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = GetCustomerByIdResponse.class)
+            )
+        ),
+        @APIResponse(
+            responseCode = "404",
+            description = "Customer not found",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        )
+    })
     public Response getCustomerById(
         @PathParam("customerId") String customerId
     ) {
@@ -128,6 +195,24 @@ public class CustomerResource {
     
     @GET
     @Path("/{customerId}/loans")
+    @APIResponses({
+        @APIResponse(
+            responseCode = "200",
+            description = "Loans list for customer",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(type = SchemaType.ARRAY, implementation = GetLoanByIdResponse.class)
+            )
+        ),
+        @APIResponse(
+            responseCode = "404",
+            description = "No loans found for customer",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        )
+    })
     public Response listLoansByCustomerId(
         @PathParam("customerId") String customerId
     ) {

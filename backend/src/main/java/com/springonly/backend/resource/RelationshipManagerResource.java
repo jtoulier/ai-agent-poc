@@ -19,6 +19,16 @@ import jakarta.ws.rs.core.Response;
 import java.util.Comparator;
 import java.util.List;
 
+import com.springonly.backend.model.response.LoginRelationshipManagerResponse;
+import com.springonly.backend.model.response.UpdateRelationshipManagerThreadIdResponse;
+import com.springonly.backend.model.response.GetRelationshipManagerByIdResponse;
+
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
+
 @Path("/relationship-managers")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -40,6 +50,24 @@ public class RelationshipManagerResource {
 
     @POST
     @Path("/login")
+    @APIResponses({
+        @APIResponse(
+            responseCode = "200",
+            description = "Login successful",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = LoginRelationshipManagerResponse.class)
+            )
+        ),
+        @APIResponse(
+            responseCode = "401",
+            description = "Unauthorized",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        )
+    })
     public Response loginRelationshipManager(
         LoginRelationshipManagerRequest request
     ) {
@@ -69,6 +97,24 @@ public class RelationshipManagerResource {
     @PATCH
     @Path("/{relationshipManagerId}")
     @Transactional
+    @APIResponses({
+        @APIResponse(
+            responseCode = "200",
+            description = "Relationship manager thread id updated",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = UpdateRelationshipManagerThreadIdResponse.class)
+            )
+        ),
+        @APIResponse(
+            responseCode = "404",
+            description = "Relationship manager not found",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        )
+    })
     public Response updateRelationshipManagerThreadId(
         @PathParam("relationshipManagerId") String relationshipManagerId,
         UpdateRelationshipManagerThreadIdRequest request
@@ -100,6 +146,24 @@ public class RelationshipManagerResource {
 
     @GET
     @Path("/{relationshipManagerId}")
+    @APIResponses({
+        @APIResponse(
+            responseCode = "200",
+            description = "Relationship manager retrieved successfully",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = GetRelationshipManagerByIdResponse.class)
+            )
+        ),
+        @APIResponse(
+            responseCode = "404",
+            description = "Relationship manager not found",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        )
+    })
     public Response getRelationshipManagerById(
         @PathParam("relationshipManagerId") String relationshipManagerId
     ) {
@@ -127,6 +191,24 @@ public class RelationshipManagerResource {
     
     @GET
     @Path("/{relationshipManagerId}/customers")
+    @APIResponses({
+        @APIResponse(
+            responseCode = "200",
+            description = "Customers list for relationship manager",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(type = SchemaType.ARRAY, implementation = GetCustomerByIdResponse.class)
+            )
+        ),
+        @APIResponse(
+            responseCode = "404",
+            description = "No customers found for relationship manager",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        )
+    })
     public Response listCustomersByRelationshipManagerById(
         @PathParam("relationshipManagerId") String relationshipManagerId
     ) {

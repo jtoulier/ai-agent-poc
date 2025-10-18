@@ -4,8 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="533b2072-edab-4355-8a14-c4c38ff6da44" name="Changes" comment="openapi">
+    <list default="true" id="533b2072-edab-4355-8a14-c4c38ff6da44" name="Changes" comment="con apiresponse">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/CustomerResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/CustomerResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/LoanResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/LoanResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/PaymentResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/PaymentResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/RelationshipManagerResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/RelationshipManagerResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/openapi/openapi.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/openapi/openapi.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -219,6 +224,7 @@
     <MESSAGE value="loans" />
     <MESSAGE value="payments" />
     <MESSAGE value="openapi" />
-    <option name="LAST_COMMIT_MESSAGE" value="openapi" />
+    <MESSAGE value="con apiresponse" />
+    <option name="LAST_COMMIT_MESSAGE" value="con apiresponse" />
   </component>
 </project>

@@ -1,265 +1,330 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "SpringOnly Backend API",
-    "version": "1.0.0",
-    "description": "API REST para la gestión de clientes, préstamos y pagos en el sistema SpringOnly."
+    "title": "Simple Credit API",
+    "version": "1.0.1",
+    "description": "API minimalista con autenticación contextual por usuario loggeado"
   },
   "servers": [
     {
       "url": "https://backend.springonly.com",
-      "description": "Servidor principal de SpringOnly"
+      "description": "Servidor Spring Only"
     }
   ],
   "paths": {
     "/api/customers": {
-      "get": {
-        "operationId": "getCustomers",
-        "summary": "Obtener la lista de clientes visibles para el usuario actual",
-        "parameters": [
-          {
-            "name": "X-Relationship-Manager-Id",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "x-ms-dynamic-value": "relationshipManagerId",
-            "description": "Identificador único del usuario loggeado (proporcionado por la app o thread)."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Lista de clientes visibles para el usuario actual",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Customer"
-                  }
-                }
-              }
-            }
+      "parameters": [
+        {
+          "name": "X-Relationship-Manager-Id",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string"
           },
-          "401": {
-            "description": "No autorizado: falta o es inválido el header X-Relationship-Manager-Id"
-          }
+          "x-ms-dynamic-value": "relationshipManagerId",
+          "description": "Identificador único del usuario loggeado (proporcionado por la app o thread)."
         }
-      },
+      ],
       "post": {
         "operationId": "createCustomer",
-        "summary": "Registrar un nuevo cliente en el sistema",
-        "parameters": [
-          {
-            "name": "X-Relationship-Manager-Id",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "x-ms-dynamic-value": "relationshipManagerId",
-            "description": "Identificador único del usuario loggeado (proporcionado por la app o thread)."
-          }
-        ],
+        "summary": "Crear un nuevo cliente en el sistema",
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Customer"
+                "$ref": "#/components/schemas/CreateCustomerRequest"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "Cliente creado exitosamente"
           },
           "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "No autorizado: falta o es inválido el header X-Relationship-Manager-Id"
+            "description": "Solicitud inválida: revisar datos de entrada"
           }
+        },
+        "tags": [
+          "Customer Resource"
+        ]
+      }
+    },
+    "/api/customers/{customerId}": {
+      "parameters": [
+        {
+          "name": "X-Relationship-Manager-Id",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "x-ms-dynamic-value": "relationshipManagerId",
+          "description": "Identificador único del usuario loggeado (proporcionado por la app o thread)."
         }
+      ],
+      "patch": {
+        "operationId": "updateCustomer",
+        "summary": "Actualizar información de un cliente existente",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCustomerRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Cliente actualizado correctamente"
+          }
+        },
+        "tags": [
+          "Customer Resource"
+        ]
+      },
+      "get": {
+        "operationId": "getCustomerById",
+        "summary": "Obtener los detalles de un cliente por su ID",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalles del cliente recuperados correctamente"
+          }
+        },
+        "tags": [
+          "Customer Resource"
+        ]
+      }
+    },
+    "/api/customers/{customerId}/loans": {
+      "parameters": [
+        {
+          "name": "X-Relationship-Manager-Id",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "x-ms-dynamic-value": "relationshipManagerId",
+          "description": "Identificador único del usuario loggeado (proporcionado por la app o thread)."
+        }
+      ],
+      "get": {
+        "operationId": "listLoansByCustomerId",
+        "summary": "Listar todos los préstamos asociados a un cliente",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de préstamos del cliente recuperada correctamente"
+          }
+        },
+        "tags": [
+          "Customer Resource"
+        ]
       }
     },
     "/api/loans": {
+      "parameters": [
+        {
+          "name": "X-Relationship-Manager-Id",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "x-ms-dynamic-value": "relationshipManagerId",
+          "description": "Identificador único del usuario loggeado (proporcionado por la app o thread)."
+        }
+      ],
       "post": {
         "operationId": "createLoan",
-        "summary": "Crear un nuevo préstamo asociado a un cliente existente",
-        "parameters": [
-          {
-            "name": "X-Relationship-Manager-Id",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "x-ms-dynamic-value": "relationshipManagerId",
-            "description": "Identificador único del usuario loggeado (proporcionado por la app o thread)."
-          }
-        ],
+        "summary": "Crear un nuevo préstamo para un cliente",
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Loan"
+                "$ref": "#/components/schemas/CreateLoanRequest"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "Préstamo creado exitosamente"
           },
           "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "No autorizado: falta o es inválido el header X-Relationship-Manager-Id"
+            "description": "Solicitud inválida: revisar datos del préstamo"
           }
-        }
+        },
+        "tags": [
+          "Loan Resource"
+        ]
       }
     },
     "/api/loans/{loanId}": {
-      "get": {
-        "operationId": "getLoanById",
-        "summary": "Obtener el detalle de un préstamo por su identificador",
-        "parameters": [
-          {
-            "name": "loanId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
+      "parameters": [
+        {
+          "name": "X-Relationship-Manager-Id",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string"
           },
-          {
-            "name": "X-Relationship-Manager-Id",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "x-ms-dynamic-value": "relationshipManagerId",
-            "description": "Identificador único del usuario loggeado (proporcionado por la app o thread)."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Detalles del préstamo solicitado",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Loan"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Préstamo no encontrado"
-          }
+          "x-ms-dynamic-value": "relationshipManagerId",
+          "description": "Identificador único del usuario loggeado (proporcionado por la app o thread)."
         }
-      },
+      ],
       "patch": {
         "operationId": "updateLoan",
-        "summary": "Actualizar los datos de un préstamo existente",
+        "summary": "Actualizar información de un préstamo existente",
         "parameters": [
           {
             "name": "loanId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int32"
             }
-          },
-          {
-            "name": "X-Relationship-Manager-Id",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "x-ms-dynamic-value": "relationshipManagerId",
-            "description": "Identificador único del usuario loggeado (proporcionado por la app o thread)."
           }
         ],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Loan"
+                "$ref": "#/components/schemas/UpdateLoanRequest"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
-            "description": "Préstamo actualizado exitosamente"
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "404": {
-            "description": "Préstamo no encontrado"
-          }
-        }
-      }
-    },
-    "/api/payments": {
-      "post": {
-        "operationId": "createPayment",
-        "summary": "Registrar un nuevo pago asociado a un préstamo",
-        "parameters": [
-          {
-            "name": "X-Relationship-Manager-Id",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "x-ms-dynamic-value": "relationshipManagerId",
-            "description": "Identificador único del usuario loggeado (proporcionado por la app o thread)."
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Payment"
-              }
-            }
+            "description": "Préstamo actualizado correctamente"
           }
         },
-        "responses": {
-          "201": {
-            "description": "Pago registrado exitosamente"
-          },
-          "400": {
-            "description": "Solicitud inválida"
-          },
-          "401": {
-            "description": "No autorizado: falta o es inválido el header X-Relationship-Manager-Id"
-          }
-        }
-      }
-    },
-    "/api/payments/{loanId}/{paymentNumber}": {
+        "tags": [
+          "Loan Resource"
+        ]
+      },
       "get": {
-        "operationId": "getPaymentById",
-        "summary": "Obtener el detalle de un pago específico dado el préstamo y número de cuota",
+        "operationId": "getLoanById",
+        "summary": "Obtener detalles de un préstamo por su ID",
         "parameters": [
           {
             "name": "loanId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalles del préstamo recuperados correctamente"
+          }
+        },
+        "tags": [
+          "Loan Resource"
+        ]
+      }
+    },
+    "/api/loans/{loanId}/payments": {
+      "parameters": [
+        {
+          "name": "X-Relationship-Manager-Id",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "x-ms-dynamic-value": "relationshipManagerId",
+          "description": "Identificador único del usuario loggeado (proporcionado por la app o thread)."
+        }
+      ],
+      "get": {
+        "operationId": "listPaymentsByLoanId",
+        "summary": "Listar todos los pagos asociados a un préstamo",
+        "parameters": [
+          {
+            "name": "loanId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de pagos del préstamo recuperada correctamente"
+          }
+        },
+        "tags": [
+          "Payment Resource"
+        ]
+      }
+    },
+    "/api/loans/{loanId}/payments/{paymentNumber}": {
+      "parameters": [
+        {
+          "name": "X-Relationship-Manager-Id",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "x-ms-dynamic-value": "relationshipManagerId",
+          "description": "Identificador único del usuario loggeado (proporcionado por la app o thread)."
+        }
+      ],
+      "patch": {
+        "operationId": "updatePayment",
+        "summary": "Actualizar un pago específico de un préstamo",
+        "parameters": [
+          {
+            "name": "loanId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             }
           },
           {
@@ -267,113 +332,379 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int16"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePaymentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Pago actualizado correctamente"
+          }
+        },
+        "tags": [
+          "Payment Resource"
+        ]
+      },
+      "get": {
+        "operationId": "getPaymentById",
+        "summary": "Obtener detalles de un pago específico",
+        "parameters": [
+          {
+            "name": "loanId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             }
           },
           {
-            "name": "X-Relationship-Manager-Id",
-            "in": "header",
+            "name": "paymentNumber",
+            "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
-            },
-            "x-ms-dynamic-value": "relationshipManagerId",
-            "description": "Identificador único del usuario loggeado (proporcionado por la app o thread)."
+              "type": "integer",
+              "format": "int16"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Detalles del pago solicitado",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Payment"
-                }
+            "description": "Detalles del pago recuperados correctamente"
+          }
+        },
+        "tags": [
+          "Payment Resource"
+        ]
+      },
+      "post": {
+        "operationId": "createPayment",
+        "summary": "Registrar un nuevo pago para un préstamo",
+        "parameters": [
+          {
+            "name": "loanId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "paymentNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int16"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePaymentRequest"
               }
             }
           },
-          "404": {
-            "description": "Pago no encontrado"
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Pago creado exitosamente"
+          },
+          "400": {
+            "description": "Solicitud inválida: revisar datos del pago"
           }
+        },
+        "tags": [
+          "Payment Resource"
+        ]
+      }
+    },
+    "/api/relationship-managers/login": {
+      "parameters": [
+        {
+          "name": "X-Relationship-Manager-Id",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "x-ms-dynamic-value": "relationshipManagerId",
+          "description": "Identificador único del usuario loggeado (proporcionado por la app o thread)."
         }
+      ],
+      "post": {
+        "operationId": "loginRelationshipManager",
+        "summary": "Iniciar sesión de un Relationship Manager",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRelationshipManagerRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Inicio de sesión exitoso"
+          },
+          "400": {
+            "description": "Solicitud inválida: credenciales incorrectas"
+          }
+        },
+        "tags": [
+          "Relationship Manager Resource"
+        ]
+      }
+    },
+    "/api/relationship-managers/{relationshipManagerId}": {
+      "parameters": [
+        {
+          "name": "X-Relationship-Manager-Id",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "x-ms-dynamic-value": "relationshipManagerId",
+          "description": "Identificador único del usuario loggeado (proporcionado por la app o thread)."
+        }
+      ],
+      "patch": {
+        "operationId": "updateRelationshipManagerThreadId",
+        "summary": "Actualizar el threadId del Relationship Manager",
+        "parameters": [
+          {
+            "name": "relationshipManagerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRelationshipManagerThreadIdRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Thread ID actualizado correctamente"
+          }
+        },
+        "tags": [
+          "Relationship Manager Resource"
+        ]
+      },
+      "get": {
+        "operationId": "getRelationshipManagerById",
+        "summary": "Obtener detalles de un Relationship Manager por su ID",
+        "parameters": [
+          {
+            "name": "relationshipManagerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalles del Relationship Manager recuperados correctamente"
+          }
+        },
+        "tags": [
+          "Relationship Manager Resource"
+        ]
+      }
+    },
+    "/api/relationship-managers/{relationshipManagerId}/customers": {
+      "parameters": [
+        {
+          "name": "X-Relationship-Manager-Id",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "x-ms-dynamic-value": "relationshipManagerId",
+          "description": "Identificador único del usuario loggeado (proporcionado por la app o thread)."
+        }
+      ],
+      "get": {
+        "operationId": "listCustomersByRelationshipManagerById",
+        "summary": "Listar todos los clientes gestionados por un Relationship Manager",
+        "parameters": [
+          {
+            "name": "relationshipManagerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de clientes recuperada correctamente"
+          }
+        },
+        "tags": [
+          "Relationship Manager Resource"
+        ]
       }
     }
   },
   "components": {
     "schemas": {
-      "Customer": {
+      "CreateCustomerRequest": {
         "type": "object",
         "properties": {
           "customerId": {
-            "type": "integer"
+            "type": "string"
           },
           "customerName": {
             "type": "string"
           },
-          "documentNumber": {
+          "customerTypeId": {
             "type": "string"
           },
-          "email": {
+          "riskCategoryId": {
+            "type": "string"
+          },
+          "lineOfCreditAmount": {
+            "type": "number"
+          },
+          "relationshipManagerId": {
             "type": "string"
           }
         }
       },
-      "Loan": {
+      "CreateLoanRequest": {
         "type": "object",
         "properties": {
-          "loanId": {
-            "type": "integer"
-          },
           "customerId": {
-            "type": "integer"
+            "type": "string"
           },
           "currencyId": {
             "type": "string"
           },
           "principalAmount": {
-            "type": "number",
-            "format": "double"
+            "type": "number"
           },
           "interestRate": {
-            "type": "number",
-            "format": "double"
+            "type": "number"
+          },
+          "loanDisbursementDate": {
+            "$ref": "#/components/schemas/LocalDate"
           },
           "numberOfMonthlyPayments": {
-            "type": "integer"
+            "type": "integer",
+            "format": "int16"
           }
         }
       },
-      "Payment": {
+      "CreatePaymentRequest": {
         "type": "object",
         "properties": {
-          "loanId": {
-            "type": "integer"
-          },
-          "paymentNumber": {
-            "type": "integer"
-          },
           "dueDate": {
-            "type": "string",
-            "format": "date"
+            "$ref": "#/components/schemas/LocalDate"
           },
           "principalAmount": {
-            "type": "number",
-            "format": "double"
+            "type": "number"
           },
           "interestAmount": {
-            "type": "number",
-            "format": "double"
-          },
-          "totalPaymentAmount": {
-            "type": "number",
-            "format": "double"
-          },
-          "paymentStateId": {
+            "type": "number"
+          }
+        }
+      },
+      "LocalDate": {
+        "type": "string",
+        "format": "date",
+        "examples": [
+          "2022-03-10"
+        ]
+      },
+      "LoginRelationshipManagerRequest": {
+        "type": "object",
+        "properties": {
+          "relationshipManagerId": {
             "type": "string"
           },
-          "writtenAt": {
-            "type": "string",
-            "format": "date-time"
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "UUID": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+      },
+      "UpdateCustomerRequest": {
+        "type": "object",
+        "properties": {
+          "customerName": {
+            "type": "string"
+          },
+          "customerTypeId": {
+            "type": "string"
+          },
+          "riskCategoryId": {
+            "type": "string"
+          },
+          "lineOfCreditAmount": {
+            "type": "number"
+          },
+          "relationshipManagerId": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateLoanRequest": {
+        "type": "object",
+        "properties": {
+          "loanStateId": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdatePaymentRequest": {
+        "type": "object",
+        "properties": {
+          "paymentStateId": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateRelationshipManagerThreadIdRequest": {
+        "type": "object",
+        "properties": {
+          "threadId": {
+            "$ref": "#/components/schemas/UUID"
           }
         }
       }
