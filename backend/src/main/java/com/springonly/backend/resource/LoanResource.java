@@ -14,14 +14,25 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.ExampleObject;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
-import org.eclipse.microprofile.openapi.annotations.Operation;
 
 import java.util.Optional;
 
+@Schema(
+    name = "LoanResource",
+    description = """
+        Handles loan-related operations such as:
+          - Creating new loans for customers
+          - Updating existing loans
+          - Retrieving loan details by ID
+        """
+)
 @Path("/loans")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -38,14 +49,61 @@ public class LoanResource {
     @POST
     @Path("/")
     @Transactional
-    @Operation(operationId = "createLoan", summary = "Create loan", description = "Create a new loan for a customer and return the created loan information.")
+    @Operation(
+        operationId = "createLoan",
+        summary = "Create a new loan",
+        description = "Creates a loan for a customer. Requires a CreateLoanRequest payload with the necessary loan data."
+    )
+    @RequestBody(
+        description = "CreateLoanRequest payload",
+        required = true,
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = CreateLoanRequest.class),
+            examples = {
+                @ExampleObject(
+                    name = "Create loan example",
+                    summary = "Request to create a loan",
+                    value = """
+                    {
+                      "customerId": "CUST12345",
+                      "currencyId": "PEN",
+                      "principalAmount": 10000.00,
+                      "interestRate": 5.5,
+                      "loanDisbursementDate": "2025-09-01",
+                      "numberOfMonthlyPayments": 36
+                    }
+                    """
+                )
+            }
+        )
+    )
     @APIResponses({
         @APIResponse(
             responseCode = "201",
             description = "Loan created successfully",
             content = @Content(
                 mediaType = "application/json",
-                schema = @Schema(implementation = CreateLoanResponse.class)
+                schema = @Schema(implementation = CreateLoanResponse.class),
+                examples = {
+                    @ExampleObject(
+                        name = "CreateLoanResponse example",
+                        summary = "Created loan representation",
+                        value = """
+                        {
+                          "loanId": 12345,
+                          "customerId": "CUST12345",
+                          "currencyId": "PEN",
+                          "principalAmount": 10000.00,
+                          "interestRate": 5.5,
+                          "loanDisbursementDate": "2025-09-01",
+                          "numberOfMonthlyPayments": 36,
+                          "loanStateId": "EN EVALUACION",
+                          "writtenAt": "2025-10-07T22:57:09-05:00"
+                        }
+                        """
+                    )
+                }
             )
         ),
         @APIResponse(
@@ -53,7 +111,19 @@ public class LoanResource {
             description = "Invalid request",
             content = @Content(
                 mediaType = "application/json",
-                schema = @Schema(implementation = ErrorResponse.class)
+                schema = @Schema(implementation = ErrorResponse.class),
+                examples = {
+                    @ExampleObject(
+                        name = "CreateLoan error",
+                        summary = "Invalid input example",
+                        value = """
+                        {
+                          "message": "principalAmount must be greater than 0",
+                          "code": "INVALID_REQUEST"
+                        }
+                        """
+                    )
+                }
             )
         )
     })
@@ -76,14 +146,56 @@ public class LoanResource {
     @PATCH
     @Path("/{loanId}")
     @Transactional
-    @Operation(operationId = "updateLoan", summary = "Update loan", description = "Update an existing loan's details identified by loanId.")
+    @Operation(
+        operationId = "updateLoan",
+        summary = "Update an existing loan",
+        description = "Updates loan fields for the given loanId using UpdateLoanRequest."
+    )
+    @RequestBody(
+        description = "UpdateLoanRequest payload",
+        required = true,
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = UpdateLoanRequest.class),
+            examples = {
+                @ExampleObject(
+                    name = "Update loan example",
+                    summary = "Request to update a loan state",
+                    value = """
+                    {
+                      "loanStateId": "VIGENTE"
+                    }
+                    """
+                )
+            }
+        )
+    )
     @APIResponses({
         @APIResponse(
             responseCode = "200",
             description = "Loan updated successfully",
             content = @Content(
                 mediaType = "application/json",
-                schema = @Schema(implementation = UpdateLoanResponse.class)
+                schema = @Schema(implementation = UpdateLoanResponse.class),
+                examples = {
+                    @ExampleObject(
+                        name = "UpdateLoanResponse example",
+                        summary = "Updated loan representation",
+                        value = """
+                        {
+                          "loanId": 12345,
+                          "customerId": "CUST12345",
+                          "currencyId": "USD",
+                          "principalAmount": 10000.00,
+                          "interestRate": 5.5,
+                          "loanDisbursementDate": "2025-09-01",
+                          "numberOfMonthlyPayments": 36,
+                          "loanStateId": "VIGENTE",
+                          "writtenAt": "2025-10-07T23:05:32-05:00"
+                        }
+                        """
+                    )
+                }
             )
         ),
         @APIResponse(
@@ -91,7 +203,19 @@ public class LoanResource {
             description = "Invalid request",
             content = @Content(
                 mediaType = "application/json",
-                schema = @Schema(implementation = ErrorResponse.class)
+                schema = @Schema(implementation = ErrorResponse.class),
+                examples = {
+                    @ExampleObject(
+                        name = "UpdateLoan error",
+                        summary = "Invalid update example",
+                        value = """
+                        {
+                          "message": "Invalid update data",
+                          "code": "INVALID_UPDATE"
+                        }
+                        """
+                    )
+                }
             )
         ),
         @APIResponse(
@@ -99,7 +223,19 @@ public class LoanResource {
             description = "Loan not found",
             content = @Content(
                 mediaType = "application/json",
-                schema = @Schema(implementation = ErrorResponse.class)
+                schema = @Schema(implementation = ErrorResponse.class),
+                examples = {
+                    @ExampleObject(
+                        name = "UpdateLoan not found",
+                        summary = "Loan to update was not found",
+                        value = """
+                        {
+                          "message": "El préstamo indicado no existe",
+                          "code": "LN002"
+                        }
+                        """
+                    )
+                }
             )
         )
     })
@@ -135,14 +271,37 @@ public class LoanResource {
     
     @GET
     @Path("/{loanId}")
-    @Operation(operationId = "getLoanById", summary = "Get loan by id", description = "Retrieve detailed information for a loan identified by loanId.")
+    @Operation(
+        operationId = "getLoanById",
+        summary = "Get loan by ID",
+        description = "Retrieves the loan details for the provided loanId."
+    )
     @APIResponses({
         @APIResponse(
             responseCode = "200",
             description = "Loan retrieved successfully",
             content = @Content(
                 mediaType = "application/json",
-                schema = @Schema(implementation = GetLoanByIdResponse.class)
+                schema = @Schema(implementation = GetLoanByIdResponse.class),
+                examples = {
+                    @ExampleObject(
+                        name = "GetLoanByIdResponse example",
+                        summary = "A loan retrieved by id",
+                        value = """
+                        {
+                          "loanId": 12345,
+                          "customerId": "CUST12345",
+                          "currencyId": "PEN",
+                          "principalAmount": 10000.00,
+                          "interestRate": 5.5,
+                          "loanDisbursementDate": "2025-09-01",
+                          "numberOfMonthlyPayments": 36,
+                          "loanStateId": "VIGENTE",
+                          "writtenAt": "2025-09-16T15:45:00-05:00"
+                        }
+                        """
+                    )
+                }
             )
         ),
         @APIResponse(
@@ -150,7 +309,19 @@ public class LoanResource {
             description = "Loan not found",
             content = @Content(
                 mediaType = "application/json",
-                schema = @Schema(implementation = ErrorResponse.class)
+                schema = @Schema(implementation = ErrorResponse.class),
+                examples = {
+                    @ExampleObject(
+                        name = "GetLoanById error",
+                        summary = "Loan not found example",
+                        value = """
+                        {
+                          "message": "El préstamo indicado no existe",
+                          "code": "LN003"
+                        }
+                        """
+                    )
+                }
             )
         )
     })

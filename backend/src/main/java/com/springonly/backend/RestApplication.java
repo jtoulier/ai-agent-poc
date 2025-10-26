@@ -10,12 +10,12 @@ import org.eclipse.microprofile.openapi.annotations.servers.Server;
 
 @OpenAPIDefinition(
     info = @Info(
-        title = "Simple Credit API",
+        title = "Credit API",
         version = "1.0.1",
         description = "API para información y gestión de créditos simples.",
         contact = @Contact(
-            name = "Equipo de Desarrollo",
-            email = "devs@tuempresa.com"
+            name = "Equipo de Desarrollo de Spring Only",
+            email = "info@springonly.com"
         ),
         license = @License(
             name = "Apache 2.0",

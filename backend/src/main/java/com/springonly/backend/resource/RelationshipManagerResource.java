@@ -18,16 +18,28 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.ExampleObject;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
-import org.eclipse.microprofile.openapi.annotations.Operation;
 
 import java.util.Comparator;
 import java.util.List;
 
+@Schema(
+    name = "RelationshipManagerResource",
+    description = """
+        Handles relationship-manager related operations such as:
+          - Authenticating relationship managers
+          - Updating thread id information
+          - Retrieving relationship manager details
+          - Listing customers assigned to a relationship manager
+        """
+)
 @Path("/relationship-managers")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -50,13 +62,47 @@ public class RelationshipManagerResource {
     @POST
     @Path("/login")
     @Operation(operationId = "loginRelationshipManager", summary = "Login relationship manager", description = "Authenticate a relationship manager and return session or token details.")
+    @RequestBody(
+        description = "LoginRelationshipManagerRequest payload",
+        required = true,
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = LoginRelationshipManagerRequest.class),
+            examples = {
+                @ExampleObject(
+                    name = "Login request",
+                    summary = "Request to authenticate a relationship manager",
+                    value = """
+                    {
+                      "relationshipManagerId": "RM001",
+                      "password": "s3cr3t"
+                    }
+                    """
+                )
+            }
+        )
+    )
     @APIResponses({
         @APIResponse(
             responseCode = "200",
             description = "Login successful",
             content = @Content(
                 mediaType = "application/json",
-                schema = @Schema(implementation = LoginRelationshipManagerResponse.class)
+                schema = @Schema(implementation = LoginRelationshipManagerResponse.class),
+                examples = {
+                    @ExampleObject(
+                        name = "Login successful",
+                        summary = "Authenticated relationship manager response",
+                        value = """
+                        {
+                          "relationshipManagerId": "RM001",
+                          "relationshipManagerName": "Ana Pérez",
+                          "threadId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                          "writtenAt": "2025-10-07T22:27:36-05:00"
+                        }
+                        """
+                    )
+                }
             )
         ),
         @APIResponse(
@@ -64,7 +110,19 @@ public class RelationshipManagerResource {
             description = "Unauthorized",
             content = @Content(
                 mediaType = "application/json",
-                schema = @Schema(implementation = ErrorResponse.class)
+                schema = @Schema(implementation = ErrorResponse.class),
+                examples = {
+                    @ExampleObject(
+                        name = "Unauthorized login",
+                        summary = "Invalid credentials example",
+                        value = """
+                        {
+                          "message": "Usuario y/o password incorrectos",
+                          "code": "RM001"
+                        }
+                        """
+                    )
+                }
             )
         )
     })
@@ -97,14 +155,51 @@ public class RelationshipManagerResource {
     @PATCH
     @Path("/{relationshipManagerId}")
     @Transactional
-    @Operation(operationId = "updateRelationshipManagerThreadId", summary = "Update thread id", description = "Update the thread id information for a relationship manager.")
+    @Operation(
+        operationId = "updateRelationshipManagerThreadId",
+        summary = "Update thread id",
+        description = "Update the thread id information for a relationship manager."
+    )
+    @RequestBody(
+        description = "UpdateRelationshipManagerThreadIdRequest payload",
+        required = true,
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = UpdateRelationshipManagerThreadIdRequest.class),
+            examples = {
+                @ExampleObject(
+                    name = "Update thread id request",
+                    summary = "Request to update relationship manager thread id",
+                    value = """
+                    {
+                      "threadId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                    }
+                    """
+                )
+            }
+        )
+    )
     @APIResponses({
         @APIResponse(
             responseCode = "200",
             description = "Relationship manager thread id updated",
             content = @Content(
                 mediaType = "application/json",
-                schema = @Schema(implementation = UpdateRelationshipManagerThreadIdResponse.class)
+                schema = @Schema(implementation = UpdateRelationshipManagerThreadIdResponse.class),
+                examples = {
+                    @ExampleObject(
+                        name = "Update thread id success",
+                        summary = "Updated relationship manager thread id response",
+                        value = """
+                        {
+                          "relationshipManagerId": "RM001",
+                          "relationshipManagerName": "Ana Pérez",
+                          "threadId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                          "writtenAt": "2025-10-07T22:27:36-05:00"
+                        }
+                        """
+                    )
+                }
             )
         ),
         @APIResponse(
@@ -112,7 +207,19 @@ public class RelationshipManagerResource {
             description = "Relationship manager not found",
             content = @Content(
                 mediaType = "application/json",
-                schema = @Schema(implementation = ErrorResponse.class)
+                schema = @Schema(implementation = ErrorResponse.class),
+                examples = {
+                    @ExampleObject(
+                        name = "Update thread id not found",
+                        summary = "Relationship manager not found example",
+                        value = """
+                        {
+                          "message": "El Ejecutivo de Cuenta indicado no existe",
+                          "code": "RM002"
+                        }
+                        """
+                    )
+                }
             )
         )
     })
@@ -154,7 +261,21 @@ public class RelationshipManagerResource {
             description = "Relationship manager retrieved successfully",
             content = @Content(
                 mediaType = "application/json",
-                schema = @Schema(implementation = GetRelationshipManagerByIdResponse.class)
+                schema = @Schema(implementation = GetRelationshipManagerByIdResponse.class),
+                examples = {
+                    @ExampleObject(
+                        name = "GetRelationshipManagerByIdResponse example",
+                        summary = "A relationship manager retrieved by id",
+                        value = """
+                        {
+                          "relationshipManagerId": "RM001",
+                          "relationshipManagerName": "Ana Pérez",
+                          "threadId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                          "writtenAt": "2025-10-07T22:27:36-05:00"
+                        }
+                        """
+                    )
+                }
             )
         ),
         @APIResponse(
@@ -162,7 +283,19 @@ public class RelationshipManagerResource {
             description = "Relationship manager not found",
             content = @Content(
                 mediaType = "application/json",
-                schema = @Schema(implementation = ErrorResponse.class)
+                schema = @Schema(implementation = ErrorResponse.class),
+                examples = {
+                    @ExampleObject(
+                        name = "GetRelationshipManager not found",
+                        summary = "Requested relationship manager does not exist",
+                        value = """
+                        {
+                          "message": "El Ejecutivo de Cuenta indicado no existe",
+                          "code": "RM003"
+                        }
+                        """
+                    )
+                }
             )
         )
     })
@@ -200,7 +333,35 @@ public class RelationshipManagerResource {
             description = "Customers list for relationship manager",
             content = @Content(
                 mediaType = "application/json",
-                schema = @Schema(type = SchemaType.ARRAY, implementation = GetCustomerByIdResponse.class)
+                schema = @Schema(type = SchemaType.ARRAY, implementation = GetCustomerByIdResponse.class),
+                examples = {
+                    @ExampleObject(
+                        name = "Customers list",
+                        summary = "A list of customers for a relationship manager",
+                        value = """
+                        [
+                          {
+                            "customerId": "CUST12345",
+                            "customerName": "John Doe",
+                            "customerTypeId": "MICRO EMPRESA",
+                            "riskCategoryId": "DU",
+                            "lineOfCreditAmount": 50000.00,
+                            "relationshipManagerId": "RM001",
+                            "writtenAt": "2024-12-14T19:37:26-05:00"
+                          },
+                          {
+                            "customerId": "CUST67890",
+                            "customerName": "María López",
+                            "customerTypeId": "PERSONAL",
+                            "riskCategoryId": "PP",
+                            "lineOfCreditAmount": 15000.00,
+                            "relationshipManagerId": "RM001",
+                            "writtenAt": "2025-01-20T15:00:00-05:00"
+                          }
+                        ]
+                        """
+                    )
+                }
             )
         ),
         @APIResponse(
@@ -208,7 +369,19 @@ public class RelationshipManagerResource {
             description = "No customers found for relationship manager",
             content = @Content(
                 mediaType = "application/json",
-                schema = @Schema(implementation = ErrorResponse.class)
+                schema = @Schema(implementation = ErrorResponse.class),
+                examples = {
+                    @ExampleObject(
+                        name = "No customers found",
+                        summary = "No customers for given relationship manager",
+                        value = """
+                        {
+                          "message": "El Ejecutivo de Cuentas no tiene clientes asignados",
+                          "code": "RM002"
+                        }
+                        """
+                    )
+                }
             )
         )
     })

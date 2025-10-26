@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "contact": {
-      "email": "devs@tuempresa.com",
-      "name": "Equipo de Desarrollo"
+      "email": "info@springonly.com",
+      "name": "Equipo de Desarrollo de Spring Only"
     },
     "description": "API para información y gestión de créditos simples.",
     "license": {
@@ -66,7 +66,11 @@
             "type": "string"
           },
           "writtenAt": {
-            "$ref": "#/components/schemas/OffsetDateTime"
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2022-03-10T12:15:50-04:00"
+            ]
           }
         }
       },
@@ -86,7 +90,11 @@
             "type": "number"
           },
           "loanDisbursementDate": {
-            "$ref": "#/components/schemas/LocalDate"
+            "type": "string",
+            "format": "date",
+            "examples": [
+              "2022-03-10"
+            ]
           },
           "numberOfMonthlyPayments": {
             "type": "integer",
@@ -114,7 +122,11 @@
             "type": "number"
           },
           "loanDisbursementDate": {
-            "$ref": "#/components/schemas/LocalDate"
+            "type": "string",
+            "format": "date",
+            "examples": [
+              "2022-03-10"
+            ]
           },
           "numberOfMonthlyPayments": {
             "type": "integer",
@@ -124,7 +136,11 @@
             "type": "string"
           },
           "writtenAt": {
-            "$ref": "#/components/schemas/OffsetDateTime"
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2022-03-10T12:15:50-04:00"
+            ]
           }
         }
       },
@@ -132,7 +148,11 @@
         "type": "object",
         "properties": {
           "dueDate": {
-            "$ref": "#/components/schemas/LocalDate"
+            "type": "string",
+            "format": "date",
+            "examples": [
+              "2022-03-10"
+            ]
           },
           "principalAmount": {
             "type": "number"
@@ -154,7 +174,11 @@
             "format": "int16"
           },
           "dueDate": {
-            "$ref": "#/components/schemas/LocalDate"
+            "type": "string",
+            "format": "date",
+            "examples": [
+              "2022-03-10"
+            ]
           },
           "principalAmount": {
             "type": "number"
@@ -169,7 +193,32 @@
             "type": "string"
           },
           "writtenAt": {
-            "$ref": "#/components/schemas/OffsetDateTime"
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2022-03-10T12:15:50-04:00"
+            ]
+          }
+        }
+      },
+      "CustomerResource": {
+        "type": "object",
+        "description": "Handles customer-related operations such as:\n  - Creating new customers\n  - Updating existing customers\n  - Retrieving customer details\n  - Listing loans associated with a customer\n",
+        "properties": {
+          "customerService": {
+            "type": "object"
+          },
+          "customerMapper": {
+            "type": "object"
+          },
+          "loanService": {
+            "type": "object"
+          },
+          "loanMapper": {
+            "type": "object"
+          },
+          "headerRelationshipManagerId": {
+            "type": "string"
           }
         }
       },
@@ -206,7 +255,11 @@
             "type": "string"
           },
           "writtenAt": {
-            "$ref": "#/components/schemas/OffsetDateTime"
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2022-03-10T12:15:50-04:00"
+            ]
           }
         }
       },
@@ -230,7 +283,11 @@
             "type": "number"
           },
           "loanDisbursementDate": {
-            "$ref": "#/components/schemas/LocalDate"
+            "type": "string",
+            "format": "date",
+            "examples": [
+              "2022-03-10"
+            ]
           },
           "numberOfMonthlyPayments": {
             "type": "integer",
@@ -240,7 +297,11 @@
             "type": "string"
           },
           "writtenAt": {
-            "$ref": "#/components/schemas/OffsetDateTime"
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2022-03-10T12:15:50-04:00"
+            ]
           }
         }
       },
@@ -256,7 +317,11 @@
             "format": "int16"
           },
           "dueDate": {
-            "$ref": "#/components/schemas/LocalDate"
+            "type": "string",
+            "format": "date",
+            "examples": [
+              "2022-03-10"
+            ]
           },
           "principalAmount": {
             "type": "number"
@@ -271,7 +336,11 @@
             "type": "string"
           },
           "writtenAt": {
-            "$ref": "#/components/schemas/OffsetDateTime"
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2022-03-10T12:15:50-04:00"
+            ]
           }
         }
       },
@@ -288,16 +357,28 @@
             "type": "string"
           },
           "writtenAt": {
-            "$ref": "#/components/schemas/OffsetDateTime"
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2022-03-10T12:15:50-04:00"
+            ]
           }
         }
       },
-      "LocalDate": {
-        "type": "string",
-        "format": "date",
-        "examples": [
-          "2022-03-10"
-        ]
+      "LoanResource": {
+        "type": "object",
+        "description": "Handles loan-related operations such as:\n  - Creating new loans for customers\n  - Updating existing loans\n  - Retrieving loan details by ID\n",
+        "properties": {
+          "loanService": {
+            "type": "object"
+          },
+          "loanMapper": {
+            "type": "object"
+          },
+          "headerRelationshipManagerId": {
+            "type": "string"
+          }
+        }
       },
       "LoginRelationshipManagerRequest": {
         "type": "object",
@@ -323,21 +404,49 @@
             "type": "string"
           },
           "writtenAt": {
-            "$ref": "#/components/schemas/OffsetDateTime"
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2022-03-10T12:15:50-04:00"
+            ]
           }
         }
       },
-      "OffsetDateTime": {
-        "type": "string",
-        "format": "date-time",
-        "examples": [
-          "2022-03-10T12:15:50-04:00"
-        ]
+      "PaymentResource": {
+        "type": "object",
+        "description": "Handles payment-related operations such as:\n  - Creating payments for a loan\n  - Updating existing payments\n  - Listing payments for a specific loan\n  - Retrieving a payment by loanId and paymentNumber\n",
+        "properties": {
+          "paymentService": {
+            "type": "object"
+          },
+          "paymentMapper": {
+            "type": "object"
+          },
+          "headerRelationshipManagerId": {
+            "type": "string"
+          }
+        }
       },
-      "UUID": {
-        "type": "string",
-        "format": "uuid",
-        "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+      "RelationshipManagerResource": {
+        "type": "object",
+        "description": "Handles relationship-manager related operations such as:\n  - Authenticating relationship managers\n  - Updating thread id information\n  - Retrieving relationship manager details\n  - Listing customers assigned to a relationship manager\n",
+        "properties": {
+          "relationshipManagerService": {
+            "type": "object"
+          },
+          "relationshipManagerMapper": {
+            "type": "object"
+          },
+          "customerService": {
+            "type": "object"
+          },
+          "customerMapper": {
+            "type": "object"
+          },
+          "headerRelationshipManagerId": {
+            "type": "string"
+          }
+        }
       },
       "UpdateCustomerRequest": {
         "type": "object",
@@ -381,7 +490,11 @@
             "type": "string"
           },
           "writtenAt": {
-            "$ref": "#/components/schemas/OffsetDateTime"
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2022-03-10T12:15:50-04:00"
+            ]
           }
         }
       },
@@ -413,7 +526,11 @@
             "type": "number"
           },
           "loanDisbursementDate": {
-            "$ref": "#/components/schemas/LocalDate"
+            "type": "string",
+            "format": "date",
+            "examples": [
+              "2022-03-10"
+            ]
           },
           "numberOfMonthlyPayments": {
             "type": "integer",
@@ -423,7 +540,11 @@
             "type": "string"
           },
           "writtenAt": {
-            "$ref": "#/components/schemas/OffsetDateTime"
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2022-03-10T12:15:50-04:00"
+            ]
           }
         }
       },
@@ -447,7 +568,11 @@
             "format": "int16"
           },
           "dueDate": {
-            "$ref": "#/components/schemas/LocalDate"
+            "type": "string",
+            "format": "date",
+            "examples": [
+              "2022-03-10"
+            ]
           },
           "principalAmount": {
             "type": "number"
@@ -462,7 +587,11 @@
             "type": "string"
           },
           "writtenAt": {
-            "$ref": "#/components/schemas/OffsetDateTime"
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2022-03-10T12:15:50-04:00"
+            ]
           }
         }
       },
@@ -470,7 +599,9 @@
         "type": "object",
         "properties": {
           "threadId": {
-            "$ref": "#/components/schemas/UUID"
+            "type": "string",
+            "format": "uuid",
+            "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
           }
         }
       },
@@ -487,7 +618,11 @@
             "type": "string"
           },
           "writtenAt": {
-            "$ref": "#/components/schemas/OffsetDateTime"
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2022-03-10T12:15:50-04:00"
+            ]
           }
         }
       }
@@ -509,8 +644,22 @@
         "description": "Create a new customer and return its created representation.",
         "operationId": "createCustomer",
         "requestBody": {
+          "description": "Request payload for creating a new customer.",
           "content": {
             "application/json": {
+              "examples": {
+                "Create customer request": {
+                  "summary": "A valid request to create a customer",
+                  "value": {
+                    "customerId": "CUST12345",
+                    "customerName": "John Doe",
+                    "customerTypeId": "MICRO EMPRESA",
+                    "riskCategoryId": "NO",
+                    "lineOfCreditAmount": 50000.0,
+                    "relationshipManagerId": "RM001"
+                  }
+                }
+              },
               "schema": {
                 "$ref": "#/components/schemas/CreateCustomerRequest"
               }
@@ -523,6 +672,20 @@
             "description": "Customer created successfully",
             "content": {
               "application/json": {
+                "examples": {
+                  "Successful creation": {
+                    "summary": "A successfully created customer",
+                    "value": {
+                      "customerId": "CUST12345",
+                      "customerName": "John Doe",
+                      "customerTypeId": "MICRO EMPRESA",
+                      "riskCategoryId": "NO",
+                      "lineOfCreditAmount": 50000.0,
+                      "relationshipManagerId": "RM001",
+                      "writtenAt": "2025-10-07T22:27:36-05:00"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/CreateCustomerResponse"
                 }
@@ -533,6 +696,15 @@
             "description": "Invalid request",
             "content": {
               "application/json": {
+                "examples": {
+                  "Invalid input": {
+                    "summary": "An example of invalid input data",
+                    "value": {
+                      "message": "Invalid input data",
+                      "code": "ERR400"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 }
@@ -570,8 +742,21 @@
           }
         ],
         "requestBody": {
+          "description": "Request payload for updating a customer.",
           "content": {
             "application/json": {
+              "examples": {
+                "Update customer request": {
+                  "summary": "A valid request to update a customer",
+                  "value": {
+                    "customerName": "John Doe Updated",
+                    "customerTypeId": "MICRO EMPRESA",
+                    "riskCategoryId": "NO",
+                    "lineOfCreditAmount": 60000.0,
+                    "relationshipManagerId": "RM001"
+                  }
+                }
+              },
               "schema": {
                 "$ref": "#/components/schemas/UpdateCustomerRequest"
               }
@@ -584,6 +769,20 @@
             "description": "Customer updated successfully",
             "content": {
               "application/json": {
+                "examples": {
+                  "Successful update": {
+                    "summary": "A successfully updated customer",
+                    "value": {
+                      "customerId": "CUST12345",
+                      "customerName": "John Doe Updated",
+                      "customerTypeId": "MICRO EMPRESA",
+                      "riskCategoryId": "PP",
+                      "lineOfCreditAmount": 60000.0,
+                      "relationshipManagerId": "RM001",
+                      "writtenAt": "2025-10-07T22:27:36-05:00"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/UpdateCustomerResponse"
                 }
@@ -594,6 +793,15 @@
             "description": "Invalid request",
             "content": {
               "application/json": {
+                "examples": {
+                  "Invalid input": {
+                    "summary": "An example of invalid input data",
+                    "value": {
+                      "message": "Invalid input data",
+                      "code": "ERR400"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 }
@@ -604,6 +812,15 @@
             "description": "Customer not found",
             "content": {
               "application/json": {
+                "examples": {
+                  "Customer not found": {
+                    "summary": "An example of a non-existent customer",
+                    "value": {
+                      "message": "Customer not found",
+                      "code": "ERR404"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 }
@@ -634,6 +851,20 @@
             "description": "Customer retrieved successfully",
             "content": {
               "application/json": {
+                "examples": {
+                  "Customer details": {
+                    "summary": "Details of an existing customer",
+                    "value": {
+                      "customerId": "CUST12345",
+                      "customerName": "John Doe",
+                      "customerTypeId": "MICRO EMPRESA",
+                      "riskCategoryId": "DU",
+                      "lineOfCreditAmount": 50000.0,
+                      "relationshipManagerId": "RM001",
+                      "writtenAt": "2024-12-14T19:37:26-05:00"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/GetCustomerByIdResponse"
                 }
@@ -644,6 +875,15 @@
             "description": "Customer not found",
             "content": {
               "application/json": {
+                "examples": {
+                  "Customer not found": {
+                    "summary": "An example of a non-existent customer",
+                    "value": {
+                      "message": "Customer not found",
+                      "code": "ERR404"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 }
@@ -685,6 +925,35 @@
             "description": "Loans list for customer",
             "content": {
               "application/json": {
+                "examples": {
+                  "Customer loans": {
+                    "summary": "A list of loans for a customer",
+                    "value": [
+                      {
+                        "loanId": 1,
+                        "customerId": "CUST12345",
+                        "currencyId": "PEN",
+                        "principalAmount": 10000.0,
+                        "interestRate": 5.5,
+                        "loanDisbursementDate": "2023-01-01",
+                        "numberOfMonthlyPayments": 12,
+                        "loanStateId": "VIGENTE",
+                        "writtenAt": "2025-09-28T11:15:00-05:00"
+                      },
+                      {
+                        "loanId": 2,
+                        "customerId": "CUST12345",
+                        "currencyId": "USD",
+                        "principalAmount": 20000.0,
+                        "interestRate": 6.0,
+                        "loanDisbursementDate": "2023-02-01",
+                        "numberOfMonthlyPayments": 24,
+                        "loanStateId": "DESAPROBADO",
+                        "writtenAt": "2025-08-30T03:49:02-05:00"
+                      }
+                    ]
+                  }
+                },
                 "schema": {
                   "type": "array",
                   "items": {
@@ -698,6 +967,15 @@
             "description": "No loans found for customer",
             "content": {
               "application/json": {
+                "examples": {
+                  "No loans found": {
+                    "summary": "An example of a customer with no loans",
+                    "value": {
+                      "message": "No loans found for customer",
+                      "code": "ERR404"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 }
@@ -721,12 +999,26 @@
         }
       ],
       "post": {
-        "summary": "Create loan",
-        "description": "Create a new loan for a customer and return the created loan information.",
+        "summary": "Create a new loan",
+        "description": "Creates a loan for a customer. Requires a CreateLoanRequest payload with the necessary loan data.",
         "operationId": "createLoan",
         "requestBody": {
+          "description": "CreateLoanRequest payload",
           "content": {
             "application/json": {
+              "examples": {
+                "Create loan example": {
+                  "summary": "Request to create a loan",
+                  "value": {
+                    "customerId": "CUST12345",
+                    "currencyId": "PEN",
+                    "principalAmount": 10000.0,
+                    "interestRate": 5.5,
+                    "loanDisbursementDate": "2025-09-01",
+                    "numberOfMonthlyPayments": 36
+                  }
+                }
+              },
               "schema": {
                 "$ref": "#/components/schemas/CreateLoanRequest"
               }
@@ -739,6 +1031,22 @@
             "description": "Loan created successfully",
             "content": {
               "application/json": {
+                "examples": {
+                  "CreateLoanResponse example": {
+                    "summary": "Created loan representation",
+                    "value": {
+                      "loanId": 12345,
+                      "customerId": "CUST12345",
+                      "currencyId": "PEN",
+                      "principalAmount": 10000.0,
+                      "interestRate": 5.5,
+                      "loanDisbursementDate": "2025-09-01",
+                      "numberOfMonthlyPayments": 36,
+                      "loanStateId": "EN EVALUACION",
+                      "writtenAt": "2025-10-07T22:57:09-05:00"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/CreateLoanResponse"
                 }
@@ -749,6 +1057,15 @@
             "description": "Invalid request",
             "content": {
               "application/json": {
+                "examples": {
+                  "CreateLoan error": {
+                    "summary": "Invalid input example",
+                    "value": {
+                      "message": "principalAmount must be greater than 0",
+                      "code": "INVALID_REQUEST"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 }
@@ -772,8 +1089,8 @@
         }
       ],
       "patch": {
-        "summary": "Update loan",
-        "description": "Update an existing loan's details identified by loanId.",
+        "summary": "Update an existing loan",
+        "description": "Updates loan fields for the given loanId using UpdateLoanRequest.",
         "operationId": "updateLoan",
         "parameters": [
           {
@@ -787,8 +1104,17 @@
           }
         ],
         "requestBody": {
+          "description": "UpdateLoanRequest payload",
           "content": {
             "application/json": {
+              "examples": {
+                "Update loan example": {
+                  "summary": "Request to update a loan state",
+                  "value": {
+                    "loanStateId": "VIGENTE"
+                  }
+                }
+              },
               "schema": {
                 "$ref": "#/components/schemas/UpdateLoanRequest"
               }
@@ -801,6 +1127,22 @@
             "description": "Loan updated successfully",
             "content": {
               "application/json": {
+                "examples": {
+                  "UpdateLoanResponse example": {
+                    "summary": "Updated loan representation",
+                    "value": {
+                      "loanId": 12345,
+                      "customerId": "CUST12345",
+                      "currencyId": "USD",
+                      "principalAmount": 10000.0,
+                      "interestRate": 5.5,
+                      "loanDisbursementDate": "2025-09-01",
+                      "numberOfMonthlyPayments": 36,
+                      "loanStateId": "VIGENTE",
+                      "writtenAt": "2025-10-07T23:05:32-05:00"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/UpdateLoanResponse"
                 }
@@ -811,6 +1153,15 @@
             "description": "Invalid request",
             "content": {
               "application/json": {
+                "examples": {
+                  "UpdateLoan error": {
+                    "summary": "Invalid update example",
+                    "value": {
+                      "message": "Invalid update data",
+                      "code": "INVALID_UPDATE"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 }
@@ -821,6 +1172,15 @@
             "description": "Loan not found",
             "content": {
               "application/json": {
+                "examples": {
+                  "UpdateLoan not found": {
+                    "summary": "Loan to update was not found",
+                    "value": {
+                      "message": "El préstamo indicado no existe",
+                      "code": "LN002"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 }
@@ -833,8 +1193,8 @@
         ]
       },
       "get": {
-        "summary": "Get loan by id",
-        "description": "Retrieve detailed information for a loan identified by loanId.",
+        "summary": "Get loan by ID",
+        "description": "Retrieves the loan details for the provided loanId.",
         "operationId": "getLoanById",
         "parameters": [
           {
@@ -852,6 +1212,22 @@
             "description": "Loan retrieved successfully",
             "content": {
               "application/json": {
+                "examples": {
+                  "GetLoanByIdResponse example": {
+                    "summary": "A loan retrieved by id",
+                    "value": {
+                      "loanId": 12345,
+                      "customerId": "CUST12345",
+                      "currencyId": "PEN",
+                      "principalAmount": 10000.0,
+                      "interestRate": 5.5,
+                      "loanDisbursementDate": "2025-09-01",
+                      "numberOfMonthlyPayments": 36,
+                      "loanStateId": "VIGENTE",
+                      "writtenAt": "2025-09-16T15:45:00-05:00"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/GetLoanByIdResponse"
                 }
@@ -862,6 +1238,15 @@
             "description": "Loan not found",
             "content": {
               "application/json": {
+                "examples": {
+                  "GetLoanById error": {
+                    "summary": "Loan not found example",
+                    "value": {
+                      "message": "El préstamo indicado no existe",
+                      "code": "LN003"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 }
@@ -904,6 +1289,33 @@
             "description": "Payments list for loan",
             "content": {
               "application/json": {
+                "examples": {
+                  "Payments list": {
+                    "summary": "A list of payments for a loan",
+                    "value": [
+                      {
+                        "loanId": 12345,
+                        "paymentNumber": 1,
+                        "dueDate": "2025-10-15",
+                        "principalAmount": 500.0,
+                        "interestAmount": 5.0,
+                        "totalPaymentAmount": 505.0,
+                        "paymentStateId": "PAGADO",
+                        "writtenAt": "2025-08-16T13:25:00-05:00"
+                      },
+                      {
+                        "loanId": 12345,
+                        "paymentNumber": 2,
+                        "dueDate": "2025-11-15",
+                        "principalAmount": 500.0,
+                        "interestAmount": 4.5,
+                        "totalPaymentAmount": 504.5,
+                        "paymentStateId": "PENDIENTE",
+                        "writtenAt": "2025-07-16T11:15:00-05:00"
+                      }
+                    ]
+                  }
+                },
                 "schema": {
                   "type": "array",
                   "items": {
@@ -917,6 +1329,15 @@
             "description": "No payments found for loan",
             "content": {
               "application/json": {
+                "examples": {
+                  "No payments found": {
+                    "summary": "No payments for given loan",
+                    "value": {
+                      "message": "El préstamo no tiene pagos registrados",
+                      "code": "PAY002"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 }
@@ -964,8 +1385,17 @@
           }
         ],
         "requestBody": {
+          "description": "UpdatePaymentRequest payload",
           "content": {
             "application/json": {
+              "examples": {
+                "UpdatePayment request": {
+                  "summary": "Request to update payment state",
+                  "value": {
+                    "paymentStateId": "PAGADO"
+                  }
+                }
+              },
               "schema": {
                 "$ref": "#/components/schemas/UpdatePaymentRequest"
               }
@@ -978,6 +1408,21 @@
             "description": "Payment updated successfully",
             "content": {
               "application/json": {
+                "examples": {
+                  "UpdatePaymentResponse example": {
+                    "summary": "Updated payment representation",
+                    "value": {
+                      "loanId": 12345,
+                      "paymentNumber": 1,
+                      "dueDate": "2025-10-15",
+                      "principalAmount": 500.0,
+                      "interestAmount": 5.0,
+                      "totalPaymentAmount": 505.0,
+                      "paymentStateId": "PAGADO",
+                      "writtenAt": "2025-09-16T15:45:00-05:00"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/UpdatePaymentResponse"
                 }
@@ -988,6 +1433,15 @@
             "description": "Payment not found",
             "content": {
               "application/json": {
+                "examples": {
+                  "UpdatePayment not found": {
+                    "summary": "Payment to update was not found",
+                    "value": {
+                      "message": "El pago indicado no existe para este préstamo",
+                      "code": "PAY404"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 }
@@ -1028,6 +1482,21 @@
             "description": "Payment retrieved successfully",
             "content": {
               "application/json": {
+                "examples": {
+                  "GetPaymentByIdResponse example": {
+                    "summary": "A payment retrieved by id",
+                    "value": {
+                      "loanId": 12345,
+                      "paymentNumber": 1,
+                      "dueDate": "2025-10-15",
+                      "principalAmount": 500.0,
+                      "interestAmount": 5.0,
+                      "totalPaymentAmount": 505.0,
+                      "paymentStateId": "PAGADO",
+                      "writtenAt": "2025-09-16T15:45:00-05:00"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/GetPaymentByIdResponse"
                 }
@@ -1038,6 +1507,15 @@
             "description": "Payment not found",
             "content": {
               "application/json": {
+                "examples": {
+                  "GetPaymentById not found": {
+                    "summary": "Requested payment does not exist",
+                    "value": {
+                      "message": "El pago solicitado no existe",
+                      "code": "PAY003"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 }
@@ -1074,8 +1552,19 @@
           }
         ],
         "requestBody": {
+          "description": "CreatePaymentRequest payload",
           "content": {
             "application/json": {
+              "examples": {
+                "CreatePayment request": {
+                  "summary": "Request to create a payment",
+                  "value": {
+                    "dueDate": "2025-10-15",
+                    "principalAmount": 500.0,
+                    "interestAmount": 5.0
+                  }
+                }
+              },
               "schema": {
                 "$ref": "#/components/schemas/CreatePaymentRequest"
               }
@@ -1088,6 +1577,21 @@
             "description": "Payment created successfully",
             "content": {
               "application/json": {
+                "examples": {
+                  "CreatePaymentResponse example": {
+                    "summary": "Created payment representation",
+                    "value": {
+                      "loanId": 12345,
+                      "paymentNumber": 1,
+                      "dueDate": "2025-10-15",
+                      "principalAmount": 500.0,
+                      "interestAmount": 5.0,
+                      "totalPaymentAmount": 505.0,
+                      "paymentStateId": "PENDIENTE",
+                      "writtenAt": "2025-09-16T15:45:00-05:00"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/CreatePaymentResponse"
                 }
@@ -1098,6 +1602,15 @@
             "description": "Invalid request",
             "content": {
               "application/json": {
+                "examples": {
+                  "CreatePayment error": {
+                    "summary": "Invalid create payment input",
+                    "value": {
+                      "message": "Invalid input data",
+                      "code": "PAY400"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 }
@@ -1125,8 +1638,18 @@
         "description": "Authenticate a relationship manager and return session or token details.",
         "operationId": "loginRelationshipManager",
         "requestBody": {
+          "description": "LoginRelationshipManagerRequest payload",
           "content": {
             "application/json": {
+              "examples": {
+                "Login request": {
+                  "summary": "Request to authenticate a relationship manager",
+                  "value": {
+                    "relationshipManagerId": "RM001",
+                    "password": "s3cr3t"
+                  }
+                }
+              },
               "schema": {
                 "$ref": "#/components/schemas/LoginRelationshipManagerRequest"
               }
@@ -1139,6 +1662,17 @@
             "description": "Login successful",
             "content": {
               "application/json": {
+                "examples": {
+                  "Login successful": {
+                    "summary": "Authenticated relationship manager response",
+                    "value": {
+                      "relationshipManagerId": "RM001",
+                      "relationshipManagerName": "Ana Pérez",
+                      "threadId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "writtenAt": "2025-10-07T22:27:36-05:00"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/LoginRelationshipManagerResponse"
                 }
@@ -1149,6 +1683,15 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
+                "examples": {
+                  "Unauthorized login": {
+                    "summary": "Invalid credentials example",
+                    "value": {
+                      "message": "Usuario y/o password incorrectos",
+                      "code": "RM001"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 }
@@ -1189,8 +1732,17 @@
           }
         ],
         "requestBody": {
+          "description": "UpdateRelationshipManagerThreadIdRequest payload",
           "content": {
             "application/json": {
+              "examples": {
+                "Update thread id request": {
+                  "summary": "Request to update relationship manager thread id",
+                  "value": {
+                    "threadId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                  }
+                }
+              },
               "schema": {
                 "$ref": "#/components/schemas/UpdateRelationshipManagerThreadIdRequest"
               }
@@ -1203,6 +1755,17 @@
             "description": "Relationship manager thread id updated",
             "content": {
               "application/json": {
+                "examples": {
+                  "Update thread id success": {
+                    "summary": "Updated relationship manager thread id response",
+                    "value": {
+                      "relationshipManagerId": "RM001",
+                      "relationshipManagerName": "Ana Pérez",
+                      "threadId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "writtenAt": "2025-10-07T22:27:36-05:00"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/UpdateRelationshipManagerThreadIdResponse"
                 }
@@ -1213,6 +1776,15 @@
             "description": "Relationship manager not found",
             "content": {
               "application/json": {
+                "examples": {
+                  "Update thread id not found": {
+                    "summary": "Relationship manager not found example",
+                    "value": {
+                      "message": "El Ejecutivo de Cuenta indicado no existe",
+                      "code": "RM002"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 }
@@ -1243,6 +1815,17 @@
             "description": "Relationship manager retrieved successfully",
             "content": {
               "application/json": {
+                "examples": {
+                  "GetRelationshipManagerByIdResponse example": {
+                    "summary": "A relationship manager retrieved by id",
+                    "value": {
+                      "relationshipManagerId": "RM001",
+                      "relationshipManagerName": "Ana Pérez",
+                      "threadId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "writtenAt": "2025-10-07T22:27:36-05:00"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/GetRelationshipManagerByIdResponse"
                 }
@@ -1253,6 +1836,15 @@
             "description": "Relationship manager not found",
             "content": {
               "application/json": {
+                "examples": {
+                  "GetRelationshipManager not found": {
+                    "summary": "Requested relationship manager does not exist",
+                    "value": {
+                      "message": "El Ejecutivo de Cuenta indicado no existe",
+                      "code": "RM003"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 }
@@ -1294,6 +1886,31 @@
             "description": "Customers list for relationship manager",
             "content": {
               "application/json": {
+                "examples": {
+                  "Customers list": {
+                    "summary": "A list of customers for a relationship manager",
+                    "value": [
+                      {
+                        "customerId": "CUST12345",
+                        "customerName": "John Doe",
+                        "customerTypeId": "MICRO EMPRESA",
+                        "riskCategoryId": "DU",
+                        "lineOfCreditAmount": 50000.0,
+                        "relationshipManagerId": "RM001",
+                        "writtenAt": "2024-12-14T19:37:26-05:00"
+                      },
+                      {
+                        "customerId": "CUST67890",
+                        "customerName": "María López",
+                        "customerTypeId": "PERSONAL",
+                        "riskCategoryId": "PP",
+                        "lineOfCreditAmount": 15000.0,
+                        "relationshipManagerId": "RM001",
+                        "writtenAt": "2025-01-20T15:00:00-05:00"
+                      }
+                    ]
+                  }
+                },
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1307,6 +1924,15 @@
             "description": "No customers found for relationship manager",
             "content": {
               "application/json": {
+                "examples": {
+                  "No customers found": {
+                    "summary": "No customers for given relationship manager",
+                    "value": {
+                      "message": "El Ejecutivo de Cuentas no tiene clientes asignados",
+                      "code": "RM002"
+                    }
+                  }
+                },
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 }
