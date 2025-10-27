@@ -6,3 +6,5 @@ target/
 .env
 __pycache__/
 .vscode/
+.idea/
+backend/.idea
