@@ -5,7 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="533b2072-edab-4355-8a14-c4c38ff6da44" name="Changes" comment="con openapi.json muy bien explicado">
+      <change beforePath="$PROJECT_DIR$/.idea/copilotDiffState.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/CustomerResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/CustomerResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/LoanResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/LoanResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/PaymentResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/PaymentResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/RelationshipManagerResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/RelationshipManagerResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/openapi/openapi.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/openapi/openapi.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../main-agent/instructions/credits.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../main-agent/instructions/credits.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -65,7 +65,7 @@ Es la persona natural o jurídica que necesita o tiene un préstamo con la insti
 
 - Línea de Crédito
 Todo cliente tiene una línea de crédito expresada en dólares y expresa siempre el monto máximo autorizado de la línea, no es el monto disponible.
-Cuando compares líneas de crédito, la cual está expresada en dólares de EE.UU., con un crédito en soles, utiliza el "Tipo de Cambio Contable" de la SBS a la fecha de la evaluación o la anterior más cercana a esa fecha
+Cuando compares líneas de crédito, la cual está expresada en dólares de EE.UU., con un crédito en soles, utiliza el Tipo de Cambio de la SBS publicado en https://www.sbs.gob.pe/app/pp/sistip_portal/paginas/publicacion/tipocambiopromedio.aspx y fíjate el valor VENTA de "Dólar de N.A."
 
 - Préstamo
 Es solicitado por el cliente, mediante el Ejecutivo de Cuenta
