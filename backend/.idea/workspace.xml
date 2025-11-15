@@ -4,16 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="533b2072-edab-4355-8a14-c4c38ff6da44" name="Changes" comment="con openapi.json muy bien explicado">
-      <change beforePath="$PROJECT_DIR$/.idea/copilotDiffState.xml" beforeDir="false" />
+    <list default="true" id="533b2072-edab-4355-8a14-c4c38ff6da44" name="Changes" comment="con openapi.json corregido, sin header, que era el error">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/CustomerResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/CustomerResource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/LoanResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/LoanResource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/PaymentResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/PaymentResource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/RelationshipManagerResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/RelationshipManagerResource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/openapi/openapi.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/openapi/openapi.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../main-agent/instructions/credits.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../main-agent/instructions/credits.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -229,7 +221,31 @@
       <option name="project" value="LOCAL" />
       <updated>1761450516489</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="con openapi.json corregido, sin header, que era el error">
+      <option name="closed" value="true" />
+      <created>1761621311203</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1761621311203</updated>
+    </task>
+    <task id="LOCAL-00015" summary="con openapi.json corregido, sin header, que era el error">
+      <option name="closed" value="true" />
+      <created>1761621749479</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1761621749479</updated>
+    </task>
+    <task id="LOCAL-00016" summary="con openapi.json corregido, sin header, que era el error">
+      <option name="closed" value="true" />
+      <created>1761995538082</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1761995538082</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -267,6 +283,7 @@
     <MESSAGE value="con apiresponse" />
     <MESSAGE value="con operation" />
     <MESSAGE value="con openapi.json muy bien explicado" />
-    <option name="LAST_COMMIT_MESSAGE" value="con openapi.json muy bien explicado" />
+    <MESSAGE value="con openapi.json corregido, sin header, que era el error" />
+    <option name="LAST_COMMIT_MESSAGE" value="con openapi.json corregido, sin header, que era el error" />
   </component>
 </project>
