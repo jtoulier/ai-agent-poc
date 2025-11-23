@@ -1,35 +1,26 @@
-// src/app/services/message.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { MessageRequest, MessageResponse } from '@app/models/message';
 
-export interface Message {
-  who: 'user' | 'bot';
-  text: string;
-}
-
-@Injectable({
-  providedIn: 'root' // inyectable en toda la app
-})
+@Injectable({ providedIn: 'root' })
 export class MessageService {
+  private readonly apiUrl = '/api'; // ajusta según tu backend o environment
+
   constructor(private http: HttpClient) {}
 
-  // Llamada al API de chistes (puedes reemplazar por otros servicios)
-  getJoke(): Observable<{ setup: string; punchline: string }> {
-    return this.http.get<{ setup: string; punchline: string }>(
-      'https://official-joke-api.appspot.com/random_joke'
+  // Agregar un mensaje a un thread
+  addMessageToThread(threadId: string, message: MessageRequest): Observable<MessageResponse> {
+    return this.http.post<MessageResponse>(
+      `${this.apiUrl}/threads/${threadId}/messages?api-version=v1`,
+      message
     );
   }
 
-  // Método genérico que podrías usar para otros APIs
-  sendMessageToApi(userMessage: string): Observable<{ reply: string }> {
-    // Ejemplo, reemplaza con tu API real
-    return new Observable(observer => {
-      // Lógica de mock
-      setTimeout(() => {
-        observer.next({ reply: `Eco: ${userMessage}` });
-        observer.complete();
-      }, 500);
-    });
+  // Obtener mensajes de un thread
+  getThreadMessages(threadId: string): Observable<MessageResponse[]> {
+    return this.http.get<MessageResponse[]>(
+      `${this.apiUrl}/threads/${threadId}/messages?api-version=v1`
+    );
   }
 }

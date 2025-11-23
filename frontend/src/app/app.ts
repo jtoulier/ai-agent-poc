@@ -3,16 +3,17 @@ import { Title } from '@angular/platform-browser';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { MessageService, Message } from './services/message.service';
 import { AuthService } from './services/auth.service';
-import { LoginResponse } from './models/login-response.model';
+import { SessionService } from '@app/services/session.service';
 
+// Modelos que se usan en esta vista
+import { Session } from '@app/models/session';
+import { Message } from '@app/models/message';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './app.html',
   styleUrls: ['./app.scss']
 })
@@ -22,15 +23,29 @@ export class App {
   loginPassword = '';
   loginError = '';
   loggedIn = false;
-  threadId = '';
+
+  // 🔹 Info de sesión mostrada en UI
   fullName = '';
+  threadId = '';
 
   // 🔹 Chat
   userInput = '';
-  responses: Message[] = [];
+  responses: { role: 'user' | 'assistant'; text: string }[] = [];
 
-  constructor(private titleService: Title, private messageService: MessageService, private authService: AuthService) {
-    this.titleService.setTitle('CreditsGPT - Gestiona tus créditos con IA');
+  constructor(
+    private titleService: Title,
+    private authService: AuthService,
+    private sessionService: SessionService
+  ) {
+    this.titleService.setTitle('CreditsAI - Gestiona tus créditos con IA');
+
+    // Si hay sesión almacenada, restaurar estado inicial
+    const current = this.sessionService.getSession();
+    if (current) {
+      this.fullName = current.fullName || '';
+      this.threadId = current.thread?.id || '';
+      this.loggedIn = !!this.threadId;
+    }
   }
 
   // 🔹 Login
@@ -41,69 +56,56 @@ export class App {
       return;
     }
 
-    // Llamada al API REST
     this.authService.login(this.loginUser, this.loginPassword).subscribe({
-      next: (res: LoginResponse) => {
-        if (res.threadId) {
-          this.threadId = res.threadId;
-          this.fullName = res.fullName || '';
+      next: () => {
+        const session = this.authService.getCurrentSession();
+        if (session) {
+          this.fullName = session.fullName;
+          this.threadId = session.thread?.id || '';
           this.loggedIn = true;
+
+          // Inicializar chat basado en session (por si en un futuro recuperas mensajes)
+          this.responses = [];
+          this.userInput = '';
         } else {
           this.loginError = 'Error inesperado al iniciar sesión';
         }
       },
       error: (err) => {
-        this.loginError = err?.error?.message || 'Usuario y/o password incorrectos';
+        if ('code' in err) {
+          this.loginError = err.message;
+        } else {
+          this.loginError = 'Usuario y/o password incorrectos';
+        }
       }
     });
   }
 
-// 🔹 Logoff
+  // 🔹 Logoff
   logoff() {
-    this.authService.logoff().subscribe({
-      next: () => {
-        // limpiar todas las variables
-        this.loggedIn = false;
-        this.threadId = '';
-        this.fullName = '';
-        this.userInput = '';
-        this.responses = [];
-        this.loginUser = '';
-        this.loginPassword = '';
-        this.loginError = '';
-      },
-      error: () => {
-        // en caso de error en logoff, aún limpiamos localmente
-        this.loggedIn = false;
-        this.threadId = '';
-        this.fullName = '';
-        this.userInput = '';
-        this.responses = [];
-        this.loginUser = '';
-        this.loginPassword = '';
-        this.loginError = '';
-      }
-    });  
+    this.authService.logout();
+    this.loggedIn = false;
+
+    // Limpiar estado local
+    this.fullName = '';
+    this.threadId = '';
+    this.userInput = '';
+    this.responses = [];
+    this.loginUser = '';
+    this.loginPassword = '';
+    this.loginError = '';
   }
 
-  // 🔹 Chat
+  // 🔹 Chat (placeholder sin llamadas externas)
   sendMessage() {
     const text = this.userInput.trim();
     if (!text) return;
 
     // Mensaje usuario
-    this.responses.unshift({ who: 'user', text });
+    this.responses.unshift({ role: 'user', text });
 
-    // Llamada al Service
-    this.messageService.getJoke().subscribe({
-      next: (joke) => {
-        const reply = `${joke.setup}\n${joke.punchline}`;
-        this.responses.unshift({ who: 'bot', text: reply });
-      },
-      error: () => {
-        this.responses.unshift({ who: 'bot', text: 'Error al obtener chiste 😢' });
-      }
-    });
+    // Placeholder de respuesta del asistente
+    this.responses.unshift({ role: 'assistant', text: 'Recibí tu mensaje. Pronto te responderé.' });
 
     // Limpiar textarea
     this.userInput = '';
@@ -112,7 +114,7 @@ export class App {
   }
 
   handleEnter(event: Event) {
-    const keyboardEvent = event as KeyboardEvent; // cast seguro aquí
+    const keyboardEvent = event as KeyboardEvent;
     if (keyboardEvent.key === 'Enter' && !keyboardEvent.shiftKey) {
       keyboardEvent.preventDefault();
       this.sendMessage();

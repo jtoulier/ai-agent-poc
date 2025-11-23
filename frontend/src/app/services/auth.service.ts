@@ -1,48 +1,67 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
-import { delay } from 'rxjs/operators';
-import { LoginResponse } from '../models/login-response.model';
-
-// Respuesta esperada del API de login
-
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { API_ROUTES } from '@app/constants/api-routes';
+import { LoginRequest, LoginResponse, LoginError, SaveThread } from '@app/models/auth';
+import { Observable, throwError, switchMap } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+import { SessionService } from '@app/services/session.service';
+import { Session } from '@app/models/session';
+import { Thread } from '@app/models/thread/thread.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private loginURL = 'TU_API_LOGIN_URL_AQUI'; // <- reemplaza con tu endpoint real
-  private logoffUrl = 'https://mi-api/logoff'; // endpoint logoff
+  constructor(
+    private http: HttpClient,
+    private sessionService: SessionService
+  ) {}
 
-  constructor(private http: HttpClient) {}
-
-  /**
-   * Realiza login del usuario
-   * @param user nombre de usuario
-   * @param password contraseña
-   * @returns Observable con el resultado del login
-   */
   login(user: string, password: string): Observable<LoginResponse> {
-    //return this.http.post<LoginResponse>(this.loginURL, { user, password });
-    if (user === 'demo' && password === '1234') {
-      const response: LoginResponse = {
-        threadId: 'asdf-1234-qwer-5678',
-        fullName: 'Demo Usuario'
-      };
-      return of(response).pipe(delay(500)); // simula retraso de red
-    }
+    const body: LoginRequest = { relationshipManagerId: user, password };
 
-    // simulación de error de login
-    return throwError(() => ({
-      error: { message: 'Usuario y/o password incorrectos' }
-    })).pipe(delay(500));
-  }  
-  
-  
-  // 🔹 Logoff
-  logoff(): Observable<any> {
-    // Temporalmente simulamos logoff
-    return of({ message: 'Sesión cerrada' });
-    // En producción:
-    // return this.http.post<any>(this.logoffUrl, {});
-  }  
+    return this.http.post<LoginResponse>(API_ROUTES.BACKEND.LOGIN, body).pipe(
+      switchMap((response: LoginResponse) => {
+        console.log('Login exitoso');
+        // 1. Crear thread en agente
+        return this.http.post<Thread>(API_ROUTES.AGENT.CREATE_THREAD, {}).pipe(
+          switchMap((thread: Thread) => {
+            // 2. Construir Session
+            const session: Session = {
+              fullName: response.relationshipManagerName,
+              thread,
+              messages: [],
+              lastMessage: null
+            };
+            this.sessionService.setSession(session);
+
+            // 3. Persistir thread en backend
+            const saveThreadBody: SaveThread = { threadId: thread.id };
+            return this.http.post<void>(
+              API_ROUTES.BACKEND.SAVE_THREAD(response.relationshipManagerId),
+              saveThreadBody
+            ).pipe(
+              tap(() => console.log('Thread guardado en backend')),
+              // devolvemos el LoginResponse original
+              switchMap(() => [response])
+            );
+          })
+        );
+      }),
+      catchError((error: HttpErrorResponse) => {
+        console.log(error)
+        if (error.status === 401) {
+          const loginError: LoginError = error.error as LoginError;
+          return throwError(() => loginError);
+        }
+        return throwError(() => error);
+      })
+    );
+  }
+
+  logout() {
+    this.sessionService.clearSession();
+  }
+
+  getCurrentSession(): Session | null {
+    return this.sessionService.getSession();
+  }
 }
-

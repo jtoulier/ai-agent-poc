@@ -7,7 +7,7 @@
   </div>
     <!-- Header -->
   <header class="app-header">
-    <div class="logo">CreditsGPT</div>
+    <div class="logo">CreditsAI</div>
   </header>
 
   <!-- Login Modal -->
@@ -29,7 +29,7 @@
 
   <!-- Mensajes -->
   <main *ngIf="loggedIn" class="responses">
-    <div *ngFor="let msg of responses" class="response" [ngClass]="msg.who">
+    <div *ngFor="let msg of responses" class="response" [ngClass]="msg.role">
       <span>{{ msg.text }}</span>
     </div>
   </main>
