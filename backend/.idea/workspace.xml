@@ -6,14 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="533b2072-edab-4355-8a14-c4c38ff6da44" name="Changes" comment="con openapi.json corregido, sin header, que era el error">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/app.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/app.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/app.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/models/login-response.model.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/UpdateRelationshipManagerThreadIdRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/UpdateRelationshipManagerThreadIdRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/RelationshipManagerResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/RelationshipManagerResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/openapi/openapi-completo.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/openapi/openapi-completo.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/app/services/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/services/auth.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/services/message.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/services/message.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/tsconfig.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../main-agent/instructions/credits.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../main-agent/instructions/credits.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/environments/environment.prod.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/environments/environment.prod.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/environments/environment.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/environments/environment.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -599,9 +599,7 @@
         "type": "object",
         "properties": {
           "threadId": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+            "type": "string"
           }
         }
       },
@@ -1596,7 +1594,7 @@
                     "value": {
                       "relationshipManagerId": "RM001",
                       "relationshipManagerName": "Ana Pérez",
-                      "threadId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "threadId": "thread_3kMdZ2PeY8tw0JuYccg871Hw",
                       "writtenAt": "2025-10-07T22:27:36-05:00"
                     }
                   }
@@ -1658,7 +1656,7 @@
                 "Update thread id request": {
                   "summary": "Request to update relationship manager thread id",
                   "value": {
-                    "threadId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                    "threadId": "thread_3kMdZ2PeY8tw0JuYccg871Hw"
                   }
                 }
               },
@@ -1680,7 +1678,7 @@
                     "value": {
                       "relationshipManagerId": "RM001",
                       "relationshipManagerName": "Ana Pérez",
-                      "threadId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "threadId": "thread_3kMdZ2PeY8tw0JuYccg871Hw",
                       "writtenAt": "2025-10-07T22:27:36-05:00"
                     }
                   }
@@ -1740,7 +1738,7 @@
                     "value": {
                       "relationshipManagerId": "RM001",
                       "relationshipManagerName": "Ana Pérez",
-                      "threadId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "threadId": "thread_3kMdZ2PeY8tw0JuYccg871Hw",
                       "writtenAt": "2025-10-07T22:27:36-05:00"
                     }
                   }

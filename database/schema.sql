@@ -39,7 +39,7 @@ CREATE TABLE credits.relationshipManagers(
     relationshipManagerId   VARCHAR(16) NOT NULL,
     relationshipManagerName VARCHAR(64) NOT NULL,
     password                VARCHAR(256) NOT NULL,
-    threadId                UNIQUEIDENTIFIER NULL,
+    threadId                VARCHAR(256) NULL,
     writtenAt               DATETIMEOFFSET(2) NOT NULL,
 
     CONSTRAINT pk_relman PRIMARY KEY (relationshipManagerId)

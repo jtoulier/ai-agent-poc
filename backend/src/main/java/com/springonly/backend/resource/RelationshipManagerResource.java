@@ -99,7 +99,7 @@ public class RelationshipManagerResource {
                         {
                           "relationshipManagerId": "RM001",
                           "relationshipManagerName": "Ana Pérez",
-                          "threadId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                          "threadId": "thread_3kMdZ2PeY8tw0JuYccg871Hw",
                           "writtenAt": "2025-10-07T22:27:36-05:00"
                         }
                         """
@@ -174,7 +174,7 @@ public class RelationshipManagerResource {
                     summary = "Request to update relationship manager thread id",
                     value = """
                     {
-                      "threadId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                      "threadId": "thread_3kMdZ2PeY8tw0JuYccg871Hw"
                     }
                     """
                 )
@@ -196,7 +196,7 @@ public class RelationshipManagerResource {
                         {
                           "relationshipManagerId": "RM001",
                           "relationshipManagerName": "Ana Pérez",
-                          "threadId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                          "threadId": "thread_3kMdZ2PeY8tw0JuYccg871Hw",
                           "writtenAt": "2025-10-07T22:27:36-05:00"
                         }
                         """
@@ -272,7 +272,7 @@ public class RelationshipManagerResource {
                         {
                           "relationshipManagerId": "RM001",
                           "relationshipManagerName": "Ana Pérez",
-                          "threadId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                          "threadId": "thread_3kMdZ2PeY8tw0JuYccg871Hw",
                           "writtenAt": "2025-10-07T22:27:36-05:00"
                         }
                         """
