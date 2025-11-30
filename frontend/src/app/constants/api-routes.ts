@@ -17,5 +17,8 @@ export const API_ROUTES = {
   BACKEND: {
     LOGIN: `${environment.backendAPIURL}/api/relationship-managers/login`,
     SAVE_THREAD: (relationshipManagerId: string) => `${environment.backendAPIURL}/api/relationship-managers/${relationshipManagerId}`
+  },
+  TOKEN_SERVER: {
+    GET_TOKEN: `${environment.tokenServerURL}/token`
   }
 };

@@ -681,6 +681,258 @@ jobs:
               --validation-method CNAME
           fi
 
+  job-create-adtokenserver-containerapp:
+      name: Create AD Token Server Container App
+      runs-on: ubuntu-latest
+      needs: job-create-loganalytics-containerappenvironment
+      steps:
+        - name: Checkout repo
+          uses: actions/checkout@v3
+
+        - name: Azure Login
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+        - name: Create AD Token Server Container App if not exists
+          run: |
+            if az containerapp show \
+                --name ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_NAME }} \
+                --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
+              echo "⚠️ Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_NAME }} already exists."
+            else
+              export dummy_image=mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
+              echo "✅ Creating Container App ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_NAME }} ..."
+              az containerapp create \
+                --name ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_NAME }} \
+                --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+                --environment ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
+                --image $dummy_image \
+                --registry-server ${{ vars.INFRA_AZURE_ACR_NAME }}.azurecr.io \
+                --registry-username $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query username -o tsv) \
+                --registry-password $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query passwords[0].value -o tsv) \
+                --ingress external \
+                --target-port ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_PORT }} \
+                --env-vars TENANT_ID=${{ vars.INFRA_AZURE_TENANT_ID }} \
+                           CLIENT_ID=${{ vars.INFRA_ADTOKENSERVER_CLIENT_ID }} \
+                           ALLOWED_ORIGINS=${{ vars.INFRA_AZURE_ADTOKENSERVER_ALLOWED_ORIGINS }} \
+                           CLIENT_SECRET=${{ secrets.INFRA_AZURE_ADTOKENSERVER_CLIENT_SECRET }}
+            fi
+
+        - name: Configure AWS credentials
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+            aws-access-key-id: ${{ vars.INFRA_AWS_DNS_USER_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.INFRA_AWS_DNS_USER_SECRET_ACCESS_KEY }}
+            aws-region: ${{ vars.INFRA_AWS_DNS_REGION }}
+
+        - name: Create TXT validation record for adtokenserver custom domain in DNS
+          run: |
+            TOKEN=$(az containerapp show \
+              --name ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_NAME }} \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --query "properties.customDomainVerificationId" -o tsv)
+            echo "TOKEN=$TOKEN" >> $GITHUB_ENV
+
+            cat > change-adtokenserver-batch.json <<EOF
+            {
+              "Changes": [{
+                "Action": "UPSERT",
+                "ResourceRecordSet": {
+                  "Name": "asuid.${{ vars.INFRA_ADTOKENSERVER_DOMAIN_NAME }}",
+                  "Type": "TXT",
+                  "TTL": 300,
+                  "ResourceRecords": [{ "Value": "\"${TOKEN}\"" }]
+                }
+              }]
+            }
+            EOF
+
+            cat change-adtokenserver-batch.json
+
+            aws route53 change-resource-record-sets \
+              --hosted-zone-id ${{ vars.INFRA_AWS_DNS_HOSTED_ZONE_ID }} \
+              --change-batch file://change-adtokenserver-batch.json
+
+        - name: Wait propagation for TXT validation record for adtokenserver custom domain in DNS
+          env:
+            DNS_NAME: "asuid.${{ vars.INFRA_ADTOKENSERVER_DOMAIN_NAME }}"
+            MAX_ATTEMPTS: 12
+            SLEEP_TIME: 5
+          run: |
+            SUCCESS=0
+            for i in $(seq 1 $MAX_ATTEMPTS); do
+              INDEX_PAD=$(printf "%03d" "$i")
+              MAX_ATTEMPTS_PAD=$(printf "%03d" "$MAX_ATTEMPTS")
+
+              echo "[$INDEX_PAD/$MAX_ATTEMPTS_PAD] Checking TXT record for $DNS_NAME..."
+
+              if dig +short TXT $DNS_NAME | grep -q .; then
+                echo "✅ Found TXT record"
+                SUCCESS=1
+                break
+              else
+                echo "⏳ No TXT record found yet, waiting ${SLEEP_TIME}s..."
+                sleep $SLEEP_TIME
+              fi
+            done
+
+            if [ $SUCCESS -eq 0 ]; then
+              echo "❌ ERROR: TXT record for $DNS_NAME not found after $MAX_ATTEMPTS attempts"
+              exit 1
+            fi
+
+        - name: Add custom domain for AD Token Server Container App
+          id: getfqdn
+          run: |
+            echo "🔍 Checking if adtokenserver custom domain ${{ vars.INFRA_ADTOKENSERVER_DOMAIN_NAME }} exists ..."
+            HOSTNAMES=$(az containerapp hostname list \
+              --name ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_NAME }} \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --query "[].name" -o tsv)
+
+            if echo "$HOSTNAMES" | grep -qx "${{ vars.INFRA_ADTOKENSERVER_DOMAIN_NAME }}"; then
+              echo "⚠️ Hostname already exists: ${{ vars.INFRA_ADTOKENSERVER_DOMAIN_NAME }}"
+            else
+              echo "✅ Adding hostname ${{ vars.INFRA_ADTOKENSERVER_DOMAIN_NAME }}"
+              az containerapp hostname add \
+                --name ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_NAME }} \
+                --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+                --hostname ${{ vars.INFRA_ADTOKENSERVER_DOMAIN_NAME }}
+            fi
+
+            fqdn=$(az containerapp show \
+              --name ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_NAME }} \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --query properties.configuration.ingress.fqdn -o tsv)
+
+            echo "fqdn=$fqdn" >> $GITHUB_OUTPUT
+
+        - name: Create CNAME validation record for adtokenserver custom domain in DNS
+          run: |
+            aws route53 change-resource-record-sets \
+              --hosted-zone-id ${{ vars.INFRA_AWS_DNS_HOSTED_ZONE_ID }} \
+              --change-batch '{
+                "Changes": [{
+                  "Action": "UPSERT",
+                  "ResourceRecordSet": {
+                    "Name": "${{ vars.INFRA_ADTOKENSERVER_DOMAIN_NAME }}",
+                    "Type": "CNAME",
+                    "TTL": 300,
+                    "ResourceRecords": [{ "Value": "${{ steps.getfqdn.outputs.fqdn }}" }]
+                  }
+                }]
+              }'
+
+        - name: Wait for CNAME validation record for adtokenserver custom domain in DNS propagation
+          env:
+            DNS_NAME: "${{ vars.INFRA_ADTOKENSERVER_DOMAIN_NAME }}"
+            MAX_ATTEMPTS: 12
+            SLEEP_TIME: 5
+          run: |
+            SUCCESS=0
+            for i in $(seq 1 $MAX_ATTEMPTS); do
+              INDEX_PAD=$(printf "%03d" "$i")
+              MAX_ATTEMPTS_PAD=$(printf "%03d" "$MAX_ATTEMPTS")
+
+              echo "[$INDEX_PAD/$MAX_ATTEMPTS_PAD] Checking CNAME record for $DNS_NAME..."
+
+              if dig +short CNAME $DNS_NAME | grep -q .; then
+                echo "✅ Found CNAME record"
+                SUCCESS=1
+                break
+              else
+                echo "⏳ No CNAME record found yet, waiting ${SLEEP_TIME}s..."
+                sleep $SLEEP_TIME
+              fi
+            done
+
+            if [ $SUCCESS -eq 0 ]; then
+              echo "❌ ERROR: CNAME record for $DNS_NAME not found after $MAX_ATTEMPTS attempts"
+              exit 1
+            fi
+
+        - name: Create managed certificate if not exists
+          run: |
+            set -e
+
+            CERT_NAME="${{ vars.INFRA_ADTOKENSERVER_DOMAIN_NAME }}-cert"
+
+            EXISTING=$(az containerapp env certificate list \
+              --name ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --query "[?name=='$CERT_NAME'].name" -o tsv)
+
+            if [ -z "$EXISTING" ]; then
+              echo "✅ Creating managed certificate $CERT_NAME for domain ${{ vars.INFRA_ADTOKENSERVER_DOMAIN_NAME }} ..."
+              az containerapp env certificate create \
+                --name ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
+                --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+                --hostname ${{ vars.INFRA_ADTOKENSERVER_DOMAIN_NAME }} \
+                --validation-method CNAME \
+                --certificate-name $CERT_NAME
+            else
+              echo "⚠️ Certificate $CERT_NAME already exists. Skipping creation."
+            fi
+
+        - name: Wait until managed certificate for AD Token Server is ready
+          env:
+            CERT_NAME: "${{ vars.INFRA_ADTOKENSERVER_DOMAIN_NAME }}-cert"
+            MAX_ATTEMPTS: 60
+            SLEEP_TIME: 15
+          run: |
+
+            SUCCESS=0
+            for i in $(seq 1 $MAX_ATTEMPTS); do
+              INDEX_PAD=$(printf "%03d" "$i")
+              MAX_ATTEMPTS_PAD=$(printf "%03d" "$MAX_ATTEMPTS")
+
+              echo "[$INDEX_PAD/$MAX_ATTEMPTS_PAD] Checking if certificate is ready ..."
+
+              EXISTING=$(az containerapp env certificate list \
+                --name ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
+                --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+                --query "[?name=='$CERT_NAME'].properties.provisioningState" -o tsv)
+
+              if [ "$EXISTING" == "Succeeded" ]; then
+                echo "✅ Certificate $CERT_NAME is ready"
+                SUCCESS=1
+                break
+              else
+                echo "⏳ Certificate not ready yet (current state: '$EXISTING'), waiting ${SLEEP_TIME}s ..."
+                sleep $SLEEP_TIME
+              fi
+            done
+
+            if [ $SUCCESS -eq 0 ]; then
+              echo "❌ ERROR: Certificate $CERT_NAME not ready after $MAX_ATTEMPTS attempts"
+              exit 1
+            fi
+
+        - name: Bind SSL Certificate to AD Token Server Custom Domain if not binded
+          run: |
+            echo "🔍 Checking bindings for ${{ vars.INFRA_ADTOKENSERVER_DOMAIN_NAME }}..."
+
+            CERT_NAME="${{ vars.INFRA_ADTOKENSERVER_DOMAIN_NAME }}-cert"
+
+            BINDINGTYPE=$(az containerapp hostname list \
+              --name ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_NAME }} \
+              --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --query "[].bindingType" -o tsv)
+
+            if [ "$EXISTING" == "Succeeded" ]; then
+              echo "⚠️ Hostname ${{ vars.INFRA_ADTOKENSERVER_DOMAIN_NAME }} already bound (bindingType=$BINDINGTYPE)"
+            else
+              echo "✅ Binding hostname ${{ vars.INFRA_ADTOKENSERVER_DOMAIN_NAME }} with cert"
+              az containerapp hostname bind \
+                --name ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_NAME }} \
+                --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+                --hostname ${{ vars.INFRA_ADTOKENSERVER_DOMAIN_NAME }} \
+                --certificate $CERT_NAME \
+                --environment ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
+                --validation-method CNAME
+            fi
+
   job-create-firewall-rules-sql:
     name: Create SQL Firewall Rules
     runs-on: ubuntu-latest

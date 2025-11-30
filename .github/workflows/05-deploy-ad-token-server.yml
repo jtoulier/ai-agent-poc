@@ -1,0 +1,45 @@
+name: WF05 - Deploy AD Token Server to Azure
+
+on:
+  workflow_dispatch:
+
+jobs:
+  job-deploy-adtokenserver:
+    runs-on: ubuntu-latest
+    env:
+      RG: ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+      ACR: ${{ vars.INFRA_AZURE_ACR_NAME }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      #############################################
+      # Build and push AD Token Server container
+      #############################################
+      - name: Build AD Token Server Docker image
+        run: |
+          cd ./ad-token-server
+          docker build -t $ACR.azurecr.io/${{ vars.INFRA_ADTOKENSERVER_IMAGE_NAME }}:${{ vars.INFRA_ADTOKENSERVER_IMAGE_VERSION }} .
+          echo "Built AD Token Server image"
+
+      - name: Push AD Token Server to ACR
+        run: |
+          az acr login --name $ACR
+          docker push $ACR.azurecr.io/${{ vars.INFRA_ADTOKENSERVER_IMAGE_NAME }}:${{ vars.INFRA_ADTOKENSERVER_IMAGE_VERSION }}
+
+      #############################################
+      # Deploy AD Token Server Container App
+      #############################################
+      - name: Deploy AD Token Server Container App
+        run: |
+          echo "Updating existing AD Token Server Container App..."
+          az containerapp update \
+            --name ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_NAME }} \
+            --resource-group $RG \
+            --image $ACR.azurecr.io/${{ vars.INFRA_ADTOKENSERVER_IMAGE_NAME }}:${{ vars.INFRA_ADTOKENSERVER_IMAGE_VERSION }}                  

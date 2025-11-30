@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 import { MessageRequest, MessageResponse } from '@app/models/message';
 import { API_ROUTES } from '@app/constants/api-routes';
-import { environment } from '@environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class MessageService {
@@ -13,15 +12,22 @@ export class MessageService {
   addMessageToThread(threadId: string, message: MessageRequest): Observable<MessageResponse> {
     console.log('[MessageService] Adding message to thread:', threadId, message);
 
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${environment.agentAPIToken}`,
-      'Content-Type': 'application/json'
-    });
+    // 🔹 Fetch dynamic token from Python token server
+    return this.http.get<{ accessToken: string }>(API_ROUTES.TOKEN_SERVER.GET_TOKEN).pipe(
+      switchMap(tokenResponse => {
+        const token = tokenResponse.accessToken;
+        const headers = new HttpHeaders({
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        });
+        console.log('[MessageService] Token dinámico adquirido:', token);
 
-    return this.http.post<MessageResponse>(
-      API_ROUTES.AGENT.ADD_MESSAGE(threadId),
-      message,
-      { headers }
+        return this.http.post<MessageResponse>(
+          API_ROUTES.AGENT.ADD_MESSAGE(threadId),
+          message,
+          { headers }
+        );
+      })
     );
   }
 
@@ -29,13 +35,20 @@ export class MessageService {
   getThreadMessages(threadId: string): Observable<MessageResponse[]> {
     console.log('[MessageService] Getting messages from thread:', threadId);
 
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${environment.agentAPIToken}`
-    });
+    // 🔹 Fetch dynamic token from Python token server
+    return this.http.get<{ accessToken: string }>(API_ROUTES.TOKEN_SERVER.GET_TOKEN).pipe(
+      switchMap(tokenResponse => {
+        const token = tokenResponse.accessToken;
+        const headers = new HttpHeaders({
+          Authorization: `Bearer ${token}`
+        });
+        console.log('[MessageService] Token dinámico adquirido:', token);
 
-    return this.http.get<MessageResponse[]>(
-      API_ROUTES.AGENT.GET_MESSAGES(threadId),
-      { headers }
+        return this.http.get<MessageResponse[]>(
+          API_ROUTES.AGENT.GET_MESSAGES(threadId),
+          { headers }
+        );
+      })
     );
   }
 }

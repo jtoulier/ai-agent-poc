@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 import { Run } from '@app/models/run';
 import { API_ROUTES } from '@app/constants/api-routes';
-import { environment } from '@environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class RunService {
@@ -13,13 +12,20 @@ export class RunService {
   getRun(threadId: string, runId: string): Observable<Run> {
     console.log('[RunService] Consultando estado del run:', runId);
 
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${environment.agentAPIToken}`
-    });
+    // 🔹 Fetch dynamic token from Python token server
+    return this.http.get<{ accessToken: string }>(API_ROUTES.TOKEN_SERVER.GET_TOKEN).pipe(
+      switchMap(tokenResponse => {
+        const token = tokenResponse.accessToken;
+        const headers = new HttpHeaders({
+          Authorization: `Bearer ${token}`
+        });
+        console.log('[RunService] Token dinámico adquirido:', token);
 
-    return this.http.get<Run>(
-      API_ROUTES.AGENT.GET_RUN_STATUS(threadId, runId),
-      { headers }
+        return this.http.get<Run>(
+          API_ROUTES.AGENT.GET_RUN_STATUS(threadId, runId),
+          { headers }
+        );
+      })
     );
   }
 
@@ -27,15 +33,22 @@ export class RunService {
   createRun(threadId: string, assistantId: string): Observable<Run> {
     console.log('[RunService] Creando run para thread:', threadId, 'con assistantId:', assistantId);
 
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${environment.agentAPIToken}`,
-      'Content-Type': 'application/json'
-    });
+    // 🔹 Fetch dynamic token from Python token server
+    return this.http.get<{ accessToken: string }>(API_ROUTES.TOKEN_SERVER.GET_TOKEN).pipe(
+      switchMap(tokenResponse => {
+        const token = tokenResponse.accessToken;
+        const headers = new HttpHeaders({
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        });
+        console.log('[RunService] Token dinámico adquirido:', token);
 
-    return this.http.post<Run>(
-      API_ROUTES.AGENT.CREATE_RUN(threadId),
-      { assistant_id: assistantId },
-      { headers }
+        return this.http.post<Run>(
+          API_ROUTES.AGENT.CREATE_RUN(threadId),
+          { assistant_id: assistantId },
+          { headers }
+        );
+      })
     );
   }
 }
