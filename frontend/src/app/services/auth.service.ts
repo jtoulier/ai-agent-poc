@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { API_ROUTES } from '@app/constants/api-routes';
 import { LoginRequest, LoginResponse, LoginError, SaveThread } from '@app/models/auth';
 import { Observable, throwError, switchMap } from 'rxjs';
@@ -7,6 +7,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { SessionService } from '@app/services/session.service';
 import { Session } from '@app/models/session';
 import { Thread } from '@app/models/thread/thread.model';
+import { environment } from '@environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -16,14 +17,28 @@ export class AuthService {
   ) {}
 
   login(user: string, password: string): Observable<LoginResponse> {
+    console.log('[LOGIN] Iniciando login con usuario:', user);
+
     const body: LoginRequest = { relationshipManagerId: user, password };
+    console.log('[LOGIN] Body enviado al backend:', body);
 
     return this.http.post<LoginResponse>(API_ROUTES.BACKEND.LOGIN, body).pipe(
       switchMap((response: LoginResponse) => {
-        console.log('Login exitoso');
+        console.log('[LOGIN] Respuesta del backend (LoginResponse):', response);
+
+        // Construir headers con el token del environment
+        const headers = new HttpHeaders({
+          Authorization: `Bearer ${environment.agentAPIToken}`
+        });
+        console.log('[LOGIN] Token del environment:', environment.agentAPIToken);
+        console.log('[LOGIN] Headers construidos:', headers);
+
         // 1. Crear thread en agente
-        return this.http.post<Thread>(API_ROUTES.AGENT.CREATE_THREAD, {}).pipe(
+        console.log('[THREAD] Creando thread en agente con headers:', headers);
+        return this.http.post<Thread>(API_ROUTES.AGENT.CREATE_THREAD, {}, { headers }).pipe(
           switchMap((thread: Thread) => {
+            console.log('[THREAD] Respuesta del agente (Thread creado):', thread);
+
             // 2. Construir Session
             const session: Session = {
               fullName: response.relationshipManagerName,
@@ -31,27 +46,40 @@ export class AuthService {
               messages: [],
               lastMessage: null
             };
-            this.sessionService.setSession(session);
+            console.log('[SESSION] Session construida:', session);
 
-            // 3. Persistir thread en backend
+            this.sessionService.setSession(session);
+            console.log('[SESSION] Session guardada en SessionService');
+
+            // 3. Persistir thread en backend con PATCH
             const saveThreadBody: SaveThread = { threadId: thread.id };
-            return this.http.post<void>(
+            console.log('[SAVE_THREAD] Body enviado al backend:', saveThreadBody);
+            console.log('[SAVE_THREAD] URL:', API_ROUTES.BACKEND.SAVE_THREAD(response.relationshipManagerId));
+
+            return this.http.patch<LoginResponse>(
               API_ROUTES.BACKEND.SAVE_THREAD(response.relationshipManagerId),
               saveThreadBody
             ).pipe(
-              tap(() => console.log('Thread guardado en backend')),
-              // devolvemos el LoginResponse original
-              switchMap(() => [response])
+              tap((updatedResponse) => {
+                console.log('[SAVE_THREAD] Thread guardado en backend, respuesta:', updatedResponse);
+              }),
+              // devolvemos el LoginResponse actualizado que viene del backend
+              switchMap((updatedResponse: LoginResponse) => {
+                console.log('[FINAL] Devolviendo LoginResponse actualizado:', updatedResponse);
+                return [updatedResponse];
+              })
             );
           })
         );
       }),
       catchError((error: HttpErrorResponse) => {
-        console.log(error)
+        console.log('[ERROR] Ocurrió un error en login/flujo completo:', error);
         if (error.status === 401) {
           const loginError: LoginError = error.error as LoginError;
+          console.log('[ERROR] 401 detectado, LoginError:', loginError);
           return throwError(() => loginError);
         }
+        console.log('[ERROR] Otro tipo de error:', error);
         return throwError(() => error);
       })
     );

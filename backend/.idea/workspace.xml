@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="533b2072-edab-4355-8a14-c4c38ff6da44" name="Changes" comment="con openapi.json corregido, sin header, que era el error">
+    <list default="true" id="533b2072-edab-4355-8a14-c4c38ff6da44" name="Changes" comment="threadid es varchar">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/UpdateRelationshipManagerThreadIdRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/model/request/UpdateRelationshipManagerThreadIdRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/RelationshipManagerResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/springonly/backend/resource/RelationshipManagerResource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/openapi/openapi-completo.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/openapi/openapi-completo.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/app/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/app.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/app/services/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/services/auth.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/environments/environment.prod.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/environments/environment.prod.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/environments/environment.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/environments/environment.ts" afterDir="false" />
@@ -251,7 +250,15 @@
       <option name="project" value="LOCAL" />
       <updated>1761995538082</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="threadid es varchar">
+      <option name="closed" value="true" />
+      <created>1763911908873</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1763911908873</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -290,6 +297,15 @@
     <MESSAGE value="con operation" />
     <MESSAGE value="con openapi.json muy bien explicado" />
     <MESSAGE value="con openapi.json corregido, sin header, que era el error" />
-    <option name="LAST_COMMIT_MESSAGE" value="con openapi.json corregido, sin header, que era el error" />
+    <MESSAGE value="threadid es varchar" />
+    <option name="LAST_COMMIT_MESSAGE" value="threadid es varchar" />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
   </component>
 </project>
