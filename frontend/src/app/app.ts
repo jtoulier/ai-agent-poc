@@ -3,22 +3,23 @@ import { Title } from '@angular/platform-browser';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from './services/auth.service';
+import { AuthService } from '@app/services/auth.service';
 import { SessionService } from '@app/services/session.service';
 
 import { MessageService } from '@app/services/message.service';
 import { RunService } from '@app/services/run.service';
-
 
 import { timer } from 'rxjs';
 import { switchMap, filter, take, tap } from 'rxjs/operators';
 import { MessageRequest } from '@app/models/message';
 import { Run } from '@app/models/run';
 
-import { environment } from '@environments/environment';
 
 // Modelos
 import { Session } from '@app/models/session';
+
+// ✅ Nuevo servicio de configuración runtime
+import { ConfigService } from '@app/services/config.service';
 
 @Component({
   selector: 'app-root',
@@ -45,7 +46,8 @@ export class App {
     private authService: AuthService,
     private sessionService: SessionService,
     private messageService: MessageService,   // ✅ referencia agregada
-    private runService: RunService            // ✅ referencia agregada
+    private runService: RunService,           // ✅ referencia agregada
+    private config: ConfigService             // ✅ servicio de configuración runtime
   ) {
     this.titleService.setTitle('CreditsAI - Gestiona tus créditos con IA');
     this.session = this.sessionService.getSession();
@@ -135,9 +137,9 @@ export class App {
       // 2. Crear run
       switchMap((msgResponse) => {
         console.log('[SEND_MESSAGE] Mensaje agregado al thread, respuesta:', msgResponse);
-        console.log('[SEND_MESSAGE] Creando run para thread:', this.session!.thread!.id, 'con assistantId:', environment.agentId);
+        console.log('[SEND_MESSAGE] Creando run para thread:', this.session!.thread!.id, 'con assistantId:', this.config.agentId);
 
-        return this.runService.createRun(this.session!.thread!.id, environment.agentId).pipe(
+        return this.runService.createRun(this.session!.thread!.id, this.config.agentId).pipe(
           tap((run: Run) => {
             console.log('[SEND_MESSAGE] Run creado con ID:', run.id);
           })
@@ -172,15 +174,15 @@ export class App {
         // Filtrar solo los del agente
         const assistantMessages = allMessages.filter((m: any) => m.role === 'assistant');
 
-      // Tomar el más reciente (primer elemento, porque la API ordena descendente)
-      const latestAssistantMsg = assistantMessages[0];
+        // Tomar el más reciente (primer elemento, porque la API ordena descendente)
+        const latestAssistantMsg = assistantMessages[0];
 
-      if (latestAssistantMsg) {
-        const textContent = latestAssistantMsg.content[0]?.text?.value ?? '';
-        console.log('[SEND_MESSAGE] Último mensaje del agente (más reciente):', textContent);
-        this.responses.unshift({ role: 'assistant', text: textContent });
-      } else {
-        console.log('[SEND_MESSAGE] No se encontró mensaje del agente en la respuesta.');
+        if (latestAssistantMsg) {
+          const textContent = latestAssistantMsg.content[0]?.text?.value ?? '';
+          console.log('[SEND_MESSAGE] Último mensaje del agente (más reciente):', textContent);
+          this.responses.unshift({ role: 'assistant', text: textContent });
+        } else {
+          console.log('[SEND_MESSAGE] No se encontró mensaje del agente en la respuesta.');
         }
       },
       error: (err) => {
@@ -201,7 +203,6 @@ export class App {
       console.log('[SEND_MESSAGE] Textarea reseteado a altura automática.');
     }
   }
-
 
   handleEnter(event: Event) {
     const keyboardEvent = event as KeyboardEvent;

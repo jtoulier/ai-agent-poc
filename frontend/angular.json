@@ -36,6 +36,12 @@
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",
@@ -76,7 +82,6 @@
             }
           },
           "defaultConfiguration": "development"
-
         },
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n"

@@ -464,7 +464,8 @@ jobs:
               --registry-username $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query username -o tsv) \
               --registry-password $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query passwords[0].value -o tsv) \
               --ingress external \
-              --target-port ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_PORT }}
+              --target-port ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_PORT }} \
+              --env-vars AGENT_ID=${{ vars.INFRA_AZURE_AIFOUNDRY_AGENT_ID }}
           fi
 
       - name: Configure AWS credentials
