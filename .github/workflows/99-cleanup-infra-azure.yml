@@ -250,6 +250,7 @@ jobs:
   job-drop-resource-group:
     name: Drop Resource Group
     runs-on: ubuntu-latest
+    if: false
     needs: [job-drop-loganalytics-containerappenvironment, job-drop-acr, job-drop-sql]
     steps:
       - name: Checkout repo
