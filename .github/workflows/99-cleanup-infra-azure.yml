@@ -111,7 +111,7 @@ jobs:
   job-drop-loganalytics-containerappenvironment:
     name: Drop Log Analytics and Container App Environment
     runs-on: ubuntu-latest
-    needs: [job-drop-mcpserver-containerapp, job-drop-frontend-containerapp, job-drop-backend-containerapp]
+    needs: [job-drop-mcpserver-containerapp, job-drop-frontend-containerapp, job-drop-backend-containerapp, job-drop-adtokenserver-containerapp]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
