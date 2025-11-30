@@ -24,8 +24,8 @@ jobs:
       #############################################
       - name: Build AD Token Server Docker image
         run: |
-          cd ./ad-token-server/docker
-          docker build -t $ACR.azurecr.io/${{ vars.INFRA_ADTOKENSERVER_IMAGE_NAME }}:${{ vars.INFRA_ADTOKENSERVER_IMAGE_VERSION }} .
+          cd ./ad-token-server
+          docker build -f docker/Dockerfile -t $ACR.azurecr.io/${{ vars.INFRA_ADTOKENSERVER_IMAGE_NAME }}:${{ vars.INFRA_ADTOKENSERVER_IMAGE_VERSION }} .
           echo "Built AD Token Server image"
 
       - name: Push AD Token Server to ACR
