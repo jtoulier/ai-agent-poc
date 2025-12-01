@@ -17,9 +17,7 @@ import { Run } from '@app/models/run';
 
 // Modelos
 import { Session } from '@app/models/session';
-
-// ✅ Nuevo servicio de configuración runtime
-import { ConfigService } from '@app/services/config.service';
+import { environment } from '@environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -47,9 +45,8 @@ export class App {
     private sessionService: SessionService,
     private messageService: MessageService,   // ✅ referencia agregada
     private runService: RunService,           // ✅ referencia agregada
-    private config: ConfigService             // ✅ servicio de configuración runtime
   ) {
-    this.titleService.setTitle('CreditsAI - Gestiona tus créditos con IA');
+    this.titleService.setTitle('Credits AI - Gestiona tus créditos con IA');
     this.session = this.sessionService.getSession();
   }
 
@@ -137,9 +134,9 @@ export class App {
       // 2. Crear run
       switchMap((msgResponse) => {
         console.log('[SEND_MESSAGE] Mensaje agregado al thread, respuesta:', msgResponse);
-        console.log('[SEND_MESSAGE] Creando run para thread:', this.session!.thread!.id, 'con assistantId:', this.config.agentId);
+        console.log('[SEND_MESSAGE] Creando run para thread:', this.session!.thread!.id, 'con assistantId:', environment.agentId);
 
-        return this.runService.createRun(this.session!.thread!.id, this.config.agentId).pipe(
+        return this.runService.createRun(this.session!.thread!.id, environment.agentId).pipe(
           tap((run: Run) => {
             console.log('[SEND_MESSAGE] Run creado con ID:', run.id);
           })
