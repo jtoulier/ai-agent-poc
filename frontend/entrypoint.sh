@@ -9,4 +9,5 @@ cat <<EOF > /usr/share/nginx/html/assets/config.json
 }
 EOF
 
-nginx -g "daemon off;"
+# Ejecutar el comando pasado en CMD (por defecto Nginx)
+exec "$@"
