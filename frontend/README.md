@@ -66,3 +66,8 @@ az containerapp update \
   --name cappcantolaofrontend \
   --resource-group rgcantolao \
   --set scale.minReplicas=0
+
+az containerapp delete \
+                --resource-group rgcantolao \
+                --name cappcantolaofrontend \
+                --yes  

@@ -216,7 +216,8 @@ jobs:
               --registry-username $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query username -o tsv) \
               --registry-password $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query passwords[0].value -o tsv) \
               --ingress external \
-              --target-port ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_PORT }}
+              --target-port ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_PORT }} \
+              --revisions-mode multiple
           fi
 
       - name: Configure AWS credentials
@@ -465,7 +466,7 @@ jobs:
               --registry-password $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query passwords[0].value -o tsv) \
               --ingress external \
               --target-port ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_PORT }} \
-              --env-vars AGENT_ID=${{ vars.INFRA_AZURE_AIFOUNDRY_AGENT_ID }}
+              --revisions-mode multiple
           fi
 
       - name: Configure AWS credentials
@@ -714,7 +715,7 @@ jobs:
               --registry-password $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query passwords[0].value -o tsv) \
               --ingress external \
               --target-port ${{ vars.INFRA_AZURE_CONTAINERAPP_MCPSERVER_PORT }} \
-              --env-vars AGENT_ID=${{ vars.INFRA_AZURE_AIFOUNDRY_AGENT_ID }}
+              --revisions-mode multiple
           fi
 
       - name: Configure AWS credentials
@@ -963,6 +964,7 @@ jobs:
                 --registry-password $(az acr credential show -n ${{ vars.INFRA_AZURE_ACR_NAME }} --query passwords[0].value -o tsv) \
                 --ingress external \
                 --target-port ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_PORT }} \
+                --revisions-mode multiple \
                 --env-vars TENANT_ID=${{ vars.INFRA_AZURE_TENANT_ID }} \
                            CLIENT_ID=${{ vars.INFRA_ADTOKENSERVER_CLIENT_ID }} \
                            ALLOWED_ORIGINS=${{ vars.INFRA_AZURE_ADTOKENSERVER_ALLOWED_ORIGINS }} \
