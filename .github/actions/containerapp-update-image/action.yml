@@ -1,0 +1,30 @@
+name: Container App update image
+description: Update a Container App to a specific ACR image
+inputs:
+  resourceGroup:
+    description: Name of the Resource Group
+    required: true
+  containerAppName:
+    description: Name of the Container App
+    required: true
+  acrName:
+    description: Name of the Azure Container Registry
+    required: true
+  imageName:
+    description: Name of the Docker image
+    required: true
+  imageVersion:
+    description: Version tag for the Docker image
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Update Container App image
+      shell: bash
+      run: |
+        IMAGE="${{ inputs.acrName }}.azurecr.io/${{ inputs.imageName }}:${{ inputs.imageVersion }}"
+        echo "Updating ${{ inputs.containerAppName }} to $IMAGE ..."
+        az containerapp update \
+          --name "${{ inputs.containerAppName }}" \
+          --resource-group "${{ inputs.resourceGroup }}" \
+          --image "$IMAGE"

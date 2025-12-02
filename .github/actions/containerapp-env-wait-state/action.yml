@@ -1,0 +1,43 @@
+name: Container App environment wait state
+description: Poll Container App Environment until state matches
+inputs:
+  resourceGroup:
+    description: Name of the Resource Group
+    required: true
+  environmentName:
+    description: Name of the Container App Environment
+    required: true
+  desiredState:
+    description: Desired provisioning state to wait for
+    required: true
+  sleepSeconds:
+    description: Seconds to wait between polls
+    required: false
+    default: '15'
+  totalWaitSeconds:
+    description: Total seconds to wait before timing out
+    required: false
+    default: '900'
+runs:
+  using: composite
+  steps:
+    - name: Wait for Container App Environment state
+      shell: bash
+      run: |
+        SLEEP=${{ inputs.sleepSeconds }}
+        TOTAL=${{ inputs.totalWaitSeconds }}
+        MAX=$((TOTAL / SLEEP))
+        echo "⏳ Waiting for '${{ inputs.environmentName }}' state '${{ inputs.desiredState }}' (max ${TOTAL}s)"
+        for i in $(seq 1 $MAX); do
+          STATUS=$(az containerapp env show \
+            --resource-group "${{ inputs.resourceGroup }}" \
+            --name "${{ inputs.environmentName }}" \
+            --query "properties.provisioningState" -o tsv 2>/dev/null || echo "NotFound")
+          echo "[$i/$MAX] Status: $STATUS"
+          if [ "$STATUS" = "${{ inputs.desiredState }}" ]; then
+            echo "✅ Desired state reached"
+            exit 0
+          fi
+          [ "$i" -eq "$MAX" ] && echo "❌ Timeout" && exit 1
+          sleep "$SLEEP"
+        done

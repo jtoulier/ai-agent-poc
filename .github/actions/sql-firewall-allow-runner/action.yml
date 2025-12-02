@@ -1,0 +1,46 @@
+name: SQL firewall allow runner IP
+description: Adds/updates a firewall rule in Azure SQL Server with the current runner public IP
+inputs:
+  resourceGroup:
+    description: The name of the resource group containing the SQL server
+    required: true
+  sqlServerName:
+    description: The name of the SQL server
+    required: true
+  ruleName:
+    description: The name of the firewall rule to create/update
+    required: false
+    default: TempGitHubRunner
+runs:
+  using: composite
+  steps:
+    - name: Get runner IP and update firewall rule
+      shell: bash
+      run: |
+        RG="${{ inputs.resourceGroup }}"
+        SQL_SERVER="${{ inputs.sqlServerName }}"
+        RULE="${{ inputs.ruleName }}"
+
+        RUNNER_IP=$(curl -s https://api.ipify.org)
+        echo "Runner public IP: $RUNNER_IP"
+
+        if az sql server firewall-rule show \
+            --resource-group "$RG" \
+            --server "$SQL_SERVER" \
+            --name "$RULE" &>/dev/null; then
+          echo "⚠️ Rule $RULE exists. Updating to $RUNNER_IP ..."
+          az sql server firewall-rule update \
+            --resource-group "$RG" \
+            --server "$SQL_SERVER" \
+            --name "$RULE" \
+            --start-ip-address "$RUNNER_IP" \
+            --end-ip-address "$RUNNER_IP"
+        else
+          echo "✅ Creating rule $RULE for IP $RUNNER_IP ..."
+          az sql server firewall-rule create \
+            --resource-group "$RG" \
+            --server "$SQL_SERVER" \
+            --name "$RULE" \
+            --start-ip-address "$RUNNER_IP" \
+            --end-ip-address "$RUNNER_IP"
+        fi

@@ -1,0 +1,38 @@
+name: Execute sqlcmd script
+description: Executes a SQL script using sqlcmd against Azure SQL
+inputs:
+  serverFqdn:
+    description: Full server FQDN (e.g., myserver.database.windows.net)
+    required: true
+  databaseName:
+    description: The name of the target database
+    required: true
+  username:
+    description: The SQL login username
+    required: true
+  password:
+    description: The SQL login password
+    required: true
+  scriptPath:
+    description: Relative path to the SQL script
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Run sqlcmd script
+      shell: bash
+      run: |
+        echo "⏳ Running ${{
+          inputs.scriptPath
+        }} against ${{
+          inputs.serverFqdn
+        }}/${{
+          inputs.databaseName
+        }} ..."
+        sqlcmd \
+          -S "${{ inputs.serverFqdn }}" \
+          -d "${{ inputs.databaseName }}" \
+          -U "${{ inputs.username }}" \
+          -P '${{ inputs.password }}' \
+          -i "${{ inputs.scriptPath }}" \
+          -b

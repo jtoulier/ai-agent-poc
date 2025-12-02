@@ -1,0 +1,45 @@
+name: Container App create dummy
+description: Create a Container App with a dummy image if it doesn't exist
+inputs:
+  resourceGroup:
+    description: Name of the Resource Group
+    required: true
+  environmentName:
+    description: Name of the Container App Environment
+    required: true
+  containerAppName:
+    description: Name of the Container App
+    required: true
+  targetPort:
+    description: Target port for the Container App
+    required: true
+  acrName:
+    description: Name of the Azure Container Registry
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Create container app if not exists
+      shell: bash
+      run: |
+        if az containerapp show \
+          --name "${{ inputs.containerAppName }}" \
+          --resource-group "${{ inputs.resourceGroup }}" &>/dev/null; then
+          echo "⚠️ Container App ${{ inputs.containerAppName }} already exists."
+        else
+          DUMMY_IMAGE="mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+          REG_USER=$(az acr credential show -n "${{ inputs.acrName }}" --query username -o tsv)
+          REG_PASS=$(az acr credential show -n "${{ inputs.acrName }}" --query passwords[0].value -o tsv)
+          echo "✅ Creating Container App ${{ inputs.containerAppName }} ..."
+          az containerapp create \
+            --name "${{ inputs.containerAppName }}" \
+            --resource-group "${{ inputs.resourceGroup }}" \
+            --environment "${{ inputs.environmentName }}" \
+            --image "$DUMMY_IMAGE" \
+            --registry-server "${{ inputs.acrName }}.azurecr.io" \
+            --registry-username "$REG_USER" \
+            --registry-password "$REG_PASS" \
+            --ingress external \
+            --target-port "${{ inputs.targetPort }}" \
+            --revisions-mode multiple
+        fi

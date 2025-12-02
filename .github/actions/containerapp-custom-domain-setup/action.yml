@@ -1,0 +1,192 @@
+name: Container App custom domain setup
+description: Add hostname, create Route53 records, create managed cert, and bind cert
+inputs:
+  resourceGroup:
+    description: Name of the Resource Group
+    required: true
+  environmentName:
+    description: Name of the Container App Environment
+    required: true
+  containerAppName:
+    description: Name of the Container App
+    required: true
+  domainName:
+    description: Custom domain name to add
+    required: true
+  awsHostedZoneId:
+    description: AWS Route53 Hosted Zone ID
+    required: true
+  awsRegion:
+    description: AWS Region
+    required: true
+  awsAccessKeyId:
+    description: AWS Access Key ID
+    required: true
+  awsSecretAccessKey:
+    description: AWS Secret Access Key
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ inputs.awsAccessKeyId }}
+        aws-secret-access-key: ${{ inputs.awsSecretAccessKey }}
+        aws-region: ${{ inputs.awsRegion }}
+
+    - name: Create TXT record for domain verification
+      shell: bash
+      run: |
+        TOKEN=$(az containerapp show \
+          --name "${{ inputs.containerAppName }}" \
+          --resource-group "${{ inputs.resourceGroup }}" \
+          --query "properties.customDomainVerificationId" -o tsv)
+        cat > change-txt.json <<EOF
+        {
+          "Changes": [{
+            "Action": "UPSERT",
+            "ResourceRecordSet": {
+              "Name": "asuid.${{ inputs.domainName }}",
+              "Type": "TXT",
+              "TTL": 300,
+              "ResourceRecords": [{ "Value": "\"$TOKEN\"" }]
+            }
+          }]
+        }
+        EOF
+        aws route53 change-resource-record-sets \
+          --hosted-zone-id "${{ inputs.awsHostedZoneId }}" \
+          --change-batch file://change-txt.json
+
+    - name: Wait TXT propagation
+      shell: bash
+      env:
+        DNS_NAME: asuid.${{ inputs.domainName }}
+        MAX_ATTEMPTS: 12
+        SLEEP_TIME: 5
+      run: |
+        for i in $(seq 1 $MAX_ATTEMPTS); do
+          if dig +short TXT "$DNS_NAME" | grep -q .; then
+            echo "✅ TXT record found"
+            exit 0
+          fi
+          echo "⏳ Waiting ${SLEEP_TIME}s..."
+          sleep "$SLEEP_TIME"
+        done
+        echo "❌ TXT record not found after $MAX_ATTEMPTS attempts"
+        exit 1
+
+    - name: Add hostname to Container App
+      id: getfqdn
+      shell: bash
+      run: |
+        HOSTNAMES=$(az containerapp hostname list \
+          --name "${{ inputs.containerAppName }}" \
+          --resource-group "${{ inputs.resourceGroup }}" \
+          --query "[].name" -o tsv)
+        if echo "$HOSTNAMES" | grep -qx "${{ inputs.domainName }}"; then
+          echo "⚠️ Hostname already exists: ${{ inputs.domainName }}"
+        else
+          echo "✅ Adding hostname ${{ inputs.domainName }}"
+          az containerapp hostname add \
+            --name "${{ inputs.containerAppName }}" \
+            --resource-group "${{ inputs.resourceGroup }}" \
+            --hostname "${{ inputs.domainName }}"
+        fi
+        FQDN=$(az containerapp show \
+          --name "${{ inputs.containerAppName }}" \
+          --resource-group "${{ inputs.resourceGroup }}" \
+          --query "properties.configuration.ingress.fqdn" -o tsv)
+        echo "fqdn=$FQDN" >> "$GITHUB_OUTPUT"
+
+    - name: Create CNAME to Container App FQDN
+      shell: bash
+      run: |
+        aws route53 change-resource-record-sets \
+          --hosted-zone-id "${{ inputs.awsHostedZoneId }}" \
+          --change-batch "$(jq -n --arg name "${{ inputs.domainName }}" --arg value "${{ steps.getfqdn.outputs.fqdn }}" '
+            {
+              "Changes": [{
+                "Action": "UPSERT",
+                "ResourceRecordSet": {
+                  "Name": $name,
+                  "Type": "CNAME",
+                  "TTL": 300,
+                  "ResourceRecords": [{ "Value": $value }]
+                }
+              }]
+            }')"
+
+    - name: Wait CNAME propagation
+      shell: bash
+      env:
+        DNS_NAME: ${{ inputs.domainName }}
+        MAX_ATTEMPTS: 12
+        SLEEP_TIME: 5
+      run: |
+        for i in $(seq 1 $MAX_ATTEMPTS); do
+          if dig +short CNAME "$DNS_NAME" | grep -q .; then
+            echo "✅ CNAME record found"
+            exit 0
+          fi
+          echo "⏳ Waiting ${SLEEP_TIME}s..."
+          sleep "$SLEEP_TIME"
+        done
+        echo "❌ CNAME record not found after $MAX_ATTEMPTS attempts"
+        exit 1
+
+    - name: Create managed certificate if not exists
+      shell: bash
+      run: |
+        CERT_NAME="${{ inputs.domainName }}-cert"
+        EXISTING=$(az containerapp env certificate list \
+          --name "${{ inputs.environmentName }}" \
+          --resource-group "${{ inputs.resourceGroup }}" \
+          --query "[?name=='$CERT_NAME'].name" -o tsv)
+        if [ -z "$EXISTING" ]; then
+          echo "✅ Creating cert $CERT_NAME"
+          az containerapp env certificate create \
+            --name "${{ inputs.environmentName }}" \
+            --resource-group "${{ inputs.resourceGroup }}" \
+            --hostname "${{ inputs.domainName }}" \
+            --validation-method CNAME \
+            --certificate-name "$CERT_NAME"
+        else
+          echo "⚠️ Certificate $CERT_NAME already exists"
+        fi
+
+    - name: Wait certificate ready
+      shell: bash
+      env:
+        CERT_NAME: ${{ inputs.domainName }}-cert
+        MAX_ATTEMPTS: 60
+        SLEEP_TIME: 15
+      run: |
+        for i in $(seq 1 $MAX_ATTEMPTS); do
+          STATE=$(az containerapp env certificate list \
+            --name "${{ inputs.environmentName }}" \
+            --resource-group "${{ inputs.resourceGroup }}" \
+            --query "[?name=='$CERT_NAME'].properties.provisioningState" -o tsv)
+          if [ "$STATE" = "Succeeded" ]; then
+            echo "✅ Certificate ready"
+            exit 0
+          fi
+          echo "⏳ Cert state: '$STATE' — waiting ${SLEEP_TIME}s"
+          sleep "$SLEEP_TIME"
+        done
+        echo "❌ Certificate not ready after $MAX_ATTEMPTS"
+        exit 1
+
+    - name: Bind certificate to hostname
+      shell: bash
+      run: |
+        CERT_NAME="${{ inputs.domainName }}-cert"
+        echo "Binding cert $CERT_NAME to ${{ inputs.domainName }}"
+        az containerapp hostname bind \
+          --name "${{ inputs.containerAppName }}" \
+          --resource-group "${{ inputs.resourceGroup }}" \
+          --hostname "${{ inputs.domainName }}" \
+          --certificate "$CERT_NAME" \
+          --environment "${{ inputs.environmentName }}" \
+          --validation-method CNAME

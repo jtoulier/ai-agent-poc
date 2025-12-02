@@ -1,0 +1,40 @@
+name: ACR build and push
+description: Build a Docker image from a path and push it to ACR
+inputs:
+  acrName:
+    description: Name of the Azure Container Registry
+    required: true
+  imageName:
+    description: Name of the Docker image
+    required: true
+  imageVersion:
+    description: Version tag for the Docker image
+    required: true
+  workingDir:
+    description: Directory containing the Dockerfile
+    required: true
+  dockerfile:
+    description: Name of the Dockerfile
+    required: false
+    default: Dockerfile
+runs:
+  using: composite
+  steps:
+    - name: Login to ACR
+      shell: bash
+      run: az acr login --name ${{ inputs.acrName }}
+
+    - name: Build image
+      shell: bash
+      working-directory: ${{ inputs.workingDir }}
+      run: |
+        IMAGE="${{ inputs.acrName }}.azurecr.io/${{ inputs.imageName }}:${{ inputs.imageVersion }}"
+        echo "Building $IMAGE ..."
+        docker build -f "${{ inputs.dockerfile }}" -t "$IMAGE" .
+
+    - name: Push image
+      shell: bash
+      run: |
+        IMAGE="${{ inputs.acrName }}.azurecr.io/${{ inputs.imageName }}:${{ inputs.imageVersion }}"
+        echo "Pushing $IMAGE ..."
+        docker push "$IMAGE"
