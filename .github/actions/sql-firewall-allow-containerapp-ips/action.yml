@@ -24,7 +24,7 @@ runs:
         RG="${{ inputs.resourceGroup }}"
         APP="${{ inputs.containerAppName }}"
 
-        # tsv retorna espacios separados; apto para bucle shell
+        # Obtener las IPs de salida (espacios separados)
         IPS=$(az containerapp show \
           --resource-group "$RG" \
           --name "$APP" \
@@ -36,7 +36,12 @@ runs:
           exit 1
         fi
 
-        echo "ips=$IPS" >> "$GITHUB_OUTPUT"
+        # Usar sintaxis multiline para outputs
+        {
+          echo "ips<<EOF"
+          echo "$IPS"
+          echo "EOF"
+        } >> "$GITHUB_OUTPUT"
 
     - name: Add firewall rules for each IP
       shell: bash
