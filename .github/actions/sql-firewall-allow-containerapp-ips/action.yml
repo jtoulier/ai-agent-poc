@@ -1,0 +1,74 @@
+name: Add Azure SQL firewall rules from Container App outbound IPs
+description: Creates firewall rules on Azure SQL Server using the outbound IPs from a Container App
+inputs:
+  resourceGroup:
+    description: Azure resource group name
+    required: true
+  sqlServerName:
+    description: Azure SQL server name (without FQDN)
+    required: true
+  containerAppName:
+    description: Azure Container App name
+    required: true
+  rulePrefix:
+    description: Prefix for firewall rule names
+    required: false
+    default: Rule_BACKEND_
+runs:
+  using: composite
+  steps:
+    - name: Fetch outbound IPs from Container App
+      id: ips
+      shell: bash
+      run: |
+        RG="${{ inputs.resourceGroup }}"
+        APP="${{ inputs.containerAppName }}"
+
+        # tsv retorna espacios separados; apto para bucle shell
+        IPS=$(az containerapp show \
+          --resource-group "$RG" \
+          --name "$APP" \
+          --query "properties.outboundIpAddresses" \
+          -o tsv)
+
+        if [ -z "$IPS" ]; then
+          echo "❌ No outbound IPs found for Container App '$APP'."
+          exit 1
+        fi
+
+        echo "ips=$IPS" >> "$GITHUB_OUTPUT"
+
+    - name: Add firewall rules for each IP
+      shell: bash
+      env:
+        RG: ${{ inputs.resourceGroup }}
+        SQL_SERVER: ${{ inputs.sqlServerName }}
+        RULE_PREFIX: ${{ inputs.rulePrefix }}
+        IPS: ${{ steps.ips.outputs.ips }}
+      run: |
+        # Contar IPs (separadas por espacios)
+        TOTAL=$(echo "$IPS" | wc -w | tr -d ' ')
+        INDEX=1
+
+        for IP in $IPS; do
+          RULE_NAME=$(printf "%s%03d" "$RULE_PREFIX" "$INDEX")
+          INDEX_PAD=$(printf "%03d" "$INDEX")
+          TOTAL_PAD=$(printf "%03d" "$TOTAL")
+
+          if az sql server firewall-rule show \
+                --resource-group "$RG" \
+                --server "$SQL_SERVER" \
+                --name "$RULE_NAME" &>/dev/null; then
+            echo "⚠️ [$INDEX_PAD/$TOTAL_PAD] Rule $RULE_NAME with IP $IP already exists. Skipping ..."
+          else
+            echo "✅ [$INDEX_PAD/$TOTAL_PAD] Creating rule $RULE_NAME with IP $IP ..."
+            az sql server firewall-rule create \
+                --resource-group "$RG" \
+                --server "$SQL_SERVER" \
+                --name "$RULE_NAME" \
+                --start-ip-address "$IP" \
+                --end-ip-address "$IP"
+          fi
+
+          INDEX=$((INDEX+1))
+        done
