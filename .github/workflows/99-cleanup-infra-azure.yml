@@ -18,7 +18,7 @@ jobs:
       - name: Drop MCP Server Container App if exists
         uses: ./.github/actions/resource-drop-if-exists
         with:
-          showCmd: >
+          checkCmd: >
             az containerapp show --name ${{ vars.INFRA_AZURE_CONTAINERAPP_MCPSERVER_NAME }}
             --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
           deleteCmd: >
@@ -40,7 +40,7 @@ jobs:
       - name: Drop AD Token Server Container App if exists
         uses: ./.github/actions/resource-drop-if-exists
         with:
-          showCmd: >
+          checkCmd: >
             az containerapp show --name ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_NAME }}
             --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
           deleteCmd: >
@@ -62,7 +62,7 @@ jobs:
       - name: Drop Frontend Container App if exists
         uses: ./.github/actions/resource-drop-if-exists
         with:
-          showCmd: >
+          checkCmd: >
             az containerapp show --name ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }}
             --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
           deleteCmd: >
@@ -84,7 +84,7 @@ jobs:
       - name: Drop Backend Container App if exists
         uses: ./.github/actions/resource-drop-if-exists
         with:
-          showCmd: >
+          checkCmd: >
             az containerapp show --name ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }}
             --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
           deleteCmd: >
@@ -107,7 +107,7 @@ jobs:
       - name: Drop Container App Environment if exists
         uses: ./.github/actions/resource-drop-if-exists
         with:
-          showCmd: >
+          checkCmd: >
             az containerapp env show --name ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }}
             --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
           deleteCmd: >
@@ -126,7 +126,7 @@ jobs:
       - name: Drop Log Analytics Workspace if exists
         uses: ./.github/actions/resource-drop-if-exists
         with:
-          showCmd: >
+          checkCmd: >
             az monitor log-analytics workspace show
             --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
             --workspace-name ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }}
@@ -151,7 +151,7 @@ jobs:
       - name: Drop ACR if exists
         uses: ./.github/actions/resource-drop-if-exists
         with:
-          showCmd: >
+          checkCmd: >
             az acr show --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
             --name ${{ vars.INFRA_AZURE_ACR_NAME }}
           deleteCmd: >
@@ -173,7 +173,7 @@ jobs:
       - name: Drop SQL Database if exists
         uses: ./.github/actions/resource-drop-if-exists
         with:
-          showCmd: >
+          checkCmd: >
             az sql db show --name ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }}
             --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
             --server ${{ vars.INFRA_AZURE_SQLSERVER_NAME }}
@@ -185,7 +185,7 @@ jobs:
       - name: Drop SQL Server if exists
         uses: ./.github/actions/resource-drop-if-exists
         with:
-          showCmd: >
+          checkCmd: >
             az sql server show --name ${{ vars.INFRA_AZURE_SQLSERVER_NAME }}
             --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
           deleteCmd: >
@@ -209,7 +209,7 @@ jobs:
       - name: Drop Resource Group if exists
         uses: ./.github/actions/resource-drop-if-exists
         with:
-          showCmd: >
+          checkCmd: >
             az group show --name ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
           deleteCmd: >
             az group delete --name ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} --yes

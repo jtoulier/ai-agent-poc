@@ -1,7 +1,7 @@
 name: Resource drop if exists
 description: Delete a resource if exists using az subcommand
 inputs:
-  showCmd:
+  checkCmd:
     description: Command to check if resource exists
     required: true
   deleteCmd:
@@ -14,7 +14,7 @@ runs:
       shell: bash
       run: |
         if ${{
-          inputs.showCmd
+          inputs.checkCmd
         }} &>/dev/null; then
           echo "🗑️ Deleting: ${{ inputs.deleteCmd }}"
           ${{ inputs.deleteCmd }}

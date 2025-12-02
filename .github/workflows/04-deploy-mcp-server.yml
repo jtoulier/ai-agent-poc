@@ -20,7 +20,7 @@ jobs:
         with:
           acrName: ${{ vars.INFRA_AZURE_ACR_NAME }}
           imageName: ${{ vars.INFRA_MCPSERVER_IMAGE_NAME }}
-          imageVersion: ${{ vars.INFRA_MCPSERVER_IMAGE_VERSION }}
+          imageVersion: ${GITHUB_SHA}
           workingDir: ./mcp-server
           dockerfile: docker/Dockerfile
 
@@ -31,4 +31,4 @@ jobs:
           containerAppName: ${{ vars.INFRA_AZURE_CONTAINERAPP_MCPSERVER_NAME }}
           acrName: ${{ vars.INFRA_AZURE_ACR_NAME }}
           imageName: ${{ vars.INFRA_MCPSERVER_IMAGE_NAME }}
-          imageVersion: ${{ vars.INFRA_MCPSERVER_IMAGE_VERSION }}
+          imageVersion: ${GITHUB_SHA}

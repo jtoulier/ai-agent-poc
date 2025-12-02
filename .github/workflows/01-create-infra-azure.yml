@@ -16,11 +16,11 @@ jobs:
           creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
       
       - name: Ensure resource group
-        uses: ./.github/actions/resource-drop-if-exists
+        uses: ./.github/actions/resource-create-if-not-exists
         with:
-          showCmd: >
+          checkCmd: >
             az group show --name ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
-          deleteCmd: >
+          createCmd: >
             az group create --name ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
             --location ${{ vars.INFRA_AZURE_LOCATION }}
             --subscription ${{ vars.INFRA_AZURE_SUBSCRIPTION_ID }}

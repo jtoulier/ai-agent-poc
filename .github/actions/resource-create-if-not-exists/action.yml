@@ -1,0 +1,21 @@
+name: Create if not exists
+description: Create a resource if not exists using az subcommand
+inputs:
+  checkCmd:
+    description: Command to check if resource exists
+    required: true
+  createCmd:
+    description: Command to create the resource
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Create resource if not exists
+      shell: bash
+      run: |
+        if ${{ inputs.checkCmd }} &>/dev/null; then
+          echo "✅ Resource already exists. Skipping creation."
+        else
+          echo "🚀 Resource not found. Creating..."
+          ${{ inputs.createCmd }}
+        fi
