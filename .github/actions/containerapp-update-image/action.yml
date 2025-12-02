@@ -27,4 +27,5 @@ runs:
         az containerapp update \
           --name "${{ inputs.containerAppName }}" \
           --resource-group "${{ inputs.resourceGroup }}" \
-          --image "$IMAGE"
+          --image "$IMAGE" \
+          --set-env-vars FORCE_REVISION=$(date +%s)
