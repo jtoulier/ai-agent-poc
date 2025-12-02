@@ -30,7 +30,7 @@ runs:
           DUMMY_IMAGE="mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
           REG_USER=$(az acr credential show -n "${{ inputs.acrName }}" --query username -o tsv)
           REG_PASS=$(az acr credential show -n "${{ inputs.acrName }}" --query passwords[0].value -o tsv)
-          echo "✅ Creating Container App ${{ inputs.containerAppName }} ..."
+          echo "🚀 Creating Container App ${{ inputs.containerAppName }} ..."
           az containerapp create \
             --name "${{ inputs.containerAppName }}" \
             --resource-group "${{ inputs.resourceGroup }}" \

@@ -66,7 +66,7 @@ runs:
                 --name "$RULE_NAME" &>/dev/null; then
             echo "⚠️ [$INDEX_PAD/$TOTAL_PAD] Rule $RULE_NAME with IP $IP already exists. Skipping ..."
           else
-            echo "✅ [$INDEX_PAD/$TOTAL_PAD] Creating rule $RULE_NAME with IP $IP ..."
+            echo "🚀 [$INDEX_PAD/$TOTAL_PAD] Creating rule $RULE_NAME with IP $IP ..."
             az sql server firewall-rule create \
                 --resource-group "$RG" \
                 --server "$SQL_SERVER" \

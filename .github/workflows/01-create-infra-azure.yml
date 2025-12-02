@@ -44,7 +44,7 @@ jobs:
           if az sql server show \
             --name ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} \
             --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
-            echo "⚠️ SQL Server exists"
+            echo "⚠️ SQL Server already exists"
           else
             az sql server create \
               --name ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} \
@@ -60,7 +60,7 @@ jobs:
             --name ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }} \
             --server ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} \
             --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
-            echo "⚠️ SQL DB exists"
+            echo "⚠️ SQL DB already exists"
           else
             az sql db create \
               --name ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }} \
@@ -94,7 +94,7 @@ jobs:
           if az acr show \
             --name ${{ vars.INFRA_AZURE_ACR_NAME }} \
             --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} &>/dev/null; then
-            echo "⚠️ ACR exists"
+            echo "⚠️ ACR already exists"
           else
             az acr create \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
@@ -123,7 +123,7 @@ jobs:
           if az monitor log-analytics workspace show \
             --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
             --workspace-name ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} &>/dev/null; then
-            echo "⚠️ LA exists"
+            echo "⚠️ Log Analytics already exists"
           else
             az monitor log-analytics workspace create \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
@@ -137,7 +137,7 @@ jobs:
           if az containerapp env show \
             --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
             --name ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} &>/dev/null; then
-            echo "⚠️ Env exists"
+            echo "⚠️ Container App Environment exists"
           else
             az containerapp env create \
               --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \

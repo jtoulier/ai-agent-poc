@@ -22,7 +22,7 @@ runs:
     - name: Run sqlcmd script
       shell: bash
       run: |
-        echo "⏳ Running ${{
+        echo "🚀 Running ${{
           inputs.scriptPath
         }} against ${{
           inputs.serverFqdn

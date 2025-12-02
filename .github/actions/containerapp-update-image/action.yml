@@ -23,7 +23,7 @@ runs:
       shell: bash
       run: |
         IMAGE="${{ inputs.acrName }}.azurecr.io/${{ inputs.imageName }}:${{ inputs.imageVersion }}"
-        echo "Updating ${{ inputs.containerAppName }} to $IMAGE ..."
+        echo "🚀 Updating ${{ inputs.containerAppName }} to $IMAGE ..."
         az containerapp update \
           --name "${{ inputs.containerAppName }}" \
           --resource-group "${{ inputs.resourceGroup }}" \

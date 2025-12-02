@@ -88,7 +88,7 @@ runs:
         if echo "$HOSTNAMES" | grep -qx "${{ inputs.domainName }}"; then
           echo "⚠️ Hostname already exists: ${{ inputs.domainName }}"
         else
-          echo "✅ Adding hostname ${{ inputs.domainName }}"
+          echo "🚀 Adding hostname ${{ inputs.domainName }}"
           az containerapp hostname add \
             --name "${{ inputs.containerAppName }}" \
             --resource-group "${{ inputs.resourceGroup }}" \
@@ -145,7 +145,7 @@ runs:
           --resource-group "${{ inputs.resourceGroup }}" \
           --query "[?name=='$CERT_NAME'].name" -o tsv)
         if [ -z "$EXISTING" ]; then
-          echo "✅ Creating cert $CERT_NAME"
+          echo "🚀 Creating cert $CERT_NAME"
           az containerapp env certificate create \
             --name "${{ inputs.environmentName }}" \
             --resource-group "${{ inputs.resourceGroup }}" \
@@ -182,7 +182,7 @@ runs:
       shell: bash
       run: |
         CERT_NAME="${{ inputs.domainName }}-cert"
-        echo "Binding cert $CERT_NAME to ${{ inputs.domainName }}"
+        echo "🚀 Binding cert $CERT_NAME to ${{ inputs.domainName }}"
         az containerapp hostname bind \
           --name "${{ inputs.containerAppName }}" \
           --resource-group "${{ inputs.resourceGroup }}" \

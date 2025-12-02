@@ -29,12 +29,12 @@ runs:
       working-directory: ${{ inputs.workingDir }}
       run: |
         IMAGE="${{ inputs.acrName }}.azurecr.io/${{ inputs.imageName }}:${{ inputs.imageVersion }}"
-        echo "Building $IMAGE ..."
+        echo "🚀 Building $IMAGE ..."
         docker build -f "${{ inputs.dockerfile }}" -t "$IMAGE" .
 
     - name: Push image
       shell: bash
       run: |
         IMAGE="${{ inputs.acrName }}.azurecr.io/${{ inputs.imageName }}:${{ inputs.imageVersion }}"
-        echo "Pushing $IMAGE ..."
+        echo "🚀 Pushing $IMAGE ..."
         docker push "$IMAGE"

@@ -22,13 +22,13 @@ runs:
         RULE="${{ inputs.ruleName }}"
 
         RUNNER_IP=$(curl -s https://api.ipify.org)
-        echo "Runner public IP: $RUNNER_IP"
+        echo "ℹ️ Runner public IP: $RUNNER_IP"
 
         if az sql server firewall-rule show \
             --resource-group "$RG" \
             --server "$SQL_SERVER" \
             --name "$RULE" &>/dev/null; then
-          echo "⚠️ Rule $RULE exists. Updating to $RUNNER_IP ..."
+          echo "🚀 Rule $RULE exists. Updating to $RUNNER_IP ..."
           az sql server firewall-rule update \
             --resource-group "$RG" \
             --server "$SQL_SERVER" \
@@ -36,7 +36,7 @@ runs:
             --start-ip-address "$RUNNER_IP" \
             --end-ip-address "$RUNNER_IP"
         else
-          echo "✅ Creating rule $RULE for IP $RUNNER_IP ..."
+          echo "🚀 Creating rule $RULE for IP $RUNNER_IP ..."
           az sql server firewall-rule create \
             --resource-group "$RG" \
             --server "$SQL_SERVER" \
