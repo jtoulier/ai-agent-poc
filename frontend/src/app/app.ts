@@ -17,6 +17,11 @@ import { Run } from '@app/models/run';
 
 import { marked } from 'marked';
 
+// Activa soporte para tablas y GitHub Markdown Extensions
+marked.setOptions({
+  gfm: true,
+  breaks: true
+});
 // Modelos
 import { Session } from '@app/models/session';
 import { environment } from '@environments/environment';
@@ -68,8 +73,8 @@ export class App {
 
   // 🔹 Renderizar markdown usando marked
   private renderMarkdown(md: string): SafeHtml {
-    const html = marked(md); // convierte markdown → HTML
-    return this.sanitizer.bypassSecurityTrustHtml(html); // limpia
+    const html = marked.parse(md); // convierte markdown → HTML con tablas
+    return this.sanitizer.bypassSecurityTrustHtml(html); // limpia y permite innerHTML
   }
   // 🔹 Extractor de texto universal para Azure OpenAI
   private extractText(content: any[]): string {
