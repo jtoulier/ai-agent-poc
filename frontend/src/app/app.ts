@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -14,6 +15,7 @@ import { switchMap, filter, take, tap } from 'rxjs/operators';
 import { MessageRequest } from '@app/models/message';
 import { Run } from '@app/models/run';
 
+import { marked } from 'marked';
 
 // Modelos
 import { Session } from '@app/models/session';
@@ -37,14 +39,15 @@ export class App {
 
   // 🔹 Chat
   userInput = '';
-  responses: { role: 'user' | 'assistant'; text: string }[] = [];
+  responses: { role: 'user' | 'assistant'; text: SafeHtml }[] = [];
 
   constructor(
     private titleService: Title,
     private authService: AuthService,
     private sessionService: SessionService,
-    private messageService: MessageService,   // ✅ referencia agregada
-    private runService: RunService,           // ✅ referencia agregada
+    private messageService: MessageService,
+    private runService: RunService,
+    private sanitizer: DomSanitizer      // 👈 necesario para innerHTML
   ) {
     this.titleService.setTitle('Credits AI - Gestiona tus créditos con IA');
     this.session = this.sessionService.getSession();
@@ -63,6 +66,25 @@ export class App {
     return !!this.session?.thread;
   }
 
+  // 🔹 Renderizar markdown usando marked
+  private renderMarkdown(md: string): SafeHtml {
+    const html = marked(md); // convierte markdown → HTML
+    return this.sanitizer.bypassSecurityTrustHtml(html); // limpia
+  }
+  // 🔹 Extractor de texto universal para Azure OpenAI
+  private extractText(content: any[]): string {
+    if (!content || !Array.isArray(content)) return '';
+    const item = content[0];
+    // Caso output_text
+    if (item.text?.value) return item.text.value;
+    // Caso text plano
+    if (typeof item.text === 'string') return item.text;
+    // Caso text con value dentro
+    if (item.text?.value) return item.text.value;
+    // Caso string directo
+    if (typeof item === 'string') return item;
+    return JSON.stringify(item);
+  }
   // 🔹 Login
   login() {
     this.loginError = '';
@@ -121,7 +143,7 @@ export class App {
 
     // Mostrar mensaje del usuario en la UI
     console.log('[SEND_MESSAGE] Agregando mensaje del usuario a responses:', text);
-    this.responses.unshift({ role: 'user', text });
+    this.responses.unshift({ role: 'user', text: this.renderMarkdown(text) });
 
     // 1. Crear mensaje en el thread
     const messageReq: MessageRequest = {
@@ -175,9 +197,12 @@ export class App {
         const latestAssistantMsg = assistantMessages[0];
 
         if (latestAssistantMsg) {
-          const textContent = latestAssistantMsg.content[0]?.text?.value ?? '';
+          const textContent = this.extractText(latestAssistantMsg.content);
           console.log('[SEND_MESSAGE] Último mensaje del agente (más reciente):', textContent);
-          this.responses.unshift({ role: 'assistant', text: textContent });
+          this.responses.unshift({
+            role: 'assistant',
+            text: this.renderMarkdown(textContent)
+          });
         } else {
           console.log('[SEND_MESSAGE] No se encontró mensaje del agente en la respuesta.');
         }
@@ -186,7 +211,7 @@ export class App {
         console.error('[SEND_MESSAGE][AGENT ERROR] Ocurrió un error en el flujo:', err);
         this.responses.unshift({
           role: 'assistant',
-          text: 'Error al comunicarme con el agente.'
+          text: this.renderMarkdown('Error al comunicarme con el agente.')
         });
       }
     });

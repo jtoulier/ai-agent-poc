@@ -228,3 +228,77 @@ app-root {
     }
   }
 }
+.markdown-body {
+  font-size: 15px;
+  line-height: 1.5;
+  white-space: normal;
+  color: #222;
+  font-family: "Segoe UI", Arial, sans-serif;
+
+  h1, h2, h3, h4 {
+    margin-top: 12px;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 6px 0;
+  }
+
+  ul, ol {
+    margin: 8px 0 8px 20px;
+  }
+
+  li {
+    margin: 4px 0;
+  }
+
+  /* ============================================================
+     🔹 TABLA ESTILO EXCEL – CUADRÍCULA COMPLETA
+     ============================================================ */
+  table {
+    width: 100%;
+    border-collapse: collapse;          /* 👈 Necesario para cuadricula */
+    margin: 16px 0;
+    background: white;
+    border: 1px solid #b5b5b5;          /* borde exterior */
+  }
+
+  th, td {
+    border: 1px solid #b5b5b5 !important; /* 👈 cuadricula completa */
+    padding: 8px 12px;
+    text-align: left;
+    font-size: 14px;
+  }
+
+  th {
+    background: #dce6f5;                /* azul suave estilo Excel */
+    font-weight: 700;
+    border: 1px solid #9bb7d6 !important; /* borde encabezado más fuerte */
+  }
+
+  tr:nth-child(even) {
+    background: #f9fbff;                /* alternado suave */
+  }
+
+  tr:hover {
+    background: #e8f1ff;                /* hover estilo Excel */
+  }
+
+  /* ============================================================ */
+
+  pre {
+    background: #f5f5f5;
+    padding: 10px;
+    border-radius: 6px;
+    overflow-x: auto;
+    border: 1px solid #ddd;
+  }
+
+  code {
+    background: #eee;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-family: "Consolas", monospace;
+  }
+}

@@ -5,7 +5,8 @@
     <span>Thread: {{ threadId }}</span>
     <button class="logoff-btn" (click)="logoff()">Cerrar sesión</button>
   </div>
-    <!-- Header -->
+
+  <!-- Header -->
   <header class="app-header">
     <div class="logo">Credits AI</div>
   </header>
@@ -30,7 +31,8 @@
   <!-- Mensajes -->
   <main *ngIf="loggedIn" class="responses">
     <div *ngFor="let msg of responses" class="response" [ngClass]="msg.role">
-      <span>{{ msg.text }}</span>
+      <!-- 🔹 Renderizado HTML seguro generado por marked -->
+      <div class="markdown-body" [innerHTML]="msg.text"></div>
     </div>
   </main>
 
