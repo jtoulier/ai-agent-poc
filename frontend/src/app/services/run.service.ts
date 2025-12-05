@@ -30,10 +30,9 @@ export class RunService {
   }
 
   // Lanzar un nuevo run sobre un thread
-  createRun(threadId: string, assistantId: string): Observable<Run> {
-    console.log('[RunService] Creando run para thread:', threadId, 'con assistantId:', assistantId);
+  createRun(threadId: string, agentName: string): Observable<Run> {
+    console.log('[RunService] Creando run para thread:', threadId, 'con agentName:', agentName);
 
-    // 🔹 Fetch dynamic token from Python token server
     return this.http.get<{ accessToken: string }>(API_ROUTES.TOKEN_SERVER.GET_TOKEN).pipe(
       switchMap(tokenResponse => {
         const token = tokenResponse.accessToken;
@@ -43,10 +42,26 @@ export class RunService {
         });
         console.log('[RunService] Token dinámico adquirido:', token);
 
-        return this.http.post<Run>(
-          API_ROUTES.AGENT.CREATE_RUN(threadId),
-          { assistant_id: assistantId },
+        // 🔹 Paso 1: Listar agentes desde Azure AI Foundry
+        return this.http.get<{ object: string; data: { id: string; name: string }[] }>(
+          API_ROUTES.AGENT.LIST_AGENTS,
           { headers }
+        ).pipe(
+          switchMap(agentResponse => {
+            // 🔹 Paso 2: Buscar el agente por nombre en agentResponse.data
+            const agent = agentResponse.data.find(a => a.name === agentName);
+            if (!agent) {
+              throw new Error(`[RunService] No se encontró agente con nombre: ${agentName}`);
+            }
+            console.log('[RunService] Agente encontrado:', agent);
+
+            // 🔹 Paso 3: Crear el Run con el ID del agente
+            return this.http.post<Run>(
+              API_ROUTES.AGENT.CREATE_RUN(threadId),
+              { assistant_id: agent.id },
+              { headers }
+            );
+          })
         );
       })
     );

@@ -134,9 +134,9 @@ export class App {
       // 2. Crear run
       switchMap((msgResponse) => {
         console.log('[SEND_MESSAGE] Mensaje agregado al thread, respuesta:', msgResponse);
-        console.log('[SEND_MESSAGE] Creando run para thread:', this.session!.thread!.id, 'con assistantId:', environment.agentId);
+        console.log('[SEND_MESSAGE] Creando run para thread:', this.session!.thread!.id, 'con assistantName:', environment.agentName);
 
-        return this.runService.createRun(this.session!.thread!.id, environment.agentId).pipe(
+        return this.runService.createRun(this.session!.thread!.id, environment.agentName).pipe(
           tap((run: Run) => {
             console.log('[SEND_MESSAGE] Run creado con ID:', run.id);
           })

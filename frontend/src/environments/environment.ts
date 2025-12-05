@@ -3,6 +3,6 @@ export const environment = {
   agentAPIURL: 'https://aifcantolao.services.ai.azure.com/api/projects/prjcantolao',
   agentAPIVersion: 'v1',
   backendAPIURL: 'http://localhost:8080',
-  agentId: 'asst_SN7P0aJCQlhyESPa8DObe34j',
+  agentName: 'agentcantolao',
   tokenServerURL: 'http://localhost:5000'
 }

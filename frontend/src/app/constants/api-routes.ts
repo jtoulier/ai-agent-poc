@@ -12,7 +12,8 @@ export const API_ROUTES = {
     GET_RUN_STATUS: (threadId: string, runId: string) =>
       withVersion(`${environment.agentAPIURL}/threads/${threadId}/runs/${runId}`),
     GET_MESSAGES: (threadId: string) =>
-      withVersion(`${environment.agentAPIURL}/threads/${threadId}/messages`)
+      withVersion(`${environment.agentAPIURL}/threads/${threadId}/messages`),
+    LIST_AGENTS: withVersion(`${environment.agentAPIURL}/assistants`)
   },
   BACKEND: {
     LOGIN: `${environment.backendAPIURL}/api/relationship-managers/login`,
