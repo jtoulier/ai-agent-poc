@@ -11,7 +11,7 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Azure Login
-        uses: ./.github/actions/azure-login
+        uses: azure/login@v1
         with:
           creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
       

@@ -16,9 +16,17 @@ runs:
     - name: Create resource if not exists
       shell: bash
       run: |
-        if ${{ inputs.checkCmd }} &>/dev/null; then
+        set -euo pipefail
+
+        # DEBUG: imprime el comando que se va a ejecutar (quita el echo en production)
+        echo "Checking resource '${{ inputs.resourceName }}' with:"
+        echo "  checkCmd: ${{ inputs.checkCmd }}"
+
+        # Ejecutar el check de forma segura dentro de bash -c para evitar problemas de parsing
+        if bash -lc "${{ inputs.checkCmd }} >/dev/null 2>&1"; then
           echo "⚠️ Resource '${{ inputs.resourceName }}' already exists. Skipping creation."
         else
           echo "🚀 Resource '${{ inputs.resourceName }}' not found. Creating..."
-          ${{ inputs.createCmd }}
+          # Ejecutar create también con bash -c (para soportar comandos multilinea)
+          bash -lc "${{ inputs.createCmd }}"
         fi
