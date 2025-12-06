@@ -16,7 +16,7 @@ runs:
     - name: Create resource if not exists
       shell: bash
       run: |
-        set -euo pipefail
+        # set -euo pipefail
 
         # DEBUG: imprime el comando que se va a ejecutar (quita el echo en production)
         # echo "Checking resource '${{ inputs.resourceName }}' with:"
