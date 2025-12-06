@@ -210,6 +210,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:  [
               job-01-a-create-acr,
+              job-01-b-create-akv,
               job-02-b-create-containerapp-environment
             ]
     steps:

@@ -1,0 +1,30 @@
+name: WF- Delete Resource Group
+on:
+  workflow_dispatch:
+
+jobs:
+  job-99-delete-resource-group:
+    name: JOB-99 Delete RG
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Delete Resource Group
+        uses: ./.github/actions/resource-delete-if-exists
+        with:
+          resourceName: ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+
+          checkCmd: |
+            az group show \
+              --name    ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+
+          deleteCmd: |
+            az group delete \
+              --name    ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --yes
