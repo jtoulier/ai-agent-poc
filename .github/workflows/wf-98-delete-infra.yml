@@ -7,12 +7,6 @@ jobs:
   # No es ncesario eliminar las reglas de firewall del servidor SQL,
   # ya que al eliminar el servidor SQL se eliminan automáticamente.
 
-  job-06-a-deploy-frontend-container-app
-  
-  job-05-a-deploy-backend-container-app
-
-  job-04-b-deploy-adtoken-container-app
-
   job-03-c-delete-frontend-containerapp:
     name: JOB-03-C Delete Frontend CAPP
     runs-on: ubuntu-latest
@@ -142,6 +136,9 @@ jobs:
   job-02-a-delete-sqldatabase:
     name: JOB-02-A Delete SQL DB
     runs-on: ubuntu-latest
+    needs:  [
+              job-03-a-delete-backend-containerapp
+            ]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -263,6 +260,11 @@ jobs:
   job-01-a-delete-acr:
     name: JOB-01-A Delete ACR
     runs-on: ubuntu-latest
+    needs:  [
+              job-03-c-delete-frontend-containerapp,
+              job-03-b-delete-adtoken-containerapp,
+              job-03-a-delete-backend-containerapp
+            ]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
