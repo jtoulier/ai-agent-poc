@@ -111,10 +111,10 @@ jobs:
           checkCmd:     az monitor log-analytics workspace show --workspace-name ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
 
           createCmd:    az monitor log-analytics workspace create \
-                        --workspace-name ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} \
-                        --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
-                        --location ${{ vars.INFRA_AZURE_LOCATION }} \
-                        --sku Free
+                        --workspace-name  ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} \
+                        --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+                        --location        ${{ vars.INFRA_AZURE_LOCATION }} \
+                        --sku             Free
 
   job-02-a-create-sqldatabase:
     name: JOB-02-A Create SQL Database
