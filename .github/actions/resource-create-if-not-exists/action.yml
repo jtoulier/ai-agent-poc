@@ -22,12 +22,22 @@ runs:
         # echo "Checking resource '${{ inputs.resourceName }}' with:"
         # echo "  checkCmd: ${{ inputs.checkCmd }}"
 
-        bash -lc "${{ inputs.checkCmd }}"
+        eval "${{ inputs.checkCmd }}"
         RESULT=$?
+        echo "Check command exited with code: $RESULT"
 
         if [[ $RESULT -eq 0 ]]; then
           echo "⚠️ Resource '${{ inputs.resourceName }}' already exists. Skipping creation."
         else
           echo "🚀 Resource '${{ inputs.resourceName }}' not found. Creating..."
-          bash -lc "${{ inputs.createCmd }}"
+
+          eval "${{ inputs.createCmd }}"
+
+          RESULT=$?
+          if [[ $RESULT -eq 0 ]]; then
+            echo "✅ Resource '${{ inputs.resourceName }}' created successfully."
+          else
+            echo "❌ Failed to create resource '${{ inputs.resourceName }}'. Exiting with code $RESULT."
+            exit $RESULT
+          fi
         fi
