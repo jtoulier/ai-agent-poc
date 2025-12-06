@@ -31,17 +31,18 @@ runs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        aws-access-key-id: ${{ inputs.awsAccessKeyId }}
-        aws-secret-access-key: ${{ inputs.awsSecretAccessKey }}
-        aws-region: ${{ inputs.awsRegion }}
+        aws-access-key-id:      ${{ inputs.awsAccessKeyId }}
+        aws-secret-access-key:  ${{ inputs.awsSecretAccessKey }}
+        aws-region:             ${{ inputs.awsRegion }}
 
     - name: Create TXT record for domain verification
       shell: bash
       run: |
         TOKEN=$(az containerapp show \
-          --name "${{ inputs.containerAppName }}" \
-          --resource-group "${{ inputs.resourceGroup }}" \
-          --query "properties.customDomainVerificationId" -o tsv)
+                  --name            "${{ inputs.containerAppName }}" \
+                  --resource-group  "${{ inputs.resourceGroup }}" \
+                  --query           "properties.customDomainVerificationId" \
+                  --output          tsv)
         cat > change-txt.json <<EOF
         {
           "Changes": [{
@@ -56,8 +57,8 @@ runs:
         }
         EOF
         aws route53 change-resource-record-sets \
-          --hosted-zone-id "${{ inputs.awsHostedZoneId }}" \
-          --change-batch file://change-txt.json
+          --hosted-zone-id  "${{ inputs.awsHostedZoneId }}" \
+          --change-batch    file://change-txt.json
 
     - name: Wait TXT propagation
       shell: bash
@@ -68,13 +69,13 @@ runs:
       run: |
         for i in $(seq 1 $MAX_ATTEMPTS); do
           if dig +short TXT "$DNS_NAME" | grep -q .; then
-            echo "✅ TXT record found"
+            echo "✅ $DNS_NAME TXT record found"
             exit 0
           fi
           echo "⏳ Waiting ${SLEEP_TIME}s..."
           sleep "$SLEEP_TIME"
         done
-        echo "❌ TXT record not found after $MAX_ATTEMPTS attempts"
+        echo "❌ $DNS_NAME TXT record not found after $MAX_ATTEMPTS attempts"
         exit 1
 
     - name: Add hostname to Container App
@@ -82,22 +83,24 @@ runs:
       shell: bash
       run: |
         HOSTNAMES=$(az containerapp hostname list \
-          --name "${{ inputs.containerAppName }}" \
-          --resource-group "${{ inputs.resourceGroup }}" \
-          --query "[].name" -o tsv)
+                      --name            "${{ inputs.containerAppName }}" \
+                      --resource-group  "${{ inputs.resourceGroup }}" \
+                      --query           "[].name" \
+                      --output          tsv)
         if echo "$HOSTNAMES" | grep -qx "${{ inputs.domainName }}"; then
           echo "⚠️ Hostname already exists: ${{ inputs.domainName }}"
         else
           echo "🚀 Adding hostname ${{ inputs.domainName }}"
           az containerapp hostname add \
-            --name "${{ inputs.containerAppName }}" \
-            --resource-group "${{ inputs.resourceGroup }}" \
-            --hostname "${{ inputs.domainName }}"
+            --name            "${{ inputs.containerAppName }}" \
+            --resource-group  "${{ inputs.resourceGroup }}" \
+            --hostname        "${{ inputs.domainName }}"
         fi
         FQDN=$(az containerapp show \
-          --name "${{ inputs.containerAppName }}" \
-          --resource-group "${{ inputs.resourceGroup }}" \
-          --query "properties.configuration.ingress.fqdn" -o tsv)
+                --name            "${{ inputs.containerAppName }}" \
+                --resource-group  "${{ inputs.resourceGroup }}" \
+                --query           "properties.configuration.ingress.fqdn" \
+                --output          tsv)
         echo "fqdn=$FQDN" >> "$GITHUB_OUTPUT"
 
     - name: Create CNAME to Container App FQDN
@@ -141,17 +144,18 @@ runs:
       run: |
         CERT_NAME="${{ inputs.domainName }}-cert"
         EXISTING=$(az containerapp env certificate list \
-          --name "${{ inputs.environmentName }}" \
-          --resource-group "${{ inputs.resourceGroup }}" \
-          --query "[?name=='$CERT_NAME'].name" -o tsv)
+                    --name            "${{ inputs.environmentName }}" \
+                    --resource-group  "${{ inputs.resourceGroup }}" \
+                    --query           "[?name=='$CERT_NAME'].name" \
+                    --output          tsv)
         if [ -z "$EXISTING" ]; then
           echo "🚀 Creating cert $CERT_NAME"
           az containerapp env certificate create \
-            --name "${{ inputs.environmentName }}" \
-            --resource-group "${{ inputs.resourceGroup }}" \
-            --hostname "${{ inputs.domainName }}" \
+            --name              "${{ inputs.environmentName }}" \
+            --resource-group    "${{ inputs.resourceGroup }}" \
+            --hostname          "${{ inputs.domainName }}" \
             --validation-method CNAME \
-            --certificate-name "$CERT_NAME"
+            --certificate-name  "$CERT_NAME"
         else
           echo "⚠️ Certificate $CERT_NAME already exists"
         fi
@@ -165,9 +169,10 @@ runs:
       run: |
         for i in $(seq 1 $MAX_ATTEMPTS); do
           STATE=$(az containerapp env certificate list \
-            --name "${{ inputs.environmentName }}" \
-            --resource-group "${{ inputs.resourceGroup }}" \
-            --query "[?name=='$CERT_NAME'].properties.provisioningState" -o tsv)
+                  --name            "${{ inputs.environmentName }}" \
+                  --resource-group  "${{ inputs.resourceGroup }}" \
+                  --query           "[?name=='$CERT_NAME'].properties.provisioningState" \
+                  --output          tsv)
           if [ "$STATE" = "Succeeded" ]; then
             echo "✅ Certificate ready"
             exit 0
@@ -184,9 +189,9 @@ runs:
         CERT_NAME="${{ inputs.domainName }}-cert"
         echo "🚀 Binding cert $CERT_NAME to ${{ inputs.domainName }}"
         az containerapp hostname bind \
-          --name "${{ inputs.containerAppName }}" \
-          --resource-group "${{ inputs.resourceGroup }}" \
-          --hostname "${{ inputs.domainName }}" \
-          --certificate "$CERT_NAME" \
-          --environment "${{ inputs.environmentName }}" \
+          --name              "${{ inputs.containerAppName }}" \
+          --resource-group    "${{ inputs.resourceGroup }}" \
+          --hostname          "${{ inputs.domainName }}" \
+          --certificate       "$CERT_NAME" \
+          --environment       "${{ inputs.environmentName }}" \
           --validation-method CNAME

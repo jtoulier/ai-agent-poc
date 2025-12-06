@@ -12,7 +12,7 @@ runs:
       run: |
         set +e
         
-        DELETED_AKVS=$(az keyvault list-deleted --query "[].name" -o tsv)
+        DELETED_AKVS=$(az keyvault list-deleted --query "[].name" --output tsv)
 
         echo "Deleted Key Vaults:"
         echo "$DELETED_AKVS"

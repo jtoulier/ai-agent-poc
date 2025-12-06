@@ -204,3 +204,105 @@ jobs:
           environmentName:  ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }}
 
           desiredState:     Succeeded
+
+  job-03-a-create-backend-containerapp:
+    name: Create Backend Container App
+    runs-on: ubuntu-latest
+    needs: job-02-b-create-containerapp-environment
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Create Backend Container App
+        uses: ./.github/actions/containerapp-create-dummy
+        with:
+          resourceGroup:    ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+          environmentName:  ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }}
+          containerAppName: ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }}
+          targetPort:       ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_PORT }}
+          acrName:          ${{ vars.INFRA_AZURE_ACR_NAME }}
+
+      - name: Wait for Backend Container App to be Succeeded
+        uses: ./.github/actions/containerapp-custom-domain-setup
+        with:
+          resourceGroup:      ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+          environmentName:    ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }}
+          containerAppName:   ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }}
+          domainName:         ${{ vars.INFRA_BACKEND_DOMAIN_NAME }}
+          awsHostedZoneId:    ${{ vars.INFRA_AWS_DNS_HOSTED_ZONE_ID }}
+          awsRegion:          ${{ vars.INFRA_AWS_DNS_REGION }}
+          awsAccessKeyId:     ${{ vars.INFRA_AWS_DNS_USER_ACCESS_KEY_ID }}
+          awsSecretAccessKey: ${{ secrets.INFRA_AWS_DNS_USER_SECRET_ACCESS_KEY }}
+
+  job-03-b-create-adtoken-containerapp:
+    name: Create AD Token Container App
+    runs-on: ubuntu-latest
+    needs: job-02-b-create-containerapp-environment
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Create AD Token Container App
+        uses: ./.github/actions/containerapp-create-dummy
+        with:
+          resourceGroup:    ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+          environmentName:  ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }}
+          containerAppName: ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_NAME }}
+          targetPort:       ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_PORT }}
+          acrName:          ${{ vars.INFRA_AZURE_ACR_NAME }}
+
+      - name: Wait for AD Token Container App to be Succeeded
+        uses: ./.github/actions/containerapp-custom-domain-setup
+        with:
+          resourceGroup:      ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+          environmentName:    ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }}
+          containerAppName:   ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_NAME }}
+          domainName:         ${{ vars.INFRA_ADTOKENSERVER_DOMAIN_NAME }}
+          awsHostedZoneId:    ${{ vars.INFRA_AWS_DNS_HOSTED_ZONE_ID }}
+          awsRegion:          ${{ vars.INFRA_AWS_DNS_REGION }}
+          awsAccessKeyId:     ${{ vars.INFRA_AWS_DNS_USER_ACCESS_KEY_ID }}
+          awsSecretAccessKey: ${{ secrets.INFRA_AWS_DNS_USER_SECRET_ACCESS_KEY }}
+
+  job-03-c-create-frontend-containerapp:
+    name: Create Frontend Container App
+    runs-on: ubuntu-latest
+    needs: job-02-b-create-containerapp-environment
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Create Frontend Container App
+        uses: ./.github/actions/containerapp-create-dummy
+        with:
+          resourceGroup:    ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+          environmentName:  ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }}
+          containerAppName: ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }}
+          targetPort:       ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_PORT }}
+          acrName:          ${{ vars.INFRA_AZURE_ACR_NAME }}
+
+      - name: Wait for Frontend Container App to be Succeeded
+        uses: ./.github/actions/containerapp-custom-domain-setup
+        with:
+          resourceGroup:      ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+          environmentName:    ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }}
+          containerAppName:   ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }}
+          domainName:         ${{ vars.INFRA_FRONTEND_DOMAIN_NAME }}
+          awsHostedZoneId:    ${{ vars.INFRA_AWS_DNS_HOSTED_ZONE_ID }}
+          awsRegion:          ${{ vars.INFRA_AWS_DNS_REGION }}
+          awsAccessKeyId:     ${{ vars.INFRA_AWS_DNS_USER_ACCESS_KEY_ID }}
+          awsSecretAccessKey: ${{ secrets.INFRA_AWS_DNS_USER_SECRET_ACCESS_KEY }}

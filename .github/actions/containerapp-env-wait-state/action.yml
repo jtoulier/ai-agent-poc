@@ -32,9 +32,10 @@ runs:
 
         for i in $(seq 1 $MAX); do
           STATUS=$(az containerapp env show \
-                    --resource-group "${{ inputs.resourceGroup }}" \
-                    --name "${{ inputs.environmentName }}" \
-                    --query "properties.provisioningState" -o tsv 2>/dev/null || echo "NotFound")
+                    --resource-group  "${{ inputs.resourceGroup }}" \
+                    --name            "${{ inputs.environmentName }}" \
+                    --query           "properties.provisioningState" \
+                    --output          tsv 2>/dev/null || echo "NotFound")
         
           echo "[$i/$MAX] Status: $STATUS"
         

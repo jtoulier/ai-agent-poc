@@ -22,24 +22,38 @@ runs:
     - name: Create container app if not exists
       shell: bash
       run: |
-        if az containerapp show \
-          --name "${{ inputs.containerAppName }}" \
-          --resource-group "${{ inputs.resourceGroup }}" &>/dev/null; then
-          echo "⚠️ Container App ${{ inputs.containerAppName }} already exists."
+        set +e
+
+        az containerapp show --name "${{ inputs.containerAppName }}" --resource-group "${{ inputs.resourceGroup }}
+        RESULT=$?
+        echo "Check command exited with code: $RESULT"
+
+        if [[ $RESULT -eq 0 ]]; then
+          echo "⚠️ Container App '${{ inputs.containerAppName }}' already exists. Skipping creation."
         else
+          echo "🚀 Container App '${{ inputs.containerAppName }}' not found. Creating ..."
+
           DUMMY_IMAGE="mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
-          REG_USER=$(az acr credential show -n "${{ inputs.acrName }}" --query username -o tsv)
-          REG_PASS=$(az acr credential show -n "${{ inputs.acrName }}" --query passwords[0].value -o tsv)
-          echo "🚀 Creating Container App ${{ inputs.containerAppName }} ..."
+          REG_USER=$(az acr credential show -n "${{ inputs.acrName }}" --query username --output tsv)
+          REG_PASS=$(az acr credential show -n "${{ inputs.acrName }}" --query passwords[0].value --output tsv)
+
           az containerapp create \
-            --name "${{ inputs.containerAppName }}" \
-            --resource-group "${{ inputs.resourceGroup }}" \
-            --environment "${{ inputs.environmentName }}" \
-            --image "$DUMMY_IMAGE" \
-            --registry-server "${{ inputs.acrName }}.azurecr.io" \
+            --name              "${{ inputs.containerAppName }}" \
+            --resource-group    "${{ inputs.resourceGroup }}" \
+            --environment       "${{ inputs.environmentName }}" \
+            --image             "$DUMMY_IMAGE" \
+            --registry-server   "${{ inputs.acrName }}.azurecr.io" \
             --registry-username "$REG_USER" \
             --registry-password "$REG_PASS" \
-            --ingress external \
-            --target-port "${{ inputs.targetPort }}" \
-            --revisions-mode multiple
+            --ingress           external \
+            --target-port       "${{ inputs.targetPort }}" \
+            --revisions-mode    multiple
+
+          RESULT=$?
+          if [[ $RESULT -eq 0 ]]; then
+            echo "✅ Container App '${{ inputs.containerAppName }}' created successfully."
+          else
+            echo "❌ Failed to create Container App '${{ inputs.containerAppName }}'. Exiting with code $RESULT."
+            exit $RESULT
+          fi
         fi

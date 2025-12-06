@@ -29,7 +29,7 @@ runs:
           --resource-group "$RG" \
           --name "$APP" \
           --query "properties.outboundIpAddresses" \
-          -o tsv)
+          --output tsv)
 
         if [ -z "$IPS" ]; then
           echo "❌ No outbound IPs found for Container App '$APP'."
