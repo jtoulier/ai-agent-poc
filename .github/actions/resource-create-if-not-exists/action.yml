@@ -16,6 +16,8 @@ runs:
     - name: Create resource if not exists
       shell: bash
       run: |
+        set +e
+        
         bash -c "${{ inputs.checkCmd }}"
         RESULT=$?
         echo "Check command exited with code: $RESULT"
