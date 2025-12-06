@@ -20,11 +20,9 @@ jobs:
         with:
           resourceName:         ${{ vars.INFRA_AZURE_ACR_NAME }}
           checkCmd: >
-            az acr show \
-              --name            ${{ vars.INFRA_AZURE_ACR_NAME }} \
-              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+            az acr show --name ${{ vars.INFRA_AZURE_ACR_NAME }} --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
           createCmd: >
-            aaz acr create \
+            az acr create \
               --name            ${{ vars.INFRA_AZURE_ACR_NAME }} \
               --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
               --sku             Basic \
@@ -48,11 +46,9 @@ jobs:
         with:
           resourceName:         ${{ vars.INFRA_AZURE_AKV_NAME }}
           checkCmd: >
-            az keyvault  show \
-              --name            ${{ vars.INFRA_AZURE_AKV_NAME }} \
-              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+            az keyvault show --name ${{ vars.INFRA_AZURE_AKV_NAME }} --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
           createCmd: >
-            aaz keyvault create \
+            az keyvault create \
               --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
               --location        ${{ vars.INFRA_AZURE_LOCATION }} \
               --name            ${{ vars.INFRA_AZURE_AKV_NAME }} \
