@@ -19,12 +19,15 @@ runs:
        set -euo pipefail
 
         # DEBUG: imprime el comando que se va a ejecutar (quita el echo en production)
-        echo "Checking resource '${{ inputs.resourceName }}' with:"
-        echo "  checkCmd: ${{ inputs.checkCmd }}"
-              
-        if bash -c "${{ inputs.checkCmd }} >/dev/null 2>&1"; then
+        # echo "Checking resource '${{ inputs.resourceName }}' with:"
+        # echo "  checkCmd: ${{ inputs.checkCmd }}"
+
+        bash -lc "${{ inputs.checkCmd }}"
+        RESULT=$?
+
+        if [[ $RESULT -eq 0 ]]; then
           echo "⚠️ Resource '${{ inputs.resourceName }}' already exists. Skipping creation."
         else
           echo "🚀 Resource '${{ inputs.resourceName }}' not found. Creating..."
-          bash -c "${{ inputs.createCmd }}"
+          bash -lc "${{ inputs.createCmd }}"
         fi

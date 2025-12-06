@@ -50,7 +50,7 @@ jobs:
         with:
           resourceName: ${{ vars.INFRA_AZURE_AKV_NAME }}
 
-          checkCmd: |
+          checkCmd: >
             az keyvault show \
               --name            ${{ vars.INFRA_AZURE_AKV_NAME }} \
               --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
@@ -108,9 +108,7 @@ jobs:
         with:
           resourceName: ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }}
 
-          checkCmd:     az monitor log-analytics workspace show \
-                          --workspace-name ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} \
-                          --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+          checkCmd:     az monitor log-analytics workspace show --workspace-name ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
 
           createCmd:    az monitor log-analytics workspace create \
                         --workspace-name ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} \
