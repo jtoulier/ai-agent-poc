@@ -3,6 +3,10 @@ on:
   workflow_dispatch:
 
 jobs:
+  job-03-c-create-frontend-containerapp:
+  job-03-b-create-adtoken-containerapp:  
+  job-03-a-create-backend-containerapp:
+  
   job-02-b-delete-containerapp-environment:
     name: JOB-02-B Delete CAPPENV
     runs-on: ubuntu-latest
