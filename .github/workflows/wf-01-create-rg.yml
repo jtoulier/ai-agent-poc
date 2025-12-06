@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: ./.github/actions/checkout
+        uses: actions/checkout@v4
       
       - name: Azure Login
         uses: ./.github/actions/azure-login
@@ -24,6 +24,5 @@ jobs:
               --name          ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
           createCmd: >
             az group create \
-              --name          ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
               --location      ${{ vars.INFRA_AZURE_LOCATION }} \
-              --subscription  ${{ vars.INFRA_AZURE_SUBSCRIPTION_ID }}
+              --name          ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
