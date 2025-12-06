@@ -27,17 +27,22 @@ runs:
         SLEEP=${{ inputs.sleepSeconds }}
         TOTAL=${{ inputs.totalWaitSeconds }}
         MAX=$((TOTAL / SLEEP))
+
         echo "⏳ Waiting for '${{ inputs.environmentName }}' state '${{ inputs.desiredState }}' (max ${TOTAL}s)"
+
         for i in $(seq 1 $MAX); do
           STATUS=$(az containerapp env show \
-            --resource-group "${{ inputs.resourceGroup }}" \
-            --name "${{ inputs.environmentName }}" \
-            --query "properties.provisioningState" -o tsv 2>/dev/null || echo "NotFound")
+                    --resource-group "${{ inputs.resourceGroup }}" \
+                    --name "${{ inputs.environmentName }}" \
+                    --query "properties.provisioningState" -o tsv 2>/dev/null || echo "NotFound")
+        
           echo "[$i/$MAX] Status: $STATUS"
+        
           if [ "$STATUS" = "${{ inputs.desiredState }}" ]; then
             echo "✅ Desired state reached"
             exit 0
           fi
+        
           [ "$i" -eq "$MAX" ] && echo "❌ Timeout" && exit 1
           sleep "$SLEEP"
         done

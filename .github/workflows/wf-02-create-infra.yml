@@ -19,16 +19,17 @@ jobs:
         uses: ./.github/actions/resource-create-if-not-exists
         with:
           resourceName: ${{ vars.INFRA_AZURE_ACR_NAME }}
-          checkCmd:   az acr show \
-                        --name ${{ vars.INFRA_AZURE_ACR_NAME }} \
-                        --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
-          createCmd: >
-            az acr create \
-              --name            ${{ vars.INFRA_AZURE_ACR_NAME }} \
-              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
-              --sku             Basic \
-              --admin-enabled   true \
-              --location        ${{ vars.INFRA_AZURE_LOCATION }}
+
+          checkCmd:     az acr show \
+                          --name            ${{ vars.INFRA_AZURE_ACR_NAME }} \
+                          --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+
+          createCmd:    az acr create \
+                          --name            ${{ vars.INFRA_AZURE_ACR_NAME }} \
+                          --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+                          --sku             Basic \
+                          --admin-enabled   true \
+                          --location        ${{ vars.INFRA_AZURE_LOCATION }}
 
   job-01-b-create-akv:
     name: JOB-01-B Create AKV
@@ -45,11 +46,152 @@ jobs:
       - name: Create Azure Key Vault
         uses: ./.github/actions/resource-create-if-not-exists
         with:
-          resourceName:         ${{ vars.INFRA_AZURE_AKV_NAME }}
-          checkCmd: az keyvault show --name ${{ vars.INFRA_AZURE_AKV_NAME }} --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
-          createCmd: >
-            az keyvault create \
-              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
-              --location        ${{ vars.INFRA_AZURE_LOCATION }} \
-              --name            ${{ vars.INFRA_AZURE_AKV_NAME }} \
-              --sku             standard
+          resourceName: ${{ vars.INFRA_AZURE_AKV_NAME }}
+
+          checkCmd:     az keyvault show \
+                          --name            ${{ vars.INFRA_AZURE_AKV_NAME }} \
+                          --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+
+          createCmd:    az keyvault create \
+                          --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+                          --location        ${{ vars.INFRA_AZURE_LOCATION }} \
+                          --name            ${{ vars.INFRA_AZURE_AKV_NAME }} \
+                          --sku             standard
+
+
+  job-01-c-create-sqlserver:
+    name: Create SQL Server
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Create SQL Server
+        uses: ./.github/actions/resource-create-if-not-exists
+        with:
+          resourceName: ${{ vars.INFRA_AZURE_SQLSERVER_NAME }}
+
+          checkCmd:     az sql server show \
+                          --name            ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} \
+                          --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+
+          createCmd:    az sql server create \
+                          --name            ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} \
+                          --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+                          --admin-password  ${{ secrets.INFRA_AZURE_SQLSERVER_ADMIN_LOGINPASSWORD }} \
+                          --admin-user      ${{ vars.INFRA_AZURE_SQLSERVER_ADMIN_LOGINNAME }} \
+                          --location        ${{ vars.INFRA_AZURE_LOCATION }}
+
+  job-01-d-create-loganalytics:
+    name: Create LAWS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Create Log Analytics Workspace
+        uses: ./.github/actions/resource-create-if-not-exists
+        with:
+          resourceName: ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }}
+
+          checkCmd:     az monitor log-analytics workspace show \
+                          --workspace-name ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} \
+                          --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+
+          createCmd:    az monitor log-analytics workspace create \
+                        --workspace-name ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} \
+                        --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+                        --location ${{ vars.INFRA_AZURE_LOCATION }} \
+                        --sku Free
+
+  job-02-a-create-sqldatabase:
+    name: Create SQL Database
+    runs-on: ubuntu-latest
+    needs: job-01-c-create-sqlserver
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Create SQL DB
+        uses: ./.github/actions/resource-create-if-not-exists
+        with:
+          resourceName: ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }}
+
+          checkCmd:     az sql db show \
+                          --name            ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }} \
+                          --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+                          --server          ${{ vars.INFRA_AZURE_SQLSERVER_NAME }}
+
+          createCmd:    az sql db create \
+                          --name              ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }} \
+                          --resource-group    ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+                          --server            ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} \
+                          --auto-pause-delay  60 \
+                          --capacity          2 \
+                          --compute-model     Serverless \
+                          --edition           GeneralPurpose \
+                          --family            Gen5 \
+                          --max-size          5GB \
+                          --min-capacity      0.5 \
+                          --zone-redundant    false
+
+
+  job-02-b-create-containerapp-environment:
+    name: Create CAPPENV
+    runs-on: ubuntu-latest
+    needs: job-01-d-create-loganalytics
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Create Container App Environment
+        uses: ./.github/actions/resource-create-if-not-exists
+        with:
+          resourceName: ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }}
+
+          checkCmd:     az containerapp env show \
+                          --name            ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
+                          --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+
+          createCmd:    az containerapp env create \
+                          --name                ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
+                          --resource-group      ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+                          --location            ${{ vars.INFRA_AZURE_LOCATION }} \
+                          --logs-destination    log-analytics \
+                          --logs-workspace-id   "$(az monitor log-analytics workspace show \
+                                                    --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+                                                    --workspace-name ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} \
+                                                    --query customerId -o tsv)" \
+                          --logs-workspace-key  "$(az monitor log-analytics workspace get-shared-keys \
+                                                    --resource-group ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+                                                    --workspace-name ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} \
+                                                    --query primarySharedKey -o tsv)"
+
+      - name: Wait for Container App Environment to be Succeeded
+        uses: ./.github/actions/containerapp-env-wait-state
+        with:
+          resourceGroup:    ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+
+          environmentName:  ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }}
+
+          desiredState:     Succeeded
