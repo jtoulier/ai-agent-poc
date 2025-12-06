@@ -1,45 +1,34 @@
 name: WF05 - Deploy AD Token Server to Azure
-
 on:
   workflow_dispatch:
 
 jobs:
-  job-deploy-adtokenserver:
+  deploy-adtokenserver:
+    name: Build, push Docker image to ACR and update Azure Container App
     runs-on: ubuntu-latest
-    env:
-      RG: ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
-      ACR: ${{ vars.INFRA_AZURE_ACR_NAME }}
-
     steps:
-      - name: Checkout code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Azure Login
-        uses: azure/login@v1
+        uses: ./.github/actions/azure-login
         with:
           creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
 
-      #############################################
-      # Build and push AD Token Server container
-      #############################################
-      - name: Build AD Token Server Docker image
-        run: |
-          cd ./ad-token-server
-          docker build -f docker/Dockerfile -t $ACR.azurecr.io/${{ vars.INFRA_ADTOKENSERVER_IMAGE_NAME }}:${{ vars.INFRA_ADTOKENSERVER_IMAGE_VERSION }} .
-          echo "Built AD Token Server image"
+      - name: Build and Push Docker Image to ACR
+        uses: ./.github/actions/acr-build-push
+        with:
+          acrName: ${{ vars.INFRA_AZURE_ACR_NAME }}
+          imageName: ${{ vars.INFRA_ADTOKENSERVER_IMAGE_NAME }}
+          imageVersion: ${GITHUB_SHA}
+          workingDir: ./ad-token-server
+          dockerfile: docker/Dockerfile
 
-      - name: Push AD Token Server to ACR
-        run: |
-          az acr login --name $ACR
-          docker push $ACR.azurecr.io/${{ vars.INFRA_ADTOKENSERVER_IMAGE_NAME }}:${{ vars.INFRA_ADTOKENSERVER_IMAGE_VERSION }}
-
-      #############################################
-      # Deploy AD Token Server Container App
-      #############################################
-      - name: Deploy AD Token Server Container App
-        run: |
-          echo "Updating existing AD Token Server Container App..."
-          az containerapp update \
-            --name ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_NAME }} \
-            --resource-group $RG \
-            --image $ACR.azurecr.io/${{ vars.INFRA_ADTOKENSERVER_IMAGE_NAME }}:${{ vars.INFRA_ADTOKENSERVER_IMAGE_VERSION }}                  
+      - name: Update Azure Container App with New Image
+        uses: ./.github/actions/containerapp-update-image
+        with:
+          resourceGroup: ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+          containerAppName: ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_NAME }}
+          acrName: ${{ vars.INFRA_AZURE_ACR_NAME }}
+          imageName: ${{ vars.INFRA_ADTOKENSERVER_IMAGE_NAME }}
+          imageVersion: ${GITHUB_SHA}

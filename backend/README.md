@@ -9,7 +9,7 @@ mvn quarkus:dev
 ```bash
 clear
 mvn clean package -Dquarkus.profile=dev
-java -jar ./target/quarkus-app/quarkus-run.jar 
+java -jar ./target/quarkus-app/quarkus-run.jar
 ```
 
 # Entorno PROD

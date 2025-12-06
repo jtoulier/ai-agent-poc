@@ -1,0 +1,29 @@
+name: WF01 - Create Resource Group
+on:
+  workflow_dispatch:
+
+jobs:
+  create-resource-group:
+    name: Create Resource Group
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Azure Login
+        uses: ./.github/actions/azure-login
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+      
+      - name: Create resource group
+        uses: ./.github/actions/resource-create-if-not-exists
+        with:
+          resourceName:       ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+          checkCmd: >
+            az group show
+              --name          ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+          createCmd: >
+            az group create
+              --name          ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+              --location      ${{ vars.INFRA_AZURE_LOCATION }}
+              --subscription  ${{ vars.INFRA_AZURE_SUBSCRIPTION_ID }}
