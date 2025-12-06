@@ -1,0 +1,39 @@
+name: Delete if exists
+description: Delete a resource if exists using az subcommand
+inputs:
+  resourceName:
+    description: Name of the resource
+    required: true
+  checkCmd:
+    description: Command to check if resource exists
+    required: true
+  deleteCmd:
+    description: Command to delete the resource
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Delete resource if exists
+      shell: bash
+      run: |
+        set +e
+        
+        bash -c "${{ inputs.checkCmd }}"
+        RESULT=$?
+        echo "Check command exited with code: $RESULT"
+
+        if [[ $RESULT -eq 0 ]]; then
+          echo "🚀 Resource '${{ inputs.resourceName }}' found. Deleting ..."
+
+          bash -c "${{ inputs.deleteCmd }}"
+
+          RESULT=$?
+          if [[ $RESULT -eq 0 ]]; then
+            echo "✅ Resource '${{ inputs.resourceName }}' deleted successfully."
+          else
+            echo "❌ Failed to delete resource '${{ inputs.resourceName }}'. Exiting with code $RESULT."
+            exit $RESULT
+          fi
+        else
+          echo "⚠️ Resource '${{ inputs.resourceName }}' does not exist. Skipping deletion."
+        fi

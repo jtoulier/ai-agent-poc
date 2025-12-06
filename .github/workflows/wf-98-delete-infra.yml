@@ -1,0 +1,144 @@
+name: WF-98 Delete Infrastructure
+on:
+  workflow_dispatch:
+
+jobs:
+  job-02-b-delete-containerapp-environment:
+    name: JOB-02-B Delete CAPPENV
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Delete Container App Environment
+        uses: ./.github/actions/resource-delete-if-exists
+        with:
+          resourceName: ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }}
+
+          checkCmd: |
+            ls
+
+          deleteCmd: |
+            ls
+
+  job-02-a-delete-sqldatabase:
+    name: JOB-02-A Delete SQL Database
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Delete SQL DB
+        uses: ./.github/actions/resource-delete-if-exists
+        with:
+          resourceName: ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }}
+
+          checkCmd: |
+            ls
+
+          deleteCmd: |
+            ls
+
+  job-01-d-delete-loganalytics:
+    name: JOB-01-D Delete LAWS
+    runs-on: ubuntu-latest
+    needs: job-02-b-delete-containerapp-environment
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Delete LAWS
+        uses: ./.github/actions/resource-delete-if-exists
+        with:
+          resourceName: ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }}
+
+          checkCmd: |
+            ls
+
+          deleteCmd: |
+            ls
+
+  job-01-c-delete-sqlserver:
+    name: JOB-01-C Delete SQL Server
+    runs-on: ubuntu-latest
+    needs: job-02-a-delete-sqldatabase
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Delete SQL Server
+        uses: ./.github/actions/resource-delete-if-exists
+        with:
+          resourceName: ${{ vars.INFRA_AZURE_SQLSERVER_NAME }}
+
+          checkCmd: |
+            ls
+
+          deleteCmd: |
+            ls
+
+  job-01-b-delete-akv:
+    name: JOB-01-B Delete AKV
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Delete Azure Key Vault
+        uses: ./.github/actions/resource-delete-if-exists
+        with:
+          resourceName: ${{ vars.INFRA_AZURE_AKV_NAME }}
+
+          checkCmd: |
+            ls
+
+          deleteCmd: |
+            ls
+
+  job-01-a-delete-acr:
+    name: JOB-01-A Delete ACR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Delete Azure Container Registry
+        uses: ./.github/actions/resource-delete-if-exists
+        with:
+          resourceName: ${{ vars.INFRA_AZURE_ACR_NAME }}
+
+          checkCmd: |
+            ls
+
+          deleteCmd: |
+            ls

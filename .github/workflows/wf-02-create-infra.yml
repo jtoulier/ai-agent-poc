@@ -62,7 +62,6 @@ jobs:
               --name            ${{ vars.INFRA_AZURE_AKV_NAME }} \
               --sku             standard
 
-
   job-01-c-create-sqlserver:
     name: JOB-01-C Create SQL Server
     runs-on: ubuntu-latest
@@ -119,8 +118,7 @@ jobs:
             az monitor log-analytics workspace create \
               --workspace-name  ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} \
               --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
-              --location        ${{ vars.INFRA_AZURE_LOCATION }} \
-              --sku             Free
+              --location        ${{ vars.INFRA_AZURE_LOCATION }}
 
   job-02-a-create-sqldatabase:
     name: JOB-02-A Create SQL Database
@@ -159,7 +157,6 @@ jobs:
               --max-size          5GB \
               --min-capacity      0.5 \
               --zone-redundant    false
-
 
   job-02-b-create-containerapp-environment:
     name: JOB-02-B Create CAPPENV

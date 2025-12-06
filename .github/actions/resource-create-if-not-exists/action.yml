@@ -17,7 +17,7 @@ runs:
       shell: bash
       run: |
         set +e
-        
+
         bash -c "${{ inputs.checkCmd }}"
         RESULT=$?
         echo "Check command exited with code: $RESULT"
@@ -25,7 +25,7 @@ runs:
         if [[ $RESULT -eq 0 ]]; then
           echo "⚠️ Resource '${{ inputs.resourceName }}' already exists. Skipping creation."
         else
-          echo "🚀 Resource '${{ inputs.resourceName }}' not found. Creating..."
+          echo "🚀 Resource '${{ inputs.resourceName }}' not found. Creating ..."
 
           bash -c "${{ inputs.createCmd }}"
 
