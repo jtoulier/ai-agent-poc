@@ -64,7 +64,7 @@ jobs:
               --server          ${{ vars.INFRA_AZURE_SQLSERVER_NAME }}
 
           deleteCmd: |
-            az sql db delete
+            az sql db delete \
               --name            ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }} \
               --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
               --server          ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} \
