@@ -16,11 +16,9 @@ runs:
     - name: Create resource if not exists
       shell: bash
       run: |
-        set -euo pipefail
-
-        if bash -lc "${{ inputs.checkCmd }} >/dev/null 2>&1"; then
+        if bash -c "${{ inputs.checkCmd }} >/dev/null 2>&1"; then
           echo "⚠️ Resource '${{ inputs.resourceName }}' already exists. Skipping creation."
         else
           echo "🚀 Resource '${{ inputs.resourceName }}' not found. Creating..."
-          bash -lc "${{ inputs.createCmd }}"
+          bash -c "${{ inputs.createCmd }}"
         fi
