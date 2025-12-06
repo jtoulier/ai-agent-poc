@@ -21,13 +21,27 @@ jobs:
           resourceName: ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }}
 
           checkCmd: |
-            ls
+            az containerapp env show \
+              --name            ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
+              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
 
           deleteCmd: |
-            ls
+            az containerapp env delete \
+              --name            ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }} \
+              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --yes
+
+      - name: Wait for Container App Environment to be deleted
+        uses: ./.github/actions/containerapp-env-wait-state
+        with:
+          resourceGroup:    ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+          environmentName:  ${{ vars.INFRA_AZURE_CONTAINERAPPENVIRONMENT_NAME }}
+          desiredState:     NotFound
+          sleepSeconds:     '15'
+          totalWaitSeconds: '900'
 
   job-02-a-delete-sqldatabase:
-    name: JOB-02-A Delete SQL Database
+    name: JOB-02-A Delete SQL DB
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -44,10 +58,17 @@ jobs:
           resourceName: ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }}
 
           checkCmd: |
-            ls
+            az sql db show \
+              --name            ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }} \
+              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --server          ${{ vars.INFRA_AZURE_SQLSERVER_NAME }}
 
           deleteCmd: |
-            ls
+            az sql db delete
+              --name            ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }} \
+              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --server          ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} \
+              --yes
 
   job-01-d-delete-loganalytics:
     name: JOB-01-D Delete LAWS
@@ -68,13 +89,19 @@ jobs:
           resourceName: ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }}
 
           checkCmd: |
-            ls
+            az monitor log-analytics workspace show \
+              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --workspace-name  ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }}
 
           deleteCmd: |
-            ls
+            az monitor log-analytics workspace delete \
+              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --workspace-name  ${{ vars.INFRA_AZURE_LOGANALYTICSWORKSPACE_NAME }} \
+              --force           yes \
+              --yes
 
   job-01-c-delete-sqlserver:
-    name: JOB-01-C Delete SQL Server
+    name: JOB-01-C Delete SQL SRV
     runs-on: ubuntu-latest
     needs: job-02-a-delete-sqldatabase
     steps:
@@ -92,10 +119,15 @@ jobs:
           resourceName: ${{ vars.INFRA_AZURE_SQLSERVER_NAME }}
 
           checkCmd: |
-            ls
+            az sql server show \
+              --name            ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} \
+              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
 
           deleteCmd: |
-            ls
+            az sql server delete
+              --name            ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} \
+              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --yes
 
   job-01-b-delete-akv:
     name: JOB-01-B Delete AKV
@@ -115,10 +147,19 @@ jobs:
           resourceName: ${{ vars.INFRA_AZURE_AKV_NAME }}
 
           checkCmd: |
-            ls
+            az keyvault show \
+              --name            ${{ vars.INFRA_AZURE_AKV_NAME }} \
+              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
 
           deleteCmd: |
-            ls
+            az keyvault delete \
+              --name            ${{ vars.INFRA_AZURE_AKV_NAME }} \
+              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+
+      - name: Purge Azure Key Vault
+        uses: ./.github/actions/akv-purge-if-exists
+        with:
+          akvName: ${{ vars.INFRA_AZURE_AKV_NAME }}
 
   job-01-a-delete-acr:
     name: JOB-01-A Delete ACR
@@ -138,7 +179,12 @@ jobs:
           resourceName: ${{ vars.INFRA_AZURE_ACR_NAME }}
 
           checkCmd: |
-            ls
+            az acr show \
+              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --name            ${{ vars.INFRA_AZURE_ACR_NAME }}
 
           deleteCmd: |
-            ls
+            az acr delete \
+              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --name            ${{ vars.INFRA_AZURE_ACR_NAME }} \
+              --yes

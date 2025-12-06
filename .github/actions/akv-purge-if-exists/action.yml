@@ -1,0 +1,35 @@
+name: Purge if exists eliminated
+description: Purge an AKV if exists eliminated using az subcommand
+inputs:
+  akvName:
+    description: Name of the AKV
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Purge AKV if exists eliminated
+      shell: bash
+      run: |
+        set +e
+        
+        DELETED_AKVS=$(az keyvault list-deleted --query "[].name" -o tsv)
+
+        echo "Deleted Key Vaults:"
+        echo "$DELETED_AKVS"
+
+        if echo "$DELETED_AKVS" | grep -qx "${{ inputs.akvName }}"; then
+          echo "🚀 AKV '${{ inputs.akvName }}' found. Purging ..."
+
+          az keyvault purge --name "${{ inputs.akvName }}"
+
+          RESULT=$?
+          if [[ $RESULT -eq 0 ]]; then
+            echo "✅ AKV '${{ inputs.akvName }}' purged successfully."
+          else
+            echo "❌ Failed to purge AKV '${{ inputs.akvName }}'. Exiting with code $RESULT."
+            exit $RESULT
+          fi
+
+        else
+          echo "⚠️ AKV '${{ inputs.akvName }}' is not in deleted resources. Skipping purge."
+        fi
