@@ -124,7 +124,7 @@ jobs:
               --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
 
           deleteCmd: |
-            az sql server delete
+            az sql server delete \
               --name            ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} \
               --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
               --yes
