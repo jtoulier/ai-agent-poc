@@ -1,0 +1,32 @@
+name: WF-02 Create Infrastructure
+on:
+  workflow_dispatch:
+
+jobs:
+  job-01-a-create-acr:
+    name: JOB-01-A Create ACR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: ./.github/actions/checkout
+      
+      - name: Azure Login
+        uses: ./.github/actions/azure-login
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+      
+      - name: Create Azure Container Registry
+        uses: ./.github/actions/resource-create-if-not-exists
+        with:
+          resourceName:         ${{ vars.INFRA_AZURE_ACR_NAME }}
+          checkCmd: >
+            az acr show \
+              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --name            ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+          createCmd: >
+            aaz acr create \
+              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --location        ${{ vars.INFRA_AZURE_LOCATION }} \
+              --name            ${{ vars.INFRA_AZURE_ACR_NAME }} \
+              --sku Basic \
+              --admin-enabled true
