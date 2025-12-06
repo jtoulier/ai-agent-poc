@@ -18,10 +18,6 @@ runs:
       run: |
         set -euo pipefail
 
-        # DEBUG: imprime el comando que se va a ejecutar (quita el echo en production)
-        # echo "Checking resource '${{ inputs.resourceName }}' with:"
-        # echo "  checkCmd: ${{ inputs.checkCmd }}"
-
         bash -c "${{ inputs.checkCmd }}"
         RESULT=$?
         echo "Check command exited with code: $RESULT"
