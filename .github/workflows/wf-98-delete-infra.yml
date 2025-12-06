@@ -3,10 +3,94 @@ on:
   workflow_dispatch:
 
 jobs:
-  job-03-c-create-frontend-containerapp:
-  job-03-b-create-adtoken-containerapp:  
-  job-03-a-create-backend-containerapp:
-  
+  # job-04-a-delete-sqlserver-firewall-rules
+  # No es ncesario eliminar las reglas de firewall del servidor SQL,
+  # ya que al eliminar el servidor SQL se eliminan automáticamente.
+
+  job-03-c-delete-frontend-containerapp:
+    name: JOB-03-C Delete Frontend CAPP
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Delete Frontend Container App
+        uses: ./.github/actions/resource-delete-if-exists
+        with:
+          resourceName: ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }}
+
+          checkCmd: |
+            az containerapp show \
+              --name            ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} \
+              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+
+          deleteCmd: |
+            az containerapp delete \
+              --name            ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} \
+              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --yes
+
+  job-03-b-delete-adtoken-containerapp:  
+    name: JOB-03-B Delete AD Token CAPP
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Delete AD Token Container App
+        uses: ./.github/actions/resource-delete-if-exists
+        with:
+          resourceName: ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_NAME }}
+
+          checkCmd: |
+            az containerapp show \
+              --name            ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_NAME }} \
+              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+
+          deleteCmd: |
+            az containerapp delete \
+              --name            ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_NAME }} \
+              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --yes
+
+  job-03-a-delete-backend-containerapp:
+    name: JOB-03-A Delete Backend CAPP
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Delete Backend Container App
+        uses: ./.github/actions/resource-delete-if-exists
+        with:
+          resourceName: ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }}
+
+          checkCmd: |
+            az containerapp show \
+              --name            ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} \
+              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+
+          deleteCmd: |
+            az containerapp delete \
+              --name            ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} \
+              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --yes
+    
   job-02-b-delete-containerapp-environment:
     name: JOB-02-B Delete CAPPENV
     runs-on: ubuntu-latest
