@@ -17,8 +17,8 @@ runs:
       shell: bash
       run: |
         if ${{ inputs.checkCmd }} &>/dev/null; then
-          echo "⚠️ Resource {{ inputs.resourceName }} already exists. Skipping creation."
+          echo "⚠️ Resource '${{ inputs.resourceName }}' already exists. Skipping creation."
         else
-          echo "🚀 Resource {{ inputs.resourceName }} not found. Creating..."
+          echo "🚀 Resource '${{ inputs.resourceName }}' not found. Creating..."
           ${{ inputs.createCmd }}
         fi

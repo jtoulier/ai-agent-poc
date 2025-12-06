@@ -20,10 +20,10 @@ jobs:
         with:
           resourceName:       ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
           checkCmd: >
-            az group show
+            az group show \
               --name          ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
           createCmd: >
-            az group create
-              --name          ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
-              --location      ${{ vars.INFRA_AZURE_LOCATION }}
+            az group create \
+              --name          ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --location      ${{ vars.INFRA_AZURE_LOCATION }} \
               --subscription  ${{ vars.INFRA_AZURE_SUBSCRIPTION_ID }}
