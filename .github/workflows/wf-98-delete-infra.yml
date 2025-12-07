@@ -8,7 +8,7 @@ jobs:
   # ya que al eliminar el servidor SQL se eliminan automáticamente.
 
   job-03-c-delete-frontend-containerapp:
-    name: JOB-03-C Delete Frontend CAPP
+    name: J3C Delete Frontend CAPP
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -36,7 +36,7 @@ jobs:
               --yes
 
   job-03-b-delete-adtoken-containerapp:  
-    name: JOB-03-B Delete AD Token CAPP
+    name: J3B Delete AD Token CAPP
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -64,7 +64,7 @@ jobs:
               --yes
 
   job-03-a-delete-backend-containerapp:
-    name: JOB-03-A Delete Backend CAPP
+    name: J3A Delete Backend CAPP
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -92,7 +92,7 @@ jobs:
               --yes
     
   job-02-b-delete-containerapp-environment:
-    name: JOB-02-B Delete CAPPENV
+    name: J2B Delete CAPPENV
     runs-on: ubuntu-latest
     needs:  [
               job-03-a-delete-backend-containerapp,
@@ -134,7 +134,7 @@ jobs:
           totalWaitSeconds: '900'
 
   job-02-a-delete-sqldatabase:
-    name: JOB-02-A Delete SQL DB
+    name: J2A Delete SQL DB
     runs-on: ubuntu-latest
     needs:  [
               job-03-a-delete-backend-containerapp
@@ -167,7 +167,7 @@ jobs:
               --yes
 
   job-01-d-delete-loganalytics:
-    name: JOB-01-D Delete LAWS
+    name: J1D Delete LAWS
     runs-on: ubuntu-latest
     needs: job-02-b-delete-containerapp-environment
     steps:
@@ -197,7 +197,7 @@ jobs:
               --yes
 
   job-01-c-delete-sqlserver:
-    name: JOB-01-C Delete SQL SRV
+    name: J1C Delete SQL SRV
     runs-on: ubuntu-latest
     needs: job-02-a-delete-sqldatabase
     steps:
@@ -226,7 +226,7 @@ jobs:
               --yes
 
   job-01-b-delete-akv:
-    name: JOB-01-B Delete AKV
+    name: J1B Delete AKV
     runs-on: ubuntu-latest
     needs: job-03-a-delete-backend-containerapp
     steps:
@@ -259,7 +259,7 @@ jobs:
           akvName: ${{ vars.INFRA_AZURE_AKV_NAME }}
 
   job-01-a-delete-acr:
-    name: JOB-01-A Delete ACR
+    name: J1A Delete ACR
     runs-on: ubuntu-latest
     needs:  [
               job-03-c-delete-frontend-containerapp,

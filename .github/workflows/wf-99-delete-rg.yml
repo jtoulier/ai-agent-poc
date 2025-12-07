@@ -3,8 +3,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  job-99-delete-resource-group:
-    name: JOB-99 Delete RG
+  job-01-delete-resource-group:
+    name: J1 Delete RG
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

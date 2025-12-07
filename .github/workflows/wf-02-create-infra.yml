@@ -4,7 +4,7 @@ on:
 
 jobs:
   job-01-a-create-acr:
-    name: JOB-01-A Create ACR
+    name: J1A Create ACR
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -34,7 +34,7 @@ jobs:
               --location        ${{ vars.INFRA_AZURE_LOCATION }}
 
   job-01-b-create-akv:
-    name: JOB-01-B Create AKV
+    name: J1B Create AKV
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -63,7 +63,7 @@ jobs:
               --sku             standard
 
   job-01-c-create-sqlserver:
-    name: JOB-01-C Create SQL SRV
+    name: J1C Create SQL SRV
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -93,7 +93,7 @@ jobs:
               --location        ${{ vars.INFRA_AZURE_LOCATION }}
 
   job-01-d-create-loganalytics:
-    name: JOB-01-D Create LAWS
+    name: J1D Create LAWS
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -121,7 +121,7 @@ jobs:
               --location        ${{ vars.INFRA_AZURE_LOCATION }}
 
   job-02-a-create-sqldatabase:
-    name: JOB-02-A Create SQL DB
+    name: J2A Create SQL DB
     runs-on: ubuntu-latest
     needs: job-01-c-create-sqlserver
     steps:
@@ -159,7 +159,7 @@ jobs:
               --zone-redundant    false
 
   job-02-b-create-containerapp-environment:
-    name: JOB-02-B Create CAPPENV
+    name: J2B Create CAPPENV
     runs-on: ubuntu-latest
     needs: job-01-d-create-loganalytics
     steps:
@@ -206,7 +206,7 @@ jobs:
           desiredState:     Succeeded
 
   job-03-a-create-backend-containerapp:
-    name: JOB-03-A Create Backend CAPP
+    name: J3A Create Backend CAPP
     runs-on: ubuntu-latest
     needs:  [
               job-01-a-create-acr,
@@ -244,7 +244,7 @@ jobs:
           awsSecretAccessKey: ${{ secrets.INFRA_AWS_DNS_USER_SECRET_ACCESS_KEY }}
 
   job-03-b-create-adtoken-containerapp:
-    name: JOB-03-B Create AD Token CAPP
+    name: J3B Create AD Token CAPP
     runs-on: ubuntu-latest
     needs:  [
               job-01-a-create-acr,
@@ -281,7 +281,7 @@ jobs:
           awsSecretAccessKey: ${{ secrets.INFRA_AWS_DNS_USER_SECRET_ACCESS_KEY }}
 
   job-03-c-create-frontend-containerapp:
-    name: JOB-03-C Create Frontend CAPP
+    name: J3C Create Frontend CAPP
     runs-on: ubuntu-latest
     needs:  [
               job-01-a-create-acr,
@@ -318,7 +318,7 @@ jobs:
           awsSecretAccessKey: ${{ secrets.INFRA_AWS_DNS_USER_SECRET_ACCESS_KEY }}
 
   job-04-a-add-sqlserver-firewall-rules:
-    name: JOB-04-A Add SQL FW Rules
+    name: J4A Add SQL FW Rules
     runs-on: ubuntu-latest
     needs: [job-01-c-create-sqlserver, job-03-a-create-backend-containerapp]
     steps:
@@ -339,7 +339,7 @@ jobs:
           rulePrefix:       Rule_BACKEND_
 
   job-04-b-deploy-adtoken-containerapp:
-    name: JOB-04-B Deploy AD Token CAPP
+    name: J4B Deploy AD Token CAPP
     runs-on: ubuntu-latest
     needs: job-03-b-create-adtoken-containerapp
     steps:
@@ -370,7 +370,7 @@ jobs:
           imageVersion:     ${GITHUB_SHA}
 
   job-05-a-deploy-backend-containerapp:
-    name: JOB-05-A Deploy Backend CAPP
+    name: J5A Deploy Backend CAPP
     runs-on: ubuntu-latest
     needs:  [
               job-02-a-create-sqldatabase,
@@ -415,7 +415,7 @@ jobs:
           imageVersion:     ${GITHUB_SHA}          
 
   job-06-a-deploy-frontend-container-app:
-    name: JOB-06-A Deploy Frontend CAPP
+    name: J6A Deploy Frontend CAPP
     runs-on: ubuntu-latest
     needs:  [
               job-03-c-create-frontend-containerapp,
