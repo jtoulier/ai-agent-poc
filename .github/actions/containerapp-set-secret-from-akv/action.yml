@@ -37,6 +37,42 @@ runs:
           exit $RESULT
         fi
 
+    - name: Assign a Managed Identity to Container App (if not already assigned)
+      shell: bash
+      run: |
+        az containerapp identity assign \
+          --name            ${{ inputs.containerAppName }} \
+          --resource-group  ${{ inputs.resourceGroup }} \
+          --system-assigned
+
+        if [[ $RESULT -eq 0 ]]; then
+          echo "✅ Managed Identity assigned to Container App successfully."
+        else
+          echo "❌ Failed to assign Managed Identity to Container App. Exiting with code $RESULT."
+          exit $RESULT
+        fi        
+
+    - name: Grant Container App access to Key Vault
+      shell: bash
+      run: |
+        APP_MI_PRINCIPAL_ID=$(az containerapp show \
+                                --name            ${{ inputs.containerAppName }} \
+                                --resource-group  ${{ inputs.resourceGroup }} \
+                                --query           identity.principalId \
+                                --output          tsv)
+
+        az role assignment create \
+          --role      "Key Vault Secrets User" \
+          --assignee  $APP_MI_PRINCIPAL_ID \
+          --scope     $(az keyvault show --name ${{ inputs.akvName }} --query id -o tsv)
+
+        if [[ $RESULT -eq 0 ]]; then
+          echo "✅ Key Vault access policy set for Container App successfully."
+        else
+          echo "❌ Failed to set Key Vault access policy for Container App. Exiting with code $RESULT."
+          exit $RESULT
+        fi
+
     - name: Set Container App secret for login password
       shell: bash
       run: |
