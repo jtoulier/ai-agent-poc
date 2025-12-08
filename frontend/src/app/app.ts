@@ -73,9 +73,10 @@ export class App {
 
   // 🔹 Renderizar markdown usando marked
   private renderMarkdown(md: string): SafeHtml {
-    const html = marked.parse(md); // convierte markdown → HTML con tablas
-    return this.sanitizer.bypassSecurityTrustHtml(html); // limpia y permite innerHTML
+    const html = marked.parse(md, { async: false }) as string; 
+    return this.sanitizer.bypassSecurityTrustHtml(html);
   }
+  
   // 🔹 Extractor de texto universal para Azure OpenAI
   private extractText(content: any[]): string {
     if (!content || !Array.isArray(content)) return '';
