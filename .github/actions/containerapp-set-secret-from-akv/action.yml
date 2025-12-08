@@ -43,7 +43,7 @@ runs:
         az containerapp secret set \
           --name            ${{ inputs.containerAppName }} \
           --resource-group  ${{ inputs.resourceGroup }} \
-          --secrets         datasourcepassword=keyvault://${{ inputs.akvName }}/${{ inputs.datasourceUsername }}
+          --secrets         datasourcepassword=keyvault://${{ inputs.akvName }}/datasourcepassword
 
         if [[ $RESULT -eq 0 ]]; then
           echo "✅ Container App Secret 'datasourcepassword' created or updated successfully."
