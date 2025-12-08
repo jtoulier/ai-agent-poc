@@ -256,9 +256,9 @@ jobs:
         with:
           resourceGroup:      ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
           containerAppName:   ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }}
-          keyVaultName:       ${{ vars.INFRA_AZURE_AKV_NAME }}
-          akvSecretName:      DATASOURCEPASSWORD
-          cappSecretName:     DATASOURCEPASSWORD
+          akvName:            ${{ vars.INFRA_AZURE_AKV_NAME }}
+          datasourceUsername: ${{ vars.INFRA_AZURE_SQLSERVER_ADMIN_LOGINNAME }}
+          datasourcePassword: ${{ secrets.INFRA_AZURE_SQLSERVER_ADMIN_LOGINPASSWORD }}
 
   job-03-b-create-adtoken-containerapp:
     name: J3B Create AD Token CAPP
