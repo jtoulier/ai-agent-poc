@@ -1,0 +1,68 @@
+name: Set CAPP secret from AKV
+description: Set Container App secret from Azure Key Vault
+inputs:
+  resourceGroup:
+    description: Name of the Resource Group where the Container App is located
+    required: true
+  containerAppName:
+    description: Name of the Container App to grant access
+    required: true
+  akvName:
+    description: Name of the Azure Key Vault
+    required: true
+  datasourceUsername:
+    description: Login username for Azure SQL
+    required: true
+  datasourcePassword:
+    description: Login password secret value in Azure Key Vault
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Set Container App credentials
+      shell: bash
+      run: |
+    - name: Set Container App environment variable for login username
+      shell: bash
+      run: |
+        az containerapp update \
+          --name            ${{ inputs.containerAppName }} \
+          --resource-group  ${{ inputs.resourceGroup }} \
+          --set-env-vars    DATASOURCE_USERNAME=${{ inputs.datasourceUsername }}
+
+        if [[ $RESULT -eq 0 ]]; then
+          echo "✅ Container App Env Value 'DATASOURCE_USERNAME' created or updated successfully."
+        else
+          echo "❌ Failed to create or update Container App Env Value 'DATASOURCE_USERNAME'. Exiting with code $RESULT."
+          exit $RESULT
+        fi
+
+    - name: Set Container App secret for login password
+      shell: bash
+      run: |
+        az containerapp secret set \
+          --name            ${{ inputs.containerAppName }} \
+          --resource-group  ${{ inputs.resourceGroup }} \
+          --secrets         DATASOURCE_PASSWORD=keyvault://${{ inputs.akvName }}/${{ inputs.datasourcePassword }}
+
+        if [[ $RESULT -eq 0 ]]; then
+          echo "✅ Container App Secret 'DATASOURCE_PASSWORD' created or updated successfully."
+        else
+          echo "❌ Failed to create or update Container App Secret 'DATASOURCE_PASSWORD'. Exiting with code $RESULT."
+          exit $RESULT
+        fi
+
+    - name: Set Container App environment variable for login password
+      shell: bash
+      run: |
+        az containerapp update \
+          --name            ${{ inputs.containerAppName }} \
+          --resource-group  ${{ inputs.resourceGroup }} \
+          --set-env-vars    DATASOURCE_PASSWORD=secretref:DATASOURCE_PASSWORD
+
+        if [[ $RESULT -eq 0 ]]; then
+          echo "✅ Container App Env Value 'DATASOURCE_PASSWORD' created or updated successfully."
+        else
+          echo "❌ Failed to create or update Container App Env Value 'DATASOURCE_PASSWORD'. Exiting with code $RESULT."
+          exit $RESULT
+        fi
