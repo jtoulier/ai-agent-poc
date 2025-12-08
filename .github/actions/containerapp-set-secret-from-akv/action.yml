@@ -43,12 +43,12 @@ runs:
         az containerapp secret set \
           --name            ${{ inputs.containerAppName }} \
           --resource-group  ${{ inputs.resourceGroup }} \
-          --secrets         DATASOURCE_PASSWORD=keyvault://${{ inputs.akvName }}/${{ inputs.datasourcePassword }}
+          --secrets         DATASOURCEPASSWORD=keyvault://${{ inputs.akvName }}/${{ inputs.datasourcePassword }}
 
         if [[ $RESULT -eq 0 ]]; then
-          echo "✅ Container App Secret 'DATASOURCE_PASSWORD' created or updated successfully."
+          echo "✅ Container App Secret 'DATASOURCEPASSWORD' created or updated successfully."
         else
-          echo "❌ Failed to create or update Container App Secret 'DATASOURCE_PASSWORD'. Exiting with code $RESULT."
+          echo "❌ Failed to create or update Container App Secret 'DATASOURCEPASSWORD'. Exiting with code $RESULT."
           exit $RESULT
         fi
 
@@ -58,7 +58,7 @@ runs:
         az containerapp update \
           --name            ${{ inputs.containerAppName }} \
           --resource-group  ${{ inputs.resourceGroup }} \
-          --set-env-vars    DATASOURCE_PASSWORD=secretref:DATASOURCE_PASSWORD
+          --set-env-vars    DATASOURCE_PASSWORD=secretref:DATASOURCEPASSWORD
 
         if [[ $RESULT -eq 0 ]]; then
           echo "✅ Container App Env Value 'DATASOURCE_PASSWORD' created or updated successfully."
