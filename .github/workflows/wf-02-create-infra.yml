@@ -67,7 +67,7 @@ jobs:
         run: |
           az keyvault secret set \
             --vault-name  ${{ vars.INFRA_AZURE_AKV_NAME }} \
-            --name        DATASOURCEPASSWORD \
+            --name        datasourcepassword \
             --value       "${{ secrets.INFRA_AZURE_SQLSERVER_ADMIN_LOGINPASSWORD }}"
 
   job-01-c-create-sqlserver:
