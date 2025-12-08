@@ -28,12 +28,12 @@ runs:
         az containerapp update \
           --name            ${{ inputs.containerAppName }} \
           --resource-group  ${{ inputs.resourceGroup }} \
-          --set-env-vars    DATASOURCE_USERNAME=${{ inputs.datasourceUsername }}
+          --set-env-vars    DATASOURCEUSERNAME=${{ inputs.datasourceUsername }}
 
         if [[ $RESULT -eq 0 ]]; then
-          echo "✅ Container App Env Value 'DATASOURCE_USERNAME' created or updated successfully."
+          echo "✅ Container App Env Value 'DATASOURCEUSERNAME' created or updated successfully."
         else
-          echo "❌ Failed to create or update Container App Env Value 'DATASOURCE_USERNAME'. Exiting with code $RESULT."
+          echo "❌ Failed to create or update Container App Env Value 'DATASOURCEUSERNAME'. Exiting with code $RESULT."
           exit $RESULT
         fi
 
@@ -58,11 +58,11 @@ runs:
         az containerapp update \
           --name            ${{ inputs.containerAppName }} \
           --resource-group  ${{ inputs.resourceGroup }} \
-          --set-env-vars    DATASOURCE_PASSWORD=secretref:DATASOURCEPASSWORD
+          --set-env-vars    DATASOURCEPASSWORD=secretref:DATASOURCEPASSWORD
 
         if [[ $RESULT -eq 0 ]]; then
-          echo "✅ Container App Env Value 'DATASOURCE_PASSWORD' created or updated successfully."
+          echo "✅ Container App Env Value 'DATASOURCEPASSWORD' created or updated successfully."
         else
-          echo "❌ Failed to create or update Container App Env Value 'DATASOURCE_PASSWORD'. Exiting with code $RESULT."
+          echo "❌ Failed to create or update Container App Env Value 'DATASOURCEPASSWORD'. Exiting with code $RESULT."
           exit $RESULT
         fi

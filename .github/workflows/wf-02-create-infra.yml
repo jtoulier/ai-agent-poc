@@ -67,7 +67,7 @@ jobs:
         run: |
           az keyvault secret set \
             --vault-name  ${{ vars.INFRA_AZURE_AKV_NAME }} \
-            --name        DATASOURCE_PASSWORD \
+            --name        DATASOURCEPASSWORD \
             --value       "${{ secrets.INFRA_AZURE_SQLSERVER_ADMIN_LOGINPASSWORD }}"
 
   job-01-c-create-sqlserver:
@@ -257,8 +257,8 @@ jobs:
           resourceGroup:      ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
           containerAppName:   ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }}
           keyVaultName:       ${{ vars.INFRA_AZURE_AKV_NAME }}
-          akvSecretName:      DB_LOGIN_PASSWORD
-          cappSecretName:     DB_LOGIN_PASSWORD
+          akvSecretName:      DATASOURCEPASSWORD
+          cappSecretName:     DATASOURCEPASSWORD
 
   job-03-b-create-adtoken-containerapp:
     name: J3B Create AD Token CAPP
