@@ -29,20 +29,22 @@ runs:
         set +e
 
         IMAGE="${{ inputs.acrName }}.azurecr.io/${{ inputs.imageName }}:${{ inputs.imageVersion }}"
-        echo "🚀 Updating '${{ inputs.containerAppName }}'' to '$IMAGE' ..."
+        echo "🚀 Updating '${{ inputs.containerAppName }}' to '$IMAGE' ..."
 
         # Construir la lista de env vars: obligatoria + opcionales
         ENV_ARGS="FORCE_REVISION=$(date +%s)"
         if [ -n "${{ inputs.envVars }}" ]; then
           ENV_ARGS="$ENV_ARGS ${{ inputs.envVars }}"
         fi
+        echo "$ENV_ARGS"
 
         az containerapp update \
           --name            "${{ inputs.containerAppName }}" \
           --resource-group  "${{ inputs.resourceGroup }}" \
           --image           "$IMAGE" \
-          --set-env-vars    $ENV_ARGS
+          --set-env-vars    "$ENV_ARGS"
 
+        RESULT=$?
         if [[ $RESULT -eq 0 ]]; then
           echo "✅ Container App image updated successfully."
         else

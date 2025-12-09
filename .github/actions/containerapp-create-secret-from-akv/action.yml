@@ -30,6 +30,7 @@ runs:
           --resource-group  ${{ inputs.resourceGroup }} \
           --system-assigned
 
+        RESULT=$?
         if [[ $RESULT -eq 0 ]]; then
           echo "✅ Managed Identity assigned to Container App successfully."
         else
@@ -55,6 +56,7 @@ runs:
           --query     id \
           --output    tsv)
 
+        RESULT=$?
         if [[ $RESULT -eq 0 ]]; then
           echo "✅ Key Vault access policy set for Container App successfully."
         else
@@ -72,6 +74,7 @@ runs:
           --resource-group  ${{ inputs.resourceGroup }} \
           --secrets         "${{ inputs.containerAppSecretName }}=keyvaultref:https://${{ inputs.akvName }}.vault.azure.net/secrets/${{ inputs.akvSecretName }},identityref:system"
 
+        RESULT=$?
         if [[ $RESULT -eq 0 ]]; then
           echo "✅ Container App Secret '${{ inputs.containerAppSecretName }}' created or updated successfully."
         else

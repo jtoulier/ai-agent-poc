@@ -13,6 +13,24 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Give rol to create an AKV Secret
+      shell: bash
+      run: |
+        set +e
+
+        az role assignment create \
+          --assignee $(jq -r .clientId <<< "${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}") \
+          --role "Key Vault Secrets Officer" \
+          --scope $(az keyvault show --name ${{ inputs.akvName }} --query id -o tsv)
+
+        RESULT=$?
+        if [[ $RESULT -eq 0 ]]; then
+          echo "✅ Role assigned to create AKV Secret successfully."
+        else
+          echo "❌ Failed to assign role to create AKV Secret. Exiting with code $RESULT."
+          exit $RESULT
+        fi
+
     - name: Create AKV Secret
       shell: bash
       run: |
