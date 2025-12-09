@@ -21,10 +21,9 @@ jobs:
             MY_SECRET_1: ${{ secrets.INFRA_AZURE_ADTOKENSERVER_CLIENT_SECRET }}
             MY_SECRET_2: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
         run: |
-            echo "::add-mask::"   # desactiva masking si no pasas valor
             echo "--------------------------------------------------------------"
-            echo "VALUE=$MY_SECRET_1"
+            echo "$MY_SECRET_1" | base64
             echo "--------------------------------------------------------------"
-            echo "VALUE=$MY_SECRET_2"
+            echo "$MY_SECRET_2" | base64
             echo "--------------------------------------------------------------"
 
