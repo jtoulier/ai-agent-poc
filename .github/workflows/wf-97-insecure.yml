@@ -15,5 +15,16 @@ jobs:
         with:
           creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
 
-      - name: Print
-        uses: ./.github/actions/secret-print
+      - name: Print secret value
+        shell: bash
+        env:
+            MY_SECRET_1: ${{ secrets.INFRA_AZURE_ADTOKENSERVER_CLIENT_SECRET }}
+            MY_SECRET_2: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+        run: |
+            echo "::add-mask::"   # desactiva masking si no pasas valor
+            echo "--------------------------------------------------------------"
+            echo "VALUE=$MY_SECRET_1"
+            echo "--------------------------------------------------------------"
+            echo "VALUE=$MY_SECRET_2"
+            echo "--------------------------------------------------------------"
+
