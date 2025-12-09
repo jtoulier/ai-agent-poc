@@ -18,7 +18,7 @@ runs:
       run: |
           set +e
 
-          az containerapp stop \
+          az container stop \
             --name            ${{ inputs.containerAppName }} \
             --resource-group  ${{ inputs.resourceGroup }} \
             --subscription    ${{ inputs.subscriptionId }}
