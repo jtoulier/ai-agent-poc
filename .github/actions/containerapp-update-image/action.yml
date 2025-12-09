@@ -48,6 +48,6 @@ runs:
         if [[ $RESULT -eq 0 ]]; then
           echo "✅ Container App image updated successfully."
         else
-          echo "❌ Failed to update Container App image. Exiting with code $RESULT.""
+          echo "❌ Failed to update Container App image. Exiting with code $RESULT."
           exit $RESULT
         fi          

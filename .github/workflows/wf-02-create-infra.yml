@@ -428,6 +428,7 @@ jobs:
       - name: Create AKV Secret for DB password
         uses: ./.github/actions/akv-create-secret
         with:
+          spInfo:      ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
           akvName:     ${{ vars.INFRA_AZURE_AKV_NAME }}
           secretName:  datasourcepassword
           secretValue: ${{ secrets.INFRA_AZURE_SQLSERVER_ADMIN_LOGINPASSWORD }}

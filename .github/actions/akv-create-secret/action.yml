@@ -1,6 +1,9 @@
 name: Create or Update AKV Secret
 description: Create or update a secret in an Azure Key Vault using az subcommand
 inputs:
+  spInfo:
+    description: Service Principal info in JSON format
+    required: true
   akvName:
     description: Name of the AKV
     required: true
@@ -19,7 +22,7 @@ runs:
         set +e
 
         az role assignment create \
-          --assignee $(jq -r .clientId <<< "${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}") \
+          --assignee $(jq -r .clientId <<< "${{ inputs.spInfo }}") \
           --role "Key Vault Secrets Officer" \
           --scope $(az keyvault show --name ${{ inputs.akvName }} --query id -o tsv)
 
