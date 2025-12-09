@@ -20,11 +20,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Compile Maven project
-      working-directory: ./backend
-      shell: bash
-      run: mvn clean package -DskipTests
-
     - name: Login to ACR
       shell: bash
       run: |

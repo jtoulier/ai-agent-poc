@@ -1,0 +1,16 @@
+name: Compile a Java project with Maven
+description: Compiles a Java project using Maven
+
+runs:
+  using: composite
+  steps:      
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: microsoft
+          java-version: 21
+
+      - name: Compile Maven project
+        working-directory: ./backend
+        shell: bash
+        run: mvn clean package -DskipTests
