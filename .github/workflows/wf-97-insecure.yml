@@ -1,0 +1,19 @@
+name: WF-97 Insecure
+on:
+  workflow_dispatch:
+
+jobs:
+  job-01-insecure:
+    name: J1 Insecure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Print
+        uses: ./.github/actions/secret-print
