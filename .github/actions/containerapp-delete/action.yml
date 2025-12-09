@@ -13,24 +13,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Stop container
-      shell: bash
-      run: |
-          set +e
-
-          az container stop \
-            --name            ${{ inputs.containerAppName }} \
-            --resource-group  ${{ inputs.resourceGroup }} \
-            --subscription    ${{ inputs.subscriptionId }}
-
-          RESULT=$?
-          if [[ $RESULT -eq 0 ]]; then
-            echo "✅ Container app '${{ inputs.containerAppName }}' stopped successfully."
-          else
-            echo "❌ Failed to stop container app '${{ inputs.containerAppName }}'. Exiting with code $RESULT."
-            exit $RESULT
-          fi
-
     - name: Delete container app
       shell: bash
       run: |
