@@ -20,21 +20,59 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Compile Maven project
+      working-directory: ./backend
+      shell: bash
+      run: mvn clean package -DskipTests
+
     - name: Login to ACR
       shell: bash
-      run: az acr login --name ${{ inputs.acrName }}
+      run: |
+        set +e
+
+        az acr login --name ${{ inputs.acrName }}
+
+        RESULT=$?
+        if [[ $RESULT -eq 0 ]]; then
+          echo "✅ Logged in to ACR '${{ inputs.acrName }}' successfully."
+        else
+          echo "❌ Failed to log in to ACR '${{ inputs.acrName }}'. Exiting with code $RESULT."
+          exit $RESULT
+        fi
 
     - name: Build image
       shell: bash
       working-directory: ${{ inputs.workingDir }}
       run: |
+        set +e
+
         IMAGE="${{ inputs.acrName }}.azurecr.io/${{ inputs.imageName }}:${{ inputs.imageVersion }}"
         echo "🚀 Building '$IMAGE' ..."
+
         docker build -f "${{ inputs.dockerfile }}" -t "$IMAGE" .
+
+        RESULT=$?
+        if [[ $RESULT -eq 0 ]]; then
+          echo "✅ Built image '$IMAGE' successfully."
+        else
+          echo "❌ Failed to build image '$IMAGE'. Exiting with code $RESULT."
+          exit $RESULT
+        fi
 
     - name: Push image
       shell: bash
       run: |
+        set +e
+
         IMAGE="${{ inputs.acrName }}.azurecr.io/${{ inputs.imageName }}:${{ inputs.imageVersion }}"
         echo "🚀 Pushing '$IMAGE' ..."
+
         docker push "$IMAGE"
+
+        RESULT=$?
+        if [[ $RESULT -eq 0 ]]; then
+          echo "✅ Pushed image '$IMAGE' successfully."
+        else
+          echo "❌ Failed to push image '$IMAGE'. Exiting with code $RESULT."
+          exit $RESULT
+        fi

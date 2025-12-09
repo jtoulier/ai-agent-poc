@@ -1,0 +1,80 @@
+name: Set CAPP secret from AKV
+description: Set Container App secret from Azure Key Vault
+inputs:
+  resourceGroup:
+    description: Name of the Resource Group where the Container App is located
+    required: true
+  akvName:
+    description: Name of the Azure Key Vault
+    required: true
+  akvSecretName:
+    description: Name of the secret in Azure Key Vault
+    required: true
+  containerAppName:
+    description: Name of the Container App to grant access
+    required: true
+  containerAppSecretName:
+    description: Name of the Container App secret to create or update
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Assign a Managed Identity to Container App (if not already assigned)
+      shell: bash
+      run: |
+        set +e
+
+        az containerapp identity assign \
+          --name            ${{ inputs.containerAppName }} \
+          --resource-group  ${{ inputs.resourceGroup }} \
+          --system-assigned
+
+        if [[ $RESULT -eq 0 ]]; then
+          echo "✅ Managed Identity assigned to Container App successfully."
+        else
+          echo "❌ Failed to assign Managed Identity to Container App. Exiting with code $RESULT."
+          exit $RESULT
+        fi        
+
+    - name: Grant Container App access to Key Vault
+      shell: bash
+      run: |
+        set +e
+
+        PRINCIPAL_ID=$(az containerapp show \
+                        --name            ${{ inputs.containerAppName }} \
+                        --resource-group  ${{ inputs.resourceGroup }} \
+                        --query           identity.principalId \
+                        --output          tsv)
+
+        az role assignment create \
+          --role      "Key Vault Secrets User" \
+          --assignee  $PRINCIPAL_ID \
+          --scope     $(az keyvault show --name ${{ inputs.akvName }} \
+          --query     id \
+          --output    tsv)
+
+        if [[ $RESULT -eq 0 ]]; then
+          echo "✅ Key Vault access policy set for Container App successfully."
+        else
+          echo "❌ Failed to set Key Vault access policy for Container App. Exiting with code $RESULT."
+          exit $RESULT
+        fi
+
+    - name: Set Container App secret for login password
+      shell: bash
+      run: |
+        set +e
+
+        az containerapp secret set \
+          --name            ${{ inputs.containerAppName }} \
+          --resource-group  ${{ inputs.resourceGroup }} \
+          --secrets         "${{ inputs.containerAppSecretName }}=keyvaultref:https://${{ inputs.akvName }}.vault.azure.net/secrets/${{ inputs.akvSecretName }},identityref:system"
+
+        if [[ $RESULT -eq 0 ]]; then
+          echo "✅ Container App Secret '${{ inputs.containerAppSecretName }}' created or updated successfully."
+        else
+          echo "❌ Failed to create or update Container App Secret '${{ inputs.containerAppSecretName }}'. Exiting with code $RESULT."
+          exit $RESULT
+        fi

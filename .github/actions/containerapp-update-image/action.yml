@@ -16,16 +16,36 @@ inputs:
   imageVersion:
     description: Version tag for the Docker image
     required: true
+  envVars:
+    description: Additional environment variables to set (key=value format, space separated)
+    required: false
+
 runs:
   using: composite
   steps:
     - name: Update Container App image
       shell: bash
       run: |
+        set +e
+
         IMAGE="${{ inputs.acrName }}.azurecr.io/${{ inputs.imageName }}:${{ inputs.imageVersion }}"
         echo "🚀 Updating '${{ inputs.containerAppName }}'' to '$IMAGE' ..."
+
+        # Construir la lista de env vars: obligatoria + opcionales
+        ENV_ARGS="FORCE_REVISION=$(date +%s)"
+        if [ -n "${{ inputs.envVars }}" ]; then
+          ENV_ARGS="$ENV_ARGS ${{ inputs.envVars }}"
+        fi
+
         az containerapp update \
           --name            "${{ inputs.containerAppName }}" \
           --resource-group  "${{ inputs.resourceGroup }}" \
           --image           "$IMAGE" \
-          --set-env-vars    FORCE_REVISION=$(date +%s)
+          --set-env-vars    $ENV_ARGS
+
+        if [[ $RESULT -eq 0 ]]; then
+          echo "✅ Container App image updated successfully."
+        else
+          echo "❌ Failed to update Container App image. Exiting with code $RESULT.""
+          exit $RESULT
+        fi          

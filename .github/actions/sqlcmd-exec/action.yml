@@ -29,10 +29,11 @@ runs:
         }}/${{
           inputs.databaseName
         }} ..."
+
         sqlcmd \
           -S "${{ inputs.serverFqdn }}" \
           -d "${{ inputs.databaseName }}" \
           -U "${{ inputs.username }}" \
-          -P '${{ inputs.password }}' \
+          -P "$SQL_PASSWORD" \
           -i "${{ inputs.scriptPath }}" \
           -b

@@ -20,20 +20,14 @@ jobs:
           creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
 
       - name: Delete Frontend Container App
-        uses: ./.github/actions/resource-delete-if-exists
+        uses: ./.github/actions/containerapp-delete
         with:
-          resourceName: ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }}
+          subscriptionId:   ${{ vars.INFRA_AZURE_SUBSCRIPTION_ID }}
 
-          checkCmd: |
-            az containerapp show \
-              --name            ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} \
-              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+          containerAppName: ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }}
 
-          deleteCmd: |
-            az containerapp delete \
-              --name            ${{ vars.INFRA_AZURE_CONTAINERAPP_FRONTEND_NAME }} \
-              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
-              --yes
+          resourceGroup:    ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+
 
   job-03-b-delete-adtoken-containerapp:  
     name: J3B Delete AD Token CAPP
@@ -48,20 +42,13 @@ jobs:
           creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
 
       - name: Delete AD Token Container App
-        uses: ./.github/actions/resource-delete-if-exists
+        uses: ./.github/actions/containerapp-delete
         with:
-          resourceName: ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_NAME }}
+          subscriptionId:   ${{ vars.INFRA_AZURE_SUBSCRIPTION_ID }}
 
-          checkCmd: |
-            az containerapp show \
-              --name            ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_NAME }} \
-              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+          containerAppName: ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_NAME }}
 
-          deleteCmd: |
-            az containerapp delete \
-              --name            ${{ vars.INFRA_AZURE_CONTAINERAPP_ADTOKENSERVER_NAME }} \
-              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
-              --yes
+          resourceGroup:    ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
 
   job-03-a-delete-backend-containerapp:
     name: J3A Delete Backend CAPP
@@ -76,20 +63,13 @@ jobs:
           creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
 
       - name: Delete Backend Container App
-        uses: ./.github/actions/resource-delete-if-exists
+        uses: ./.github/actions/containerapp-delete
         with:
-          resourceName: ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }}
+          subscriptionId:   ${{ vars.INFRA_AZURE_SUBSCRIPTION_ID }}
 
-          checkCmd: |
-            az containerapp show \
-              --name            ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} \
-              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+          containerAppName: ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }}
 
-          deleteCmd: |
-            az containerapp delete \
-              --name            ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }} \
-              --resource-group  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
-              --yes
+          resourceGroup:    ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
     
   job-02-b-delete-containerapp-environment:
     name: J2B Delete CAPPENV

@@ -62,16 +62,8 @@ jobs:
               --name            ${{ vars.INFRA_AZURE_AKV_NAME }} \
               --sku             standard
 
-      - name: Create secret for SQL Admin Password
-        shell: bash
-        run: |
-          az keyvault secret set \
-            --vault-name  ${{ vars.INFRA_AZURE_AKV_NAME }} \
-            --name        datasourcepassword \
-            --value       "${{ secrets.INFRA_AZURE_SQLSERVER_ADMIN_LOGINPASSWORD }}"
-
   job-01-c-create-sqlserver:
-    name: J1C Create SQL SRV
+    name: J1C Create SQLSRV
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -129,7 +121,7 @@ jobs:
               --location        ${{ vars.INFRA_AZURE_LOCATION }}
 
   job-02-a-create-sqldatabase:
-    name: J2A Create SQL DB
+    name: J2A Create SQLDB
     runs-on: ubuntu-latest
     needs: job-01-c-create-sqlserver
     steps:
@@ -218,7 +210,6 @@ jobs:
     runs-on: ubuntu-latest
     needs:  [
               job-01-a-create-acr,
-              job-01-b-create-akv,
               job-02-b-create-containerapp-environment
             ]
     steps:
@@ -250,15 +241,6 @@ jobs:
           awsRegion:          ${{ vars.INFRA_AWS_DNS_REGION }}
           awsAccessKeyId:     ${{ vars.INFRA_AWS_DNS_USER_ACCESS_KEY_ID }}
           awsSecretAccessKey: ${{ secrets.INFRA_AWS_DNS_USER_SECRET_ACCESS_KEY }}
-
-      - name: Set Backend Container App secret from AKV
-        uses: ./.github/actions/containerapp-set-secret-from-akv
-        with:
-          resourceGroup:      ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
-          containerAppName:   ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }}
-          akvName:            ${{ vars.INFRA_AZURE_AKV_NAME }}
-          datasourceUsername: ${{ vars.INFRA_AZURE_SQLSERVER_ADMIN_LOGINNAME }}
-          datasourcePassword: ${{ secrets.INFRA_AZURE_SQLSERVER_ADMIN_LOGINPASSWORD }}
 
   job-03-b-create-adtoken-containerapp:
     name: J3B Create AD Token CAPP
@@ -335,9 +317,12 @@ jobs:
           awsSecretAccessKey: ${{ secrets.INFRA_AWS_DNS_USER_SECRET_ACCESS_KEY }}
 
   job-04-a-add-sqlserver-firewall-rules:
-    name: J4A Add SQL FW Rules
+    name: J4A Add SQLSRV FW Rules
     runs-on: ubuntu-latest
-    needs: [job-01-c-create-sqlserver, job-03-a-create-backend-containerapp]
+    needs:  [
+              job-01-c-create-sqlserver,
+              job-03-a-create-backend-containerapp
+            ]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -347,8 +332,15 @@ jobs:
         with:
           creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
 
+      - name: Allow GitHub runner IP in SQL Server firewall
+        uses: ./.github/actions/sqlserver-firewall-add-github-runner-ip
+        with:
+          resourceGroup:  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+          sqlServerName:  ${{ vars.INFRA_AZURE_SQLSERVER_NAME }}
+          ruleName:       TempGitHubRunner
+
       - name: Add Backend Container App IPs to SQL Server Firewall
-        uses: ./.github/actions/sql-firewall-allow-containerapp-ips
+        uses: ./.github/actions/sqlserver-firewall-add-backend-capp-ips
         with:
           resourceGroup:    ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
           sqlServerName:    ${{ vars.INFRA_AZURE_SQLSERVER_NAME }}
@@ -386,8 +378,35 @@ jobs:
           imageName:        ${{ vars.INFRA_ADTOKENSERVER_IMAGE_NAME }}
           imageVersion:     ${GITHUB_SHA}
 
-  job-05-a-deploy-backend-containerapp:
-    name: J5A Deploy Backend CAPP
+  job-05-a-deploy-db:
+    name: J5A Deploy SQLDB
+    runs-on: ubuntu-latest
+    needs: job-04-a-add-sqlserver-firewall-rules
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
+
+      - name: Install sqlcmd on runner
+        uses: ./.github/actions/sqlcmd-install
+
+      - name: Execute schema.sql against Azure SQL
+        uses: ./.github/actions/sqlcmd-exec
+        with:
+          serverFqdn:   ${{ vars.INFRA_AZURE_SQLSERVER_NAME }}.database.windows.net
+          databaseName: ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }}
+          username:     ${{ vars.INFRA_AZURE_SQLSERVER_ADMIN_LOGINNAME }}
+          scriptPath:   ./database/schema.sql
+        env:
+          SQL_PASSWORD: ${{ secrets.INFRA_AZURE_SQLSERVER_ADMIN_LOGINPASSWORD }}
+
+
+  job-06-a-deploy-backend-containerapp:
+    name: J6A Deploy Backend CAPP
     runs-on: ubuntu-latest
     needs:  [
               job-02-a-create-sqldatabase,
@@ -408,12 +427,23 @@ jobs:
           distribution: microsoft
           java-version: 21
 
-      - name: Build Maven project
-        working-directory: ./backend
-        shell: bash
-        run: mvn clean package -DskipTests
+      - name: Create AKV Secret for DB password
+        uses: ./.github/actions/akv-create-secret
+        with:
+          akvName:     ${{ vars.INFRA_AZURE_AKV_NAME }}
+          secretName:  datasourcepassword
+          secretValue: ${{ secrets.INFRA_AZURE_SQLSERVER_ADMIN_LOGINPASSWORD }}
 
-      - name: Build and Push Docker Image to ACR
+      - name: Create CAPP Secret for DB password from AKV Secret
+        uses: ./.github/actions/containerapp-create-secret-from-akv
+        with:
+          resourceGroup:          ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+          akvName:                ${{ vars.INFRA_AZURE_AKV_NAME }}
+          akvSecretName:          datasourcepassword
+          containerAppName:       ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }}
+          containerAppSecretName: datasourcepassword
+
+      - name: Compile, Build and Push Docker Image to ACR
         uses: ./.github/actions/acr-build-push
         with:
           acrName:      ${{ vars.INFRA_AZURE_ACR_NAME }}
@@ -429,15 +459,18 @@ jobs:
           containerAppName: ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }}
           acrName:          ${{ vars.INFRA_AZURE_ACR_NAME }}
           imageName:        ${{ vars.INFRA_BACKEND_IMAGE_NAME }}
-          imageVersion:     ${GITHUB_SHA}          
+          imageVersion:     ${GITHUB_SHA}
+          envVars: |
+            DATASOURCEUSERNAME=${{ vars.INFRA_AZURE_SQLSERVER_ADMIN_LOGINNAME }} \
+            DATASOURCEPASSWORD=secretref:datasourcepassword
 
-  job-06-a-deploy-frontend-container-app:
-    name: J6A Deploy Frontend CAPP
+  job-07-a-deploy-frontend-container-app:
+    name: J7A Deploy Frontend CAPP
     runs-on: ubuntu-latest
     needs:  [
               job-03-c-create-frontend-containerapp,
               job-04-b-deploy-adtoken-containerapp,
-              job-05-a-deploy-backend-containerapp
+              job-06-a-deploy-backend-containerapp
           ]
     steps:
       - name: Checkout Repository
