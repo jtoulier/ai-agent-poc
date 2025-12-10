@@ -362,6 +362,18 @@ jobs:
           workingDir:   ./ad-token-server
           dockerfile:   docker/Dockerfile
 
+      - name: Extract SP Credentials
+        id: spcreds
+        shell: bash
+        run: |
+          CLIENT_ID=$(jq -r .clientId <<< '${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}')
+          TENANT_ID=$(jq -r .tenantId <<< '${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}')
+          CLIENT_SECRET=$(jq -r .clientSecret <<< '${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}')
+
+          echo "client_id=$CLIENT_ID"       >> $GITHUB_OUTPUT
+          echo "tenant_id=$TENANT_ID"       >> $GITHUB_OUTPUT
+          echo "client_secret=$CLIENT_SECRET" >> $GITHUB_OUTPUT
+
       - name: Update Azure Container App with New Image
         uses: ./.github/actions/containerapp-update-image
         with:
@@ -370,6 +382,10 @@ jobs:
           acrName:          ${{ vars.INFRA_AZURE_ACR_NAME }}
           imageName:        ${{ vars.INFRA_ADTOKENSERVER_IMAGE_NAME }}
           imageVersion:     ${GITHUB_SHA}
+          envVars: |
+                      CLIENT_ID=${{ steps.spcreds.outputs.client_id }}
+                      TENANT_ID=${{ steps.spcreds.outputs.tenant_id }}
+                      CLIENT_SECRET=${{ steps.spcreds.outputs.client_secret }}
 
   job-05-a-deploy-db:
     name: J5A Deploy SQLDB

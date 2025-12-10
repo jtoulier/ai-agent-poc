@@ -21,13 +21,13 @@ runs:
       run: |
         set +e
 
-        CLIENT_ID=$(jq -r .clientId <<< "${{ inputs.spInfo }}")
-        echo "Assigning 'Key Vault Secrets Officer' role to Client ID: $CLIENT_ID
+        CLIENT_ID=$(jq -r .clientId <<< '${{ inputs.spInfo }}')
+        AKV_ID=$(az keyvault show --name ${{ inputs.akvName }} --query id -o tsv)
 
         az role assignment create \
-          --assignee $(jq -r .clientId <<< "${{ inputs.spInfo }}") \
-          --role "Key Vault Secrets Officer" \
-          --scope $(az keyvault show --name ${{ inputs.akvName }} --query id -o tsv)
+          --assignee  $CLIENT_ID \
+          --role      "Key Vault Secrets Officer" \
+          --scope     $AKV_ID
 
         RESULT=$?
         if [[ $RESULT -eq 0 ]]; then
