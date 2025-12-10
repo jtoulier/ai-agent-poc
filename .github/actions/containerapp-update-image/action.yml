@@ -33,8 +33,11 @@ runs:
 
         # Construir la lista de env vars: obligatoria + opcionales
         ENV_ARGS="FORCE_REVISION=$(date +%s)"
-        if [ -n "${{ inputs.envVars }}" ]; then
-          ENV_ARGS="$ENV_ARGS ${{ inputs.envVars }}"
+
+        CLEAN_VARS=$(echo "${{ inputs.envVars }}" | tr '\n' ' ')
+
+        if [ -n "$CLEAN_VARS" ]; then
+          ENV_ARGS="$ENV_ARGS $CLEAN_VARS"
         fi
         echo "$ENV_ARGS"
 

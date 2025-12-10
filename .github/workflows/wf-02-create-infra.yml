@@ -390,7 +390,10 @@ jobs:
   job-05-a-deploy-db:
     name: J5A Deploy SQLDB
     runs-on: ubuntu-latest
-    needs: job-04-a-add-sqlserver-firewall-rules
+    needs:  [
+              job-02-a-create-sqldatabase,
+              job-04-a-add-sqlserver-firewall-rules
+            ]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -424,11 +427,8 @@ jobs:
   job-06-a-deploy-backend-containerapp:
     name: J6A Deploy Backend CAPP
     runs-on: ubuntu-latest
-    needs:  [
-              job-02-a-create-sqldatabase,
-              job-04-a-add-sqlserver-firewall-rules,
-              job-05-a-deploy-db
-            ]
+    needs:  job-05-a-deploy-db
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
