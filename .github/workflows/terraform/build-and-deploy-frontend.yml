@@ -1,0 +1,35 @@
+# .github/workflows/build-and-deploy-frontend.yml
+name: Build & Deploy Frontend (Angular)
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'frontend/**'
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Build Angular & Docker image
+        run: |
+          cd frontend
+          npm ci
+          npm run build -- --prod
+          cd ..
+          IMAGE_TAG="${{ secrets.ACR_LOGIN_SERVER }}/frontend:${{ github.sha }}"
+          docker build -t $IMAGE_TAG frontend
+          docker push $IMAGE_TAG
+
+      - name: Update frontend container app
+        run: |
+          IMAGE_TAG="${{ secrets.ACR_LOGIN_SERVER }}/frontend:${{ github.sha }}"
+          az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} -t ${{ secrets.AZURE_TENANT_ID }}
+          az containerapp update --name ${{ secrets.FRONTEND_APP_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --image $IMAGE_TAG

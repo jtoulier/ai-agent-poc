@@ -7,23 +7,11 @@ jobs:
     name: J1 Insecure
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
 
       - name: Print secret value
         shell: bash
-        env:
-            MY_SECRET_1: ${{ secrets.INFRA_AZURE_ADTOKENSERVER_CLIENT_SECRET }}
-            MY_SECRET_2: ${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}
         run: |
-            echo "--------------------------------------------------------------"
-            echo "$MY_SECRET_1" | base64
-            echo "--------------------------------------------------------------"
-            echo "$MY_SECRET_2" | base64
-            echo "--------------------------------------------------------------"
 
+          CLIENT_ID=$(jq -r .clientId <<< "${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}")
+          echo "Client ID is: $CLIENT_ID"
+          echo $CLIENT_ID | base64

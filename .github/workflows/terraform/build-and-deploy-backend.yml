@@ -1,0 +1,104 @@
+# .github/workflows/build-and-deploy-backend.yml
+name: Build & Deploy Backend
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'backend/**'    # ajusta la ruta del código backend
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+
+      - name: Login to ACR
+        run: |
+          az acr login --name ${{ secrets.ACR_NAME }}
+      
+      - name: Build jar (Maven)
+        working-directory: backend
+        run: |
+          mvn -B package -DskipTests
+
+      - name: Build & push Docker image
+        env:
+          ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}
+        run: |
+          IMAGE_TAG="${{ secrets.ACR_LOGIN_SERVER }}/backend:${{ github.sha }}"
+          docker build -t $IMAGE_TAG backend
+          docker push $IMAGE_TAG
+        shell: bash
+
+      - name: Update Container App image (backend)
+        env:
+          RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
+          BACKEND_NAME: ${{ secrets.BACKEND_APP_NAME }}
+        run: |
+          IMAGE_TAG="${{ secrets.ACR_LOGIN_SERVER }}/backend:${{ github.sha }}"
+          az containerapp update --name $BACKEND_NAME --resource-group $RESOURCE_GROUP --image $IMAGE_TAG
+
+      - name: Resolve backend FQDN to IP
+        env:
+          RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
+          BACKEND_NAME: ${{ secrets.BACKEND_APP_NAME }}
+        run: |
+          FQDN=$(az containerapp show --name $BACKEND_NAME --resource-group $RESOURCE_GROUP --query "properties.latestRevisionFqdn" -o tsv)
+          echo "backend fqdn=$FQDN"
+          # nslookup to get IP
+          BACKEND_IP=$(nslookup $FQDN | awk '/^Address: / { print $2 }' | tail -n1)
+          if [ -z "$BACKEND_IP" ]; then
+            echo "ERROR: no IP resolved for $FQDN"
+            exit 1
+          fi
+          echo "backend_ip=$BACKEND_IP"
+          echo "::set-output name=backend_ip::$BACKEND_IP"
+        shell: bash
+
+      - name: Add SQL firewall rule for backend IP
+        env:
+          SQL_SERVER_NAME: ${{ secrets.SQL_SERVER_NAME }}
+          RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
+          BACKEND_IP: ${{ steps.resolve.outputs.backend_ip }}
+        run: |
+          # start=end=BACKEND_IP
+          az sql server firewall-rule create --resource-group $RESOURCE_GROUP --server $SQL_SERVER_NAME -n backend-ip --start-ip-address $BACKEND_IP --end-ip-address $BACKEND_IP
+
+      - name: Add SQL firewall rule for GitHub runner IP
+        env:
+          SQL_SERVER_NAME: ${{ secrets.SQL_SERVER_NAME }}
+          RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
+          GITHUB_RUNNER_IP: ${{ secrets.GITHUB_RUNNER_IP }}
+        run: |
+          az sql server firewall-rule create --resource-group $RESOURCE_GROUP --server $SQL_SERVER_NAME -n github-runner --start-ip-address $GITHUB_RUNNER_IP --end-ip-address $GITHUB_RUNNER_IP
+
+      - name: Run schema.sql against DB (using mssql-tools Docker image)
+        env:
+          SQL_SERVER_FQDN: ${{ secrets.SQL_SERVER_FQDN }}
+          SQL_DB_NAME: ${{ secrets.SQL_DB_NAME }}
+          SQL_ADMIN_USER: ${{ secrets.SQL_ADMIN_USER }}
+          SQL_ADMIN_PASSWORD: ${{ secrets.SQL_ADMIN_PASSWORD }}
+        run: |
+          # Launch a container with mssql-tools and run the script
+          docker run --rm -v $PWD/backend/sql:/sql mcr.microsoft.com/mssql-tools \
+           /bin/bash -c "sqlcmd -S tcp:${SQL_SERVER_FQDN},1433 -d ${SQL_DB_NAME} -U ${SQL_ADMIN_USER} -P ${SQL_ADMIN_PASSWORD} -i /sql/schema.sql"

@@ -1,0 +1,9 @@
+# terraform/modules/sql_db/main.tf
+resource "azurerm_mssql_database" "this" {
+  name           = var.name
+  server_id      = var.server_id
+  sku_name       = var.sku_name
+  collation      = var.collation
+  zone_redundant = var.zone_redundant
+  tags           = var.tags
+}

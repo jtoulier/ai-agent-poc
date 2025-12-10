@@ -1,0 +1,9 @@
+location = "eastus"
+resource_group_name = "rg-dev-apps"
+acr_name = "acrdevxyz"
+kv_admin_object_id = "00000000-0000-0000-0000-000000000000"
+sql_admin_user = "sqladminuser"
+# sql_admin_password via GitHub Secret -> set in pipeline as TF_VAR_sql_admin_password
+github_runner_ip = "X.X.X.X"
+acr_username = "unused"
+# Backend/adtoken/frontend image names will be provided by CI (TF_VAR_backend_image, etc).
