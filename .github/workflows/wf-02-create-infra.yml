@@ -386,6 +386,7 @@ jobs:
                       CLIENT_ID=${{ steps.spcreds.outputs.client_id }}
                       TENANT_ID=${{ steps.spcreds.outputs.tenant_id }}
                       CLIENT_SECRET=${{ steps.spcreds.outputs.client_secret }}
+                      ALLOWED_ORIGINS=https://${{ vars.INFRA_FRONTEND_DOMAIN_NAME }}
 
   job-05-a-deploy-db:
     name: J5A Deploy SQLDB
