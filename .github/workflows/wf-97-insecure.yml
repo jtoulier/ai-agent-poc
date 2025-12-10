@@ -12,6 +12,11 @@ jobs:
         shell: bash
         run: |
 
-          CLIENT_ID=$(jq -r .clientId <<< "${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}")
+          CLIENT_ID=$(jq -r .clientId <<< '${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}')
+          echo -----------------------------------------------------------------
           echo "Client ID is: $CLIENT_ID"
+          echo -----------------------------------------------------------------
           echo $CLIENT_ID | base64
+          echo -----------------------------------------------------------------
+          echo '${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}' | jq -r .clientId
+          echo -----------------------------------------------------------------
