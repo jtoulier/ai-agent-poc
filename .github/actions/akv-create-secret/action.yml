@@ -46,7 +46,7 @@ runs:
         echo "⏳ Waiting for role assignment to propagate..."
         for i in {1..15}; do
           az keyvault secret list --vault-name ${{ inputs.akvName }} >/dev/null 2>&1 && break
-          echo "Waiting for RBAC propagation… ($i/15)"
+          echo "⏳ Waiting for RBAC propagation… ($i/15)"
           sleep 10
         done      
 
