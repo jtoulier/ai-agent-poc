@@ -25,6 +25,15 @@ Darle permiso de Contributor al clientId
 az role assignment create --assignee 8c5b3945-0b9b-4a95-8b9e-dd6f1d41fe07 --role Contributor --scope subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 ```
 
+Darle permiso de User Access Administrator al clientId
+```bash
+az role assignment create \
+  --assignee c2aefd0d-ecfe-4d9f-ac67-53825beed971 \
+  --role "User Access Administrator" \
+  --scope /subscriptions/8e6b4c8b-ff8c-4715-bea2-4f94aac0a93b
+
+```
+
 Verificar los permisos, debe tener Contributor
 ```bash
 az role assignment list --assignee 8c5b3945-0b9b-4a95-8b9e-dd6f1d41fe07
