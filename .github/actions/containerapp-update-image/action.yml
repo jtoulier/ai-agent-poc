@@ -45,7 +45,7 @@ runs:
           --name            "${{ inputs.containerAppName }}" \
           --resource-group  "${{ inputs.resourceGroup }}" \
           --image           "$IMAGE" \
-          --set-env-vars    "$ENV_ARGS"
+          --set-env-vars    $ENV_ARGS
 
         RESULT=$?
         if [[ $RESULT -eq 0 ]]; then
