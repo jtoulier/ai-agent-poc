@@ -49,12 +49,21 @@ runs:
                         --query           identity.principalId \
                         --output          tsv)
 
+        SCOPE=$(az keyvault show \
+                  --name    ${{ inputs.akvName }} \
+                  --query   id \
+                  --output  tsv)
+
+        echo -------------------------------------------------------------------
+        echo $PRINCIPAL_ID | base64
+        echo -------------------------------------------------------------------
+        echo $SCOPE | base64
+        echo -------------------------------------------------------------------
+
         az role assignment create \
           --role      "Key Vault Secrets User" \
           --assignee  $PRINCIPAL_ID \
-          --scope     $(az keyvault show --name ${{ inputs.akvName }} \
-          --query     id \
-          --output    tsv)
+          --scope     $SCOPE
 
         RESULT=$?
         if [[ $RESULT -eq 0 ]]; then

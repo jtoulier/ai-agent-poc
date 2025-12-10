@@ -423,7 +423,6 @@ jobs:
         env:
           SQL_PASSWORD: ${{ secrets.INFRA_AZURE_SQLSERVER_ADMIN_LOGINPASSWORD }}
 
-
   job-06-a-deploy-backend-containerapp:
     name: J6A Deploy Backend CAPP
     runs-on: ubuntu-latest
