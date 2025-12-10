@@ -13,8 +13,12 @@ jobs:
         run: |
 
           CLIENT_ID=$(jq -r .clientId <<< '${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}')
+          TENANT_ID=$(jq -r .tenantId <<< '${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}')
+          CLIENT_SECRET=$(jq -r .clientSecret <<< '${{ secrets.INFRA_AZURE_SERVICE_PRINCIPAL_INFO }}')
           echo -----------------------------------------------------------------
-          echo "Client ID is: $CLIENT_ID"
+          echo "CCLIENT_ID is:    $CLIENT_ID"
+          echo "TENANT_ID is:     $TENANT_ID"
+          echo "CLIENT_SECRET is: $CLIENT_SECRET"
           echo -----------------------------------------------------------------
           echo $CLIENT_ID | base64
           echo -----------------------------------------------------------------
