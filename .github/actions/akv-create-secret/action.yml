@@ -24,6 +24,9 @@ runs:
         CLIENT_ID=$(jq -r .clientId <<< '${{ inputs.spInfo }}')
         AKV_ID=$(az keyvault show --name ${{ inputs.akvName }} --query id -o tsv)
 
+        echo "CLIENT_ID=$CLIENT_ID"
+        echo "AKV_ID=$AKV_ID"
+
         az role assignment create \
           --assignee  $CLIENT_ID \
           --role      "Key Vault Secrets Officer" \
