@@ -19,7 +19,12 @@ export class MessageService {
     // ✅ Inyectar el nonce dentro del mensaje enviado al agente
     const messageWithNonce = {
       ...message,
-      nonce, // <-- este campo rompe el cache del modelo
+      content: [
+        {
+          type: 'text',
+          text: `nonce: ${nonce}\n\n${message.content[0].text}`
+        }
+      ]
     };
 
     // 🔹 Fetch dynamic token from Python token server
