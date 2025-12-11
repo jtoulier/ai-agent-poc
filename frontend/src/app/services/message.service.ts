@@ -12,6 +12,16 @@ export class MessageService {
   addMessageToThread(threadId: string, message: MessageRequest): Observable<MessageResponse> {
     console.log('[MessageService] Adding message to thread:', threadId, message);
 
+    // ✅ Generar token dinámico para romper el cache del modelo
+    const nonce = crypto.randomUUID();
+    console.log('[MessageService] Nonce generado:', nonce);
+
+    // ✅ Inyectar el nonce dentro del mensaje enviado al agente
+    const messageWithNonce = {
+      ...message,
+      nonce, // <-- este campo rompe el cache del modelo
+    };
+
     // 🔹 Fetch dynamic token from Python token server
     return this.http.get<{ accessToken: string }>(API_ROUTES.TOKEN_SERVER.GET_TOKEN).pipe(
       switchMap(tokenResponse => {
@@ -24,7 +34,7 @@ export class MessageService {
 
         return this.http.post<MessageResponse>(
           API_ROUTES.AGENT.ADD_MESSAGE(threadId),
-          message,
+          messageWithNonce, // ✅ enviar mensaje con nonce
           { headers }
         );
       })

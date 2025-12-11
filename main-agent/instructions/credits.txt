@@ -157,4 +157,6 @@ El crédito debe estar en estado "VIGENTE"
 
 Al pagar la cuota esta debe estar en estado "PENDIENTE" y luego debe pasar al estado "PAGADO"
 
+Antes de pagar una cuota, debes verificar si hay cuotas anteriores en estado "PENDIENTE", si hubiese alguna, rechaza el pago y avísale que debe pagar las cuotas pendientes anteriores
+
 Si se paga la última cuota y todas las cuotas del crédito están en estado "PAGADO" entonces el crédito entero pasa al estado "CANCELADO". No olvides este último paso, es muy importante. Debes pasarlo a "CANCELADO" sin preguntar.
