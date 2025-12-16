@@ -146,17 +146,13 @@ jobs:
 
           createCmd: |
             az sql db create \
-              --name              ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }} \
-              --resource-group    ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
-              --server            ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} \
-              --auto-pause-delay  15 \
-              --capacity          2 \
-              --compute-model     Serverless \
-              --edition           GeneralPurpose \
-              --family            Gen5 \
-              --max-size          5GB \
-              --min-capacity      0.5 \
-              --zone-redundant    false
+              --name                      ${{ vars.INFRA_AZURE_SQLSERVER_DB_NAME }} \
+              --resource-group            ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }} \
+              --server                    ${{ vars.INFRA_AZURE_SQLSERVER_NAME }} \
+              --edition                   Basic \
+              --service-objective         Basic \
+              --max-size                  2GB \
+              --backup-storage-redundancy Local
 
   job-02-b-create-containerapp-environment:
     name: J2B Create CAPPENV
