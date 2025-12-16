@@ -1,6 +1,11 @@
 name: WF-02 Create Infrastructure
 on:
   workflow_dispatch:
+    inputs:
+      local_ip:
+        description: "IP pública de tu laptop (ej: 190.xxx.xxx.xxx). Usar curl https://api.ipify.org"
+        required: true
+        type: string
 
 jobs:
   job-01-a-create-acr:
@@ -336,6 +341,15 @@ jobs:
           containerAppName: ${{ vars.INFRA_AZURE_CONTAINERAPP_BACKEND_NAME }}
           rulePrefix:       Rule_BACKEND_
 
+      - name: Allow local IP in SQL Server firewall
+        uses: ./.github/actions/sqlserver-firewall-add-local-ip
+        with:
+          resourceGroup:  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
+          sqlServerName:  ${{ vars.INFRA_AZURE_SQLSERVER_NAME }}
+          ruleName:       Rule_LOCAL_
+          ip:             ${{ inputs.local_ip }}
+
+
   job-04-b-deploy-adtoken-containerapp:
     name: J4B Deploy AD Token CAPP
     runs-on: ubuntu-latest
@@ -393,7 +407,7 @@ jobs:
         with:
           resourceGroup:  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
           sqlServerName:  ${{ vars.INFRA_AZURE_SQLSERVER_NAME }}
-          ruleName:       TempGitHubRunner
+          ruleName:       Rule_GITHUB_RUNNER_
 
       - name: Install sqlcmd on runner
         uses: ./.github/actions/sqlcmd-install

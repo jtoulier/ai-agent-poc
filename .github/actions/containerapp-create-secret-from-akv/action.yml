@@ -60,18 +60,32 @@ runs:
         echo $SCOPE | base64
         echo -------------------------------------------------------------------
 
-        az role assignment create \
-          --role      "Key Vault Secrets User" \
-          --assignee  $PRINCIPAL_ID \
-          --scope     $SCOPE
+        MAX_RETRIES=10
+        SLEEP_SECONDS=15
 
-        RESULT=$?
-        if [[ $RESULT -eq 0 ]]; then
-          echo "✅ Key Vault access policy set for Container App successfully."
-        else
-          echo "❌ Failed to set Key Vault access policy for Container App. Exiting with code $RESULT."
-          exit $RESULT
-        fi
+        for ((i=1; i<=MAX_RETRIES; i++)); do
+          echo "⏳ Intento $i/$MAX_RETRIES: asignando rol Key Vault Secrets User..."
+
+          az role assignment create \
+            --role     "Key Vault Secrets User" \
+            --assignee "$PRINCIPAL_ID" \
+            --scope    "$SCOPE"
+
+          RESULT=$?
+
+          if [[ $RESULT -eq 0 ]]; then
+            echo "✅ Key Vault access policy set for Container App successfully."
+            break
+          fi
+
+          if [[ $i -lt $MAX_RETRIES ]]; then
+            echo "⏳ Falló el intento $i. Esperando $SLEEP_SECONDS segundos para reintentar (propagación Entra ID)..."
+            sleep "$SLEEP_SECONDS"
+          else
+            echo "❌ Failed to set Key Vault access policy for Container App after $MAX_RETRIES attempts."
+            exit "$RESULT"
+          fi
+        done
 
     - name: Set Container App secret for login password
       shell: bash
