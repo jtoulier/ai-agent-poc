@@ -346,7 +346,7 @@ jobs:
         with:
           resourceGroup:  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
           sqlServerName:  ${{ vars.INFRA_AZURE_SQLSERVER_NAME }}
-          ruleName:       Rule_LOCAL_
+          ruleName:       Rule_LOCAL
           ip:             ${{ inputs.local_ip }}
 
 
@@ -407,7 +407,7 @@ jobs:
         with:
           resourceGroup:  ${{ vars.INFRA_AZURE_RESOURCEGROUP_NAME }}
           sqlServerName:  ${{ vars.INFRA_AZURE_SQLSERVER_NAME }}
-          ruleName:       Rule_GITHUB_RUNNER_
+          ruleName:       Rule_GITHUB_RUNNER
 
       - name: Install sqlcmd on runner
         uses: ./.github/actions/sqlcmd-install
